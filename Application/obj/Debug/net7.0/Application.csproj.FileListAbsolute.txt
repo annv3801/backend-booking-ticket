@@ -1,0 +1,15 @@
+D:\Learn\BookingTicketMovie\Application\bin\Debug\net7.0\Application.deps.json
+D:\Learn\BookingTicketMovie\Application\bin\Debug\net7.0\Application.dll
+D:\Learn\BookingTicketMovie\Application\bin\Debug\net7.0\Application.pdb
+D:\Learn\BookingTicketMovie\Application\bin\Debug\net7.0\Domain.dll
+D:\Learn\BookingTicketMovie\Application\bin\Debug\net7.0\Domain.pdb
+D:\Learn\BookingTicketMovie\Application\obj\Debug\net7.0\Application.csproj.AssemblyReference.cache
+D:\Learn\BookingTicketMovie\Application\obj\Debug\net7.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\Learn\BookingTicketMovie\Application\obj\Debug\net7.0\Application.AssemblyInfoInputs.cache
+D:\Learn\BookingTicketMovie\Application\obj\Debug\net7.0\Application.AssemblyInfo.cs
+D:\Learn\BookingTicketMovie\Application\obj\Debug\net7.0\Application.csproj.CoreCompileInputs.cache
+D:\Learn\BookingTicketMovie\Application\obj\Debug\net7.0\Application.csproj.CopyComplete
+D:\Learn\BookingTicketMovie\Application\obj\Debug\net7.0\Application.dll
+D:\Learn\BookingTicketMovie\Application\obj\Debug\net7.0\refint\Application.dll
+D:\Learn\BookingTicketMovie\Application\obj\Debug\net7.0\Application.pdb
+D:\Learn\BookingTicketMovie\Application\obj\Debug\net7.0\ref\Application.dll

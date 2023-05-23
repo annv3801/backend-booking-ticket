@@ -10,6 +10,7 @@ using Application.DataTransferObjects.Category.Responses;
 using Application.DataTransferObjects.Film.Requests;
 using Application.DataTransferObjects.Film.Responses;
 using Application.DataTransferObjects.Pagination.Responses;
+using Application.Queries.Film;
 using Application.Repositories.Category;
 using Application.Repositories.Film;
 using Application.Services.Category;
@@ -198,6 +199,69 @@ public class FilmManagementService : IFilmManagementService
                     Director = a.Director,
                     Actor = a.Actor,
                     Genre = a.Genre,
+                    Premiere = a.Premiere,
+                    Duration = a.Duration,
+                    Language = a.Language,
+                    Rated = a.Rated,
+                    Image = a.Image
+                }).ToList()
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task<Result<ViewFilmResponse>> ViewFilmByShortenUrlAsync(string shortenUrl, CancellationToken cancellationToken = default(CancellationToken))
+    {
+        try
+        {
+            var result = await _filmRepository.GetFilmByShortenUrlAsync(shortenUrl, cancellationToken);
+            if (result == null)
+                return Result<ViewFilmResponse>.Fail(LocalizationString.Category.NotFoundCategory.ToErrors(_localizationService));
+
+            var filmResult = _mapper.Map<ViewFilmResponse>(result);
+
+            return Result<ViewFilmResponse>.Succeed(filmResult);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    public async Task<Result<PaginationBaseResponse<ViewFilmResponse>>> ViewListFilmByCategoryAsync(ViewListFilmByCategoryQuery query, CancellationToken cancellationToken = default(CancellationToken))
+    {
+        try
+        {
+            var filterQuery = await _filmRepository.ViewListFilmByCategoryAsync(query, cancellationToken);
+            var source = filterQuery.Select(p => new {p.Name, p.Image, p.ShortenUrl, p.Id, p.CategoryId, p.Actor, p.Director, p.Duration, p.Genre, p.Language, p.Premiere, p.Rated, p.Description});
+            var result = await _paginationService.PaginateAsync(source, query.Page, query.OrderBy, query.OrderByDesc, query.Size, cancellationToken);
+            if (result.Result.Count == 0)
+            {
+                return Result<PaginationBaseResponse<ViewFilmResponse>>.Fail(
+                    _localizationService[LocalizationString.Film.FailedToViewList].Value.ToErrors(_localizationService));
+            }
+            return Result<PaginationBaseResponse<ViewFilmResponse>>.Succeed(new PaginationBaseResponse<ViewFilmResponse>()
+            {
+                CurrentPage = result.CurrentPage,
+                OrderBy = result.OrderBy,
+                OrderByDesc = result.OrderByDesc,
+                PageSize = result.PageSize,
+                TotalItems = result.TotalItems,
+                TotalPages = result.TotalPages,
+                Result = result.Result.Select(a => new ViewFilmResponse()
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    ShortenUrl = a.ShortenUrl,
+                    Description = a.Description,
+                    CategoryId = a.CategoryId,
+                    Director = a.Director,
+                    Genre = a.Genre,
+                    Actor = a.Actor,
                     Premiere = a.Premiere,
                     Duration = a.Duration,
                     Language = a.Language,

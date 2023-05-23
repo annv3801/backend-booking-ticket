@@ -1,4 +1,5 @@
 ﻿using Application.DataTransferObjects.FilmSchedules.Requests;
+using Application.Queries.FilmSchedules;
 using Application.Services.FilmSchedules;
 using Microsoft.AspNetCore.Mvc;
 
@@ -98,6 +99,25 @@ public class FilmSchedulesController : Controller
         try
         {
             var result = await _filmManagementService.ViewListFilmSchedulesAsync(request, cancellationToken);
+            if (!result.Succeeded) return Accepted(result);
+            if (result.Data != null)
+                return Ok(result);
+            return Accepted(result);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    [HttpGet]
+    [Route("view-list-schedule-by-time")]
+    // [Cached]
+    public async Task<IActionResult>? ViewListFilmSchedulesByTimeAsync([FromQuery] ViewListFilmSchedulesByTimeQuery request, CancellationToken cancellationToken = default(CancellationToken))
+    {
+        try
+        {
+            var result = await _filmManagementService.ViewListFilmSchedulesByTimeAsync(request, cancellationToken);
             if (!result.Succeeded) return Accepted(result);
             if (result.Data != null)
                 return Ok(result);

@@ -274,7 +274,6 @@ builder.Services.AddCors(options =>
     options.AddPolicy(
         "AllowInternal",
         policy => policy.WithOrigins("*")
-            .WithMethods("POST", "GET", "OPTIONS", "PUT", "DELETE")
             .AllowAnyHeader()
             .AllowAnyOrigin()
     ));
@@ -289,10 +288,15 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowInternal");
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Uploads")),
+    RequestPath = "/Resources"
+});
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseCors("AllowInternal");
 app.Run();

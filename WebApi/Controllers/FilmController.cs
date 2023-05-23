@@ -1,6 +1,8 @@
 ﻿using Application.Common.Interfaces;
 using Application.DataTransferObjects.Category.Requests;
 using Application.DataTransferObjects.Film.Requests;
+using Application.Queries.Category;
+using Application.Queries.Film;
 using Application.Services.Category;
 using Application.Services.Film;
 using AutoMapper;
@@ -101,6 +103,26 @@ public class FilmController : Controller
             throw;
         }
     }
+    
+    [HttpGet]
+    [Route("view-film-by-shorten-url/{shortenUrl}")]
+    public async Task<IActionResult> ViewFilmByShortenUrlAsync(string shortenUrl, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _filmManagementService.ViewFilmByShortenUrlAsync(shortenUrl, cancellationToken);
+            if (!result.Succeeded) return Accepted(result);
+            if (result.Data != null)
+                return Ok(result);
+            return Accepted(result);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
     [HttpGet]
     [Route("view-list-film")]
     // [Cached]
@@ -109,6 +131,26 @@ public class FilmController : Controller
         try
         {
             var result = await _filmManagementService.ViewListFilmsAsync(request, cancellationToken);
+            if (!result.Succeeded) return Accepted(result);
+            if (result.Data != null)
+                return Ok(result);
+            return Accepted(result);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    [HttpGet]
+    [Route("view-list-film-by-category")]
+    // [Cached]
+    public async Task<IActionResult>? ViewListFilmsByCategoryAsync([FromQuery] ViewListFilmByCategoryQuery request, CancellationToken cancellationToken = default(CancellationToken))
+    {
+        try
+        {
+            var result = await _filmManagementService.ViewListFilmByCategoryAsync(request, cancellationToken);
             if (!result.Succeeded) return Accepted(result);
             if (result.Data != null)
                 return Ok(result);

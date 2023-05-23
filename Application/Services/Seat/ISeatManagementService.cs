@@ -12,5 +12,5 @@ public interface ISeatManagementService
     Task<Result<ViewSeatResponse>> ViewSeatAsync(Guid id, CancellationToken cancellationToken = default(CancellationToken));
     Task<Result<SeatResult>> DeleteSeatAsync(Guid id, CancellationToken cancellationToken = default(CancellationToken));
     Task<Result<PaginationBaseResponse<ViewSeatResponse>>> ViewListSeatsAsync(ViewListSeatsRequest request, CancellationToken cancellationToken = default(CancellationToken));
-    Task<Result<PaginationBaseResponse<ViewSeatResponse>>> ViewListSeatsByScheduleAsync(ViewListSeatByScheduleQuery query, CancellationToken cancellationToken = default(CancellationToken));
+    Task<Result<PaginationBaseResponse<ViewSeatResponse>>> ViewListSeatsByScheduleAsync(ViewListSeatsByScheduleRequest query, CancellationToken cancellationToken = default(CancellationToken));
 }

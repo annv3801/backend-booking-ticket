@@ -90,6 +90,26 @@ public class CouponController : Controller
             throw;
         }
     }
+    
+    [HttpGet]
+    [Route("view-coupon-by-code/{code}")]
+    public async Task<IActionResult> ViewCouponByCodeAsync(string code, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _couponManagementService.ViewCouponByCodeAsync(code, cancellationToken);
+            if (!result.Succeeded) return Accepted(result);
+            if (result.Data != null)
+                return Ok(result);
+            return Accepted(result);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
     [HttpGet]
     [Route("view-list-coupon")]
     // [Cached]

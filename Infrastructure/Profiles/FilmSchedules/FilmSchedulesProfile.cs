@@ -1,5 +1,7 @@
 using Application.Common;
+using Application.DataTransferObjects.FilmSchedules.Requests;
 using Application.DataTransferObjects.FilmSchedules.Responses;
+using Application.Queries.FilmSchedules;
 using AutoMapper;
 
 namespace Infrastructure.Profiles.FilmSchedules;

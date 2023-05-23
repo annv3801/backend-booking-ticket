@@ -138,7 +138,7 @@ public class SeatManagementService : ISeatManagementService
         }
     }
 
-    public async Task<Result<PaginationBaseResponse<ViewSeatResponse>>> ViewListSeatsByScheduleAsync(ViewListSeatByScheduleQuery query, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<Result<PaginationBaseResponse<ViewSeatResponse>>> ViewListSeatsByScheduleAsync(ViewListSeatsByScheduleRequest query, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {

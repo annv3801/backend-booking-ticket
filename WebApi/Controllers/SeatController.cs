@@ -90,4 +90,23 @@ public class SeatController : Controller
             throw;
         }
     }
+    [HttpGet]
+    [Route("view-list-seat-by-schedule")]
+    // [Cached]
+    public async Task<IActionResult>? ViewListSeatsByScheduleAsync([FromQuery] ViewListSeatsByScheduleRequest request, CancellationToken cancellationToken = default(CancellationToken))
+    {
+        try
+        {
+            var result = await _seatManagementService.ViewListSeatsByScheduleAsync(request, cancellationToken);
+            if (!result.Succeeded) return Accepted(result);
+            if (result.Data != null)
+                return Ok(result);
+            return Accepted(result);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

@@ -32,7 +32,7 @@ public class SeatRepository : Repository<Domain.Entities.Seat>, ISeatRepository
             .AsQueryable();
     }
 
-    public async Task<IQueryable<Domain.Entities.Seat>> ViewListSeatsByScheduleAsync(ViewListSeatByScheduleQuery query, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<IQueryable<Domain.Entities.Seat>> ViewListSeatsByScheduleAsync(ViewListSeatsByScheduleRequest query, CancellationToken cancellationToken = default(CancellationToken))
     {
         await Task.CompletedTask;
         return _applicationDbContext.Seats

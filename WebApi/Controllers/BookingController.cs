@@ -52,7 +52,7 @@ public class BookingController : ControllerBase
     }
     
     [HttpGet]
-    [Route("payment-vnpay-callback")]
+    [Route("PaymentVnPay/Callback")]
     public async Task<IActionResult> PaymentCallback()
     {
         var response = _vnPayService.PaymentExecute(Request.Query);
@@ -61,7 +61,6 @@ public class BookingController : ControllerBase
         {
             result = "http://localhost:3000/payment-success";
         }
-
         return Redirect(result);
     }
 }

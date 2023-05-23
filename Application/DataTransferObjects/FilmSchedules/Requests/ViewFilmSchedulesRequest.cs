@@ -5,5 +5,4 @@ namespace Application.DataTransferObjects.FilmSchedules.Requests;
 [ExcludeFromCodeCoverage]
 public class ViewListFilmSchedulesRequest : PaginationBaseRequest
 {
-    public Guid ScheduleId { get; set; }
 }

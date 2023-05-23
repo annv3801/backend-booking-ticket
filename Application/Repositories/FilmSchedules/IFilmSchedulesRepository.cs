@@ -5,7 +5,7 @@ using Domain.Entities;
 
 namespace Application.Repositories.FilmSchedules;
 
-public interface IFilmSchedulesRepository : IRepository<Domain.Entities.FilmSchedule>
+public interface IFilmSchedulesRepository : IRepository<FilmSchedule>
 {
     Task<IQueryable<FilmSchedule>> GetListFilmSchedulesAsync(ViewListFilmSchedulesRequest request, CancellationToken cancellationToken);
     Task<FilmSchedule?> GetFilmSchedulesByIdAsync(Guid id, CancellationToken cancellationToken);

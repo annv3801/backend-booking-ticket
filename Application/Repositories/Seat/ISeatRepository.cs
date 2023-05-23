@@ -8,6 +8,6 @@ public interface ISeatRepository : IRepository<Domain.Entities.Seat>
 {
     Task<Domain.Entities.Seat?> GetSeatByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<IQueryable<Domain.Entities.Seat>> GetListSeatsAsync(ViewListSeatsRequest request, CancellationToken cancellationToken);
-    Task<IQueryable<Domain.Entities.Seat>> ViewListSeatsByScheduleAsync(ViewListSeatByScheduleQuery query, CancellationToken cancellationToken = default(CancellationToken));
+    Task<IQueryable<Domain.Entities.Seat>> ViewListSeatsByScheduleAsync(ViewListSeatsByScheduleRequest query, CancellationToken cancellationToken = default(CancellationToken));
 
 }

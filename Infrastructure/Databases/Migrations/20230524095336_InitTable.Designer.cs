@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Database.Migrations
+namespace Infrastructure.Databases.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230523164849_InitTable")]
+    [Migration("20230524095336_InitTable")]
     partial class InitTable
     {
         /// <inheritdoc />
@@ -68,11 +68,7 @@ namespace Infrastructure.Database.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastModifiedById");
-
-                    b.ToTable("DMP_Bookings", (string)null);
+                    b.ToTable("Bookings", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.BookingDetail", b =>
@@ -106,13 +102,9 @@ namespace Infrastructure.Database.Migrations
 
                     b.HasIndex("BookingId");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastModifiedById");
-
                     b.HasIndex("ScheduleId");
 
-                    b.ToTable("DMP_BookingDetails", (string)null);
+                    b.ToTable("BookingDetails", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Category", b =>
@@ -146,17 +138,13 @@ namespace Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastModifiedById");
-
                     b.HasIndex("Name");
 
                     b.HasIndex("ShortenUrl");
 
                     b.HasIndex("Status");
 
-                    b.ToTable("DMP_Categories", (string)null);
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Coupon", b =>
@@ -205,11 +193,7 @@ namespace Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastModifiedById");
-
-                    b.ToTable("DMP_Coupons", (string)null);
+                    b.ToTable("Coupons", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Film", b =>
@@ -278,11 +262,7 @@ namespace Infrastructure.Database.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastModifiedById");
-
-                    b.ToTable("DMP_Films", (string)null);
+                    b.ToTable("Films", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.FilmSchedule", b =>
@@ -320,15 +300,11 @@ namespace Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
                     b.HasIndex("FilmId");
-
-                    b.HasIndex("LastModifiedById");
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("DMP_FilmSchedules", (string)null);
+                    b.ToTable("FilmSchedules", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Identity.Account", b =>
@@ -471,11 +447,7 @@ namespace Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
                     b.HasIndex("Email");
-
-                    b.HasIndex("LastModifiedById");
 
                     b.HasIndex("NormalizedEmail");
 
@@ -490,13 +462,13 @@ namespace Infrastructure.Database.Migrations
                         {
                             Id = new Guid("49e3275a-d497-4b45-bbcb-3214f3769d7f"),
                             AccessFailedCount = 0,
-                            Created = new DateTime(2023, 5, 23, 16, 48, 49, 426, DateTimeKind.Utc).AddTicks(9354),
+                            Created = new DateTime(2023, 5, 24, 9, 53, 36, 521, DateTimeKind.Utc).AddTicks(3898),
                             CreatedById = new Guid("49e3275a-d497-4b45-bbcb-3214f3769d7f"),
                             Email = "nva030801@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Nguyen",
                             Gender = true,
-                            LastModified = new DateTime(2023, 5, 23, 16, 48, 49, 426, DateTimeKind.Utc).AddTicks(9351),
+                            LastModified = new DateTime(2023, 5, 24, 9, 53, 36, 521, DateTimeKind.Utc).AddTicks(3895),
                             LastModifiedById = new Guid("49e3275a-d497-4b45-bbcb-3214f3769d7f"),
                             LastName = "An",
                             LockoutEnabled = true,
@@ -510,7 +482,7 @@ namespace Infrastructure.Database.Migrations
                             PasswordHash = "AMJoiJQ9xLazxisVPXx+lBDRw7wfWBerhXipsLpHNGLXGAAKIeCnwi5XhIRbTbqovA==",
                             PhoneNumber = "0966093801",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "FC2FD235-4D39-404B-862D-8338C8B0636A",
+                            SecurityStamp = "5D19F96E-D5B6-4B36-90A0-879963F4B855",
                             Status = 3,
                             TwoFactorEnabled = false,
                             UserName = "admin"
@@ -617,11 +589,7 @@ namespace Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastModifiedById");
-
-                    b.ToTable("DMP_News", (string)null);
+                    b.ToTable("News", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Room", b =>
@@ -654,13 +622,9 @@ namespace Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastModifiedById");
-
                     b.HasIndex("TheaterId");
 
-                    b.ToTable("DMP_Rooms", (string)null);
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Seat", b =>
@@ -696,13 +660,9 @@ namespace Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastModifiedById");
-
                     b.HasIndex("ScheduleId");
 
-                    b.ToTable("DMP_Seats", (string)null);
+                    b.ToTable("Seats", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Slider", b =>
@@ -731,11 +691,7 @@ namespace Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastModifiedById");
-
-                    b.ToTable("DMP_Sliders", (string)null);
+                    b.ToTable("Sliders", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Theater", b =>
@@ -769,11 +725,7 @@ namespace Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastModifiedById");
-
-                    b.ToTable("DMP_Theaters", (string)null);
+                    b.ToTable("Theaters", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Ticket", b =>
@@ -812,13 +764,9 @@ namespace Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastModifiedById");
-
                     b.HasIndex("ScheduleId");
 
-                    b.ToTable("DMP_Tickets", (string)null);
+                    b.ToTable("Tickets", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Booking", b =>
@@ -829,19 +777,7 @@ namespace Infrastructure.Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Identity.Account", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Domain.Entities.Identity.Account", "LastModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("LastModifiedById");
-
                     b.Navigation("Account");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastModifiedBy");
                 });
 
             modelBuilder.Entity("Domain.Entities.BookingDetail", b =>
@@ -852,14 +788,6 @@ namespace Infrastructure.Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Identity.Account", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Domain.Entities.Identity.Account", "LastModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("LastModifiedById");
-
                     b.HasOne("Domain.Entities.FilmSchedule", "Schedule")
                         .WithMany()
                         .HasForeignKey("ScheduleId")
@@ -868,41 +796,7 @@ namespace Infrastructure.Database.Migrations
 
                     b.Navigation("Booking");
 
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastModifiedBy");
-
                     b.Navigation("Schedule");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Category", b =>
-                {
-                    b.HasOne("Domain.Entities.Identity.Account", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Domain.Entities.Identity.Account", "LastModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("LastModifiedById");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastModifiedBy");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Coupon", b =>
-                {
-                    b.HasOne("Domain.Entities.Identity.Account", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Domain.Entities.Identity.Account", "LastModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("LastModifiedById");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastModifiedBy");
                 });
 
             modelBuilder.Entity("Domain.Entities.Film", b =>
@@ -913,36 +807,16 @@ namespace Infrastructure.Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Identity.Account", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Domain.Entities.Identity.Account", "LastModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("LastModifiedById");
-
                     b.Navigation("Category");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastModifiedBy");
                 });
 
             modelBuilder.Entity("Domain.Entities.FilmSchedule", b =>
                 {
-                    b.HasOne("Domain.Entities.Identity.Account", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
                     b.HasOne("Domain.Entities.Film", "Film")
                         .WithMany()
                         .HasForeignKey("FilmId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Domain.Entities.Identity.Account", "LastModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("LastModifiedById");
 
                     b.HasOne("Domain.Entities.Room", "Room")
                         .WithMany()
@@ -950,30 +824,9 @@ namespace Infrastructure.Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CreatedBy");
-
                     b.Navigation("Film");
 
-                    b.Navigation("LastModifiedBy");
-
                     b.Navigation("Room");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Identity.Account", b =>
-                {
-                    b.HasOne("Domain.Entities.Identity.Account", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Domain.Entities.Identity.Account", "LastModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("LastModifiedById")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastModifiedBy");
                 });
 
             modelBuilder.Entity("Domain.Entities.Identity.AccountLogin", b =>
@@ -998,116 +851,35 @@ namespace Infrastructure.Database.Migrations
                     b.Navigation("Account");
                 });
 
-            modelBuilder.Entity("Domain.Entities.News", b =>
-                {
-                    b.HasOne("Domain.Entities.Identity.Account", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Domain.Entities.Identity.Account", "LastModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("LastModifiedById");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastModifiedBy");
-                });
-
             modelBuilder.Entity("Domain.Entities.Room", b =>
                 {
-                    b.HasOne("Domain.Entities.Identity.Account", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Domain.Entities.Identity.Account", "LastModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("LastModifiedById");
-
                     b.HasOne("Domain.Entities.Theater", "Theater")
                         .WithMany()
                         .HasForeignKey("TheaterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastModifiedBy");
-
                     b.Navigation("Theater");
                 });
 
             modelBuilder.Entity("Domain.Entities.Seat", b =>
                 {
-                    b.HasOne("Domain.Entities.Identity.Account", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Domain.Entities.Identity.Account", "LastModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("LastModifiedById");
-
                     b.HasOne("Domain.Entities.FilmSchedule", "Schedule")
                         .WithMany()
                         .HasForeignKey("ScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastModifiedBy");
 
                     b.Navigation("Schedule");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Slider", b =>
-                {
-                    b.HasOne("Domain.Entities.Identity.Account", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Domain.Entities.Identity.Account", "LastModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("LastModifiedById");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastModifiedBy");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Theater", b =>
-                {
-                    b.HasOne("Domain.Entities.Identity.Account", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Domain.Entities.Identity.Account", "LastModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("LastModifiedById");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastModifiedBy");
-                });
-
             modelBuilder.Entity("Domain.Entities.Ticket", b =>
                 {
-                    b.HasOne("Domain.Entities.Identity.Account", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Domain.Entities.Identity.Account", "LastModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("LastModifiedById");
-
                     b.HasOne("Domain.Entities.FilmSchedule", "Schedule")
                         .WithMany()
                         .HasForeignKey("ScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastModifiedBy");
 
                     b.Navigation("Schedule");
                 });

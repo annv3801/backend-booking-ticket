@@ -9751,11 +9751,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Learn\\BookingTicketMovie\\Infrastructure\\Infrastructure.csproj",
+      "projectUniqueName": "D:\\Learn\\backend-booking-ticket\\Infrastructure\\Infrastructure.csproj",
       "projectName": "Infrastructure",
-      "projectPath": "D:\\Learn\\BookingTicketMovie\\Infrastructure\\Infrastructure.csproj",
+      "projectPath": "D:\\Learn\\backend-booking-ticket\\Infrastructure\\Infrastructure.csproj",
       "packagesPath": "C:\\Users\\An\\.nuget\\packages\\",
-      "outputPath": "D:\\Learn\\BookingTicketMovie\\Infrastructure\\obj\\",
+      "outputPath": "D:\\Learn\\backend-booking-ticket\\Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\An\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -9770,8 +9770,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "D:\\Learn\\BookingTicketMovie\\Application\\Application.csproj": {
-              "projectPath": "D:\\Learn\\BookingTicketMovie\\Application\\Application.csproj"
+            "D:\\Learn\\backend-booking-ticket\\Application\\Application.csproj": {
+              "projectPath": "D:\\Learn\\backend-booking-ticket\\Application\\Application.csproj"
             }
           }
         }
@@ -9863,7 +9863,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
       }
     }
   },

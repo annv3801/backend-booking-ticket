@@ -10352,11 +10352,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Learn\\BookingTicketMovie\\WebApi\\WebApi.csproj",
+      "projectUniqueName": "D:\\Learn\\backend-booking-ticket\\WebApi\\WebApi.csproj",
       "projectName": "WebApi",
-      "projectPath": "D:\\Learn\\BookingTicketMovie\\WebApi\\WebApi.csproj",
+      "projectPath": "D:\\Learn\\backend-booking-ticket\\WebApi\\WebApi.csproj",
       "packagesPath": "C:\\Users\\An\\.nuget\\packages\\",
-      "outputPath": "D:\\Learn\\BookingTicketMovie\\WebApi\\obj\\",
+      "outputPath": "D:\\Learn\\backend-booking-ticket\\WebApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\An\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -10371,8 +10371,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "D:\\Learn\\BookingTicketMovie\\Infrastructure\\Infrastructure.csproj": {
-              "projectPath": "D:\\Learn\\BookingTicketMovie\\Infrastructure\\Infrastructure.csproj"
+            "D:\\Learn\\backend-booking-ticket\\Infrastructure\\Infrastructure.csproj": {
+              "projectPath": "D:\\Learn\\backend-booking-ticket\\Infrastructure\\Infrastructure.csproj"
             }
           }
         }
@@ -10453,7 +10453,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
       }
     }
   },

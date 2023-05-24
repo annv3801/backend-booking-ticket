@@ -46,9 +46,6 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
         // builder.Property(u => u.SecurityStamp).HasDefaultValue(Guid.NewGuid().ToString());
         builder.ToTable("Identity_Accounts");
 
-        builder.HasOne<Account>(u => u.CreatedBy).WithMany().HasForeignKey(u => u.CreatedById).OnDelete(DeleteBehavior.NoAction);
-        builder.HasOne<Account>(u => u.LastModifiedBy).WithMany().HasForeignKey(u => u.LastModifiedById).OnDelete(DeleteBehavior.NoAction);
-
         var records = new List<Account>();
         var accountSystem = new Account()
         {

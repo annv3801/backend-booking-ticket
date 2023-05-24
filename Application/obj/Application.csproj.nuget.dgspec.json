@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Learn\\BookingTicketMovie\\Application\\Application.csproj": {}
+    "D:\\Learn\\backend-booking-ticket\\Application\\Application.csproj": {}
   },
   "projects": {
-    "D:\\Learn\\BookingTicketMovie\\Application\\Application.csproj": {
+    "D:\\Learn\\backend-booking-ticket\\Application\\Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Learn\\BookingTicketMovie\\Application\\Application.csproj",
+        "projectUniqueName": "D:\\Learn\\backend-booking-ticket\\Application\\Application.csproj",
         "projectName": "Application",
-        "projectPath": "D:\\Learn\\BookingTicketMovie\\Application\\Application.csproj",
+        "projectPath": "D:\\Learn\\backend-booking-ticket\\Application\\Application.csproj",
         "packagesPath": "C:\\Users\\An\\.nuget\\packages\\",
-        "outputPath": "D:\\Learn\\BookingTicketMovie\\Application\\obj\\",
+        "outputPath": "D:\\Learn\\backend-booking-ticket\\Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\An\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -26,8 +26,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\Learn\\BookingTicketMovie\\Domain\\Domain.csproj": {
-                "projectPath": "D:\\Learn\\BookingTicketMovie\\Domain\\Domain.csproj"
+              "D:\\Learn\\backend-booking-ticket\\Domain\\Domain.csproj": {
+                "projectPath": "D:\\Learn\\backend-booking-ticket\\Domain\\Domain.csproj"
               }
             }
           }
@@ -87,18 +87,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Learn\\BookingTicketMovie\\Domain\\Domain.csproj": {
+    "D:\\Learn\\backend-booking-ticket\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Learn\\BookingTicketMovie\\Domain\\Domain.csproj",
+        "projectUniqueName": "D:\\Learn\\backend-booking-ticket\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "D:\\Learn\\BookingTicketMovie\\Domain\\Domain.csproj",
+        "projectPath": "D:\\Learn\\backend-booking-ticket\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\An\\.nuget\\packages\\",
-        "outputPath": "D:\\Learn\\BookingTicketMovie\\Domain\\obj\\",
+        "outputPath": "D:\\Learn\\backend-booking-ticket\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\An\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -146,7 +146,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     }

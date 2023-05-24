@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "AYkwCHk/mwENzdjN0cHY7VxPCpTGMfk0I9wOC0m/vsnTUSmnJ+z8/P2bxt+cmLI9gxw4LvDX0JU2Sqj8u/2D2Q==",
+  "dgSpecHash": "gQGTtsmZ/IqwFbQgap+6IfB+fHWIWdiqd92Mq/TGv+kBGU73iJ8XQERz7G1dzY/bTLnHQOJabFfqtquuYQ4QbQ==",
   "success": true,
-  "projectFilePath": "D:\\Learn\\BookingTicketMovie\\Infrastructure\\Infrastructure.csproj",
+  "projectFilePath": "D:\\Learn\\backend-booking-ticket\\Infrastructure\\Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\An\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\An\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

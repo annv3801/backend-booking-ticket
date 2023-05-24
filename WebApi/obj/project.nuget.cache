@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "6onCncXk3QGkyXVz8k25zP5NoLVIWegHxbOW1g5aR7Hr2SsmxaKVxtsOUPckoXVsITlwHfCZpz7pBoUMBFE3Og==",
+  "dgSpecHash": "A7e+UKEBkHp2ACXjSwrapJgiqSw6k62VJZTdXhgK+pDYlmyheQvJN1OLJNGcpYbE+aDQJnxveTa980fA4GjoRw==",
   "success": true,
-  "projectFilePath": "D:\\Learn\\BookingTicketMovie\\WebApi\\WebApi.csproj",
+  "projectFilePath": "D:\\Learn\\backend-booking-ticket\\WebApi\\WebApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\An\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\An\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

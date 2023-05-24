@@ -10,3 +10,15 @@ D:\Learn\BookingTicketMovie\Domain\obj\Debug\net7.0\Domain.dll
 D:\Learn\BookingTicketMovie\Domain\obj\Debug\net7.0\refint\Domain.dll
 D:\Learn\BookingTicketMovie\Domain\obj\Debug\net7.0\Domain.pdb
 D:\Learn\BookingTicketMovie\Domain\obj\Debug\net7.0\ref\Domain.dll
+D:\Learn\backend-booking-ticket\Domain\bin\Debug\net7.0\Domain.deps.json
+D:\Learn\backend-booking-ticket\Domain\bin\Debug\net7.0\Domain.dll
+D:\Learn\backend-booking-ticket\Domain\bin\Debug\net7.0\Domain.pdb
+D:\Learn\backend-booking-ticket\Domain\obj\Debug\net7.0\Domain.csproj.AssemblyReference.cache
+D:\Learn\backend-booking-ticket\Domain\obj\Debug\net7.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Learn\backend-booking-ticket\Domain\obj\Debug\net7.0\Domain.AssemblyInfoInputs.cache
+D:\Learn\backend-booking-ticket\Domain\obj\Debug\net7.0\Domain.AssemblyInfo.cs
+D:\Learn\backend-booking-ticket\Domain\obj\Debug\net7.0\Domain.csproj.CoreCompileInputs.cache
+D:\Learn\backend-booking-ticket\Domain\obj\Debug\net7.0\Domain.dll
+D:\Learn\backend-booking-ticket\Domain\obj\Debug\net7.0\refint\Domain.dll
+D:\Learn\backend-booking-ticket\Domain\obj\Debug\net7.0\Domain.pdb
+D:\Learn\backend-booking-ticket\Domain\obj\Debug\net7.0\ref\Domain.dll

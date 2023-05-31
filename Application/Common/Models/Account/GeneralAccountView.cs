@@ -9,4 +9,5 @@ public class GeneralAccountView
     public string? MiddleName { get; set; }
     public string? LastName { get; set; }
     public string? AvatarPhoto { get; set; }
+    public string? PhoneNumber { get; set; }
 }

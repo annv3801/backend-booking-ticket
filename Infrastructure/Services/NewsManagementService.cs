@@ -22,9 +22,10 @@ public class NewsManagementService : INewsManagementService
     private readonly IStringLocalizationService _localizationService;
     public readonly ICurrentAccountService CurrentAccountService;
     private readonly IPaginationService _paginationService;
+    private readonly IFileService _fileService;
 
 
-    public NewsManagementService(IMediator mediator, IMapper mapper, INewsRepository newsRepository, IStringLocalizationService localizationService, ICurrentAccountService currentAccountService, IPaginationService paginationService)
+    public NewsManagementService(IMediator mediator, IMapper mapper, INewsRepository newsRepository, IStringLocalizationService localizationService, ICurrentAccountService currentAccountService, IPaginationService paginationService, IFileService fileService)
     {
         _mediator = mediator;
         _mapper = mapper;
@@ -32,17 +33,28 @@ public class NewsManagementService : INewsManagementService
         _localizationService = localizationService;
         CurrentAccountService = currentAccountService;
         _paginationService = paginationService;
+        _fileService = fileService;
     }
     
     public async Task<Result<NewsResult>> CreateNewsAsync(CreateNewsRequest request, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
+            var image = "";
+            if (request.Image != null)
+            {
+                var fileResult = _fileService.SaveImage(request.Image);
+                if (fileResult.Item1 == 1)
+                {
+                    image = fileResult.Item2; // getting name of image
+                }
+            }
             var newField = new News()
             {
                 Id = new Guid(),
                 Title = request.Title,
                 CategoryId = request.CategoryId,
+                Image = image,
                 ImageFile = request.Image,
                 Description = request.Description,
                 Status = request.Status
@@ -151,7 +163,7 @@ public class NewsManagementService : INewsManagementService
                     Title = a.Title,
                     Description = a.Description,
                     CategoryId = a.CategoryId,
-                    Image = a.ImageFile,
+                    Image = a.Image,
                     Status = a.Status
                 }).ToList()
             });

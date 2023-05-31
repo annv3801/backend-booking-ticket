@@ -66,7 +66,7 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
             LastName = "An",
             PhoneNumber = "0966093801",
             UserName = "admin",
-            PasswordHash = "AMJoiJQ9xLazxisVPXx+lBDRw7wfWBerhXipsLpHNGLXGAAKIeCnwi5XhIRbTbqovA==", //Abc@12345
+            PasswordHash = "AMJoiJQ9xLazxisVPXx+lBDRw7wfWBerhXipsLpHNGLXGAAKIeCnwi5XhIRbTbqovA==", //Abc@123456
             NormalizedUserName = "NVA3801",
             AccessFailedCount = 0,
             LockoutEnabled = true,

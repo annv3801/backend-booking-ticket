@@ -5,8 +5,10 @@ namespace Application.DataTransferObjects.Booking.Responses;
 public class BookingResponse
 {
     public Guid Id { get; set; }
-    public string Name { get; set; }
-    public Guid ScheduleId { get; set; }
-    public float? Price { get; set; }
-    public int Type { get; set; }
+    public Guid AccountId { get; set; }
+    public string? PhoneNumber { get; set; }
+    public int PaymentMethod { get; set; }
+    public double Total { get; set; }
+    public int IsReceived { get; set; }
+    public string ListSeatName { get; set; }
 }

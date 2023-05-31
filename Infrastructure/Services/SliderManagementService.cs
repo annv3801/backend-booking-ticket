@@ -38,9 +38,10 @@ public class SliderManagementService : ISliderManagementService
     private readonly IStringLocalizationService _localizationService;
     public readonly ICurrentAccountService CurrentAccountService;
     private readonly IPaginationService _paginationService;
+    private readonly IFileService _fileService;
 
 
-    public SliderManagementService(IMediator mediator, IMapper mapper, ISliderRepository sliderRepository, IStringLocalizationService localizationService, ICurrentAccountService currentAccountService, IPaginationService paginationService)
+    public SliderManagementService(IMediator mediator, IMapper mapper, ISliderRepository sliderRepository, IStringLocalizationService localizationService, ICurrentAccountService currentAccountService, IPaginationService paginationService, IFileService fileService)
     {
         _mediator = mediator;
         _mapper = mapper;
@@ -48,15 +49,26 @@ public class SliderManagementService : ISliderManagementService
         _localizationService = localizationService;
         CurrentAccountService = currentAccountService;
         _paginationService = paginationService;
+        _fileService = fileService;
     }
     
     public async Task<Result<SliderResult>> CreateSliderAsync(CreateSliderRequest request, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
+            var image = "";
+            if (request.Image != null)
+            {
+                var fileResult = _fileService.SaveImage(request.Image);
+                if (fileResult.Item1 == 1)
+                {
+                    image = fileResult.Item2; // getting name of image
+                }
+            }
             var newField = new Slider()
             {
                 Id = new Guid(),
+                Image = image,
                 ImageFile = request.Image,
                 Status = request.Status
             };

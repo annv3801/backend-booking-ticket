@@ -274,6 +274,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(
         "AllowInternal",
         policy => policy.WithOrigins("*")
+            .WithMethods("POST", "GET", "OPTIONS", "PUT", "DELETE")
             .AllowAnyHeader()
             .AllowAnyOrigin()
     ));

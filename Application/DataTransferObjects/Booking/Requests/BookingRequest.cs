@@ -4,6 +4,7 @@ namespace Application.DataTransferObjects.Booking.Requests;
 [ExcludeFromCodeCoverage]
 public class BookingRequest
 {
+    public string BookingId { get; set; }
     public Guid ScheduleId { get; set; }
     public List<Guid> SeatId { get; set; }
     public double Total { get; set; }

@@ -1,6 +1,10 @@
 using Application.Commands.Booking;
 using Application.Common;
+using Application.DataTransferObjects.Account.Responses;
 using Application.DataTransferObjects.Booking.Requests;
+using Application.DataTransferObjects.Booking.Responses;
+using Application.DataTransferObjects.Pagination.Responses;
+using Application.DataTransferObjects.Seat.Responses;
 using AutoMapper;
 
 namespace Infrastructure.Profiles.Booking;

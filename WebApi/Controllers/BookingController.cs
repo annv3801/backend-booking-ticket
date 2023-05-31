@@ -2,6 +2,8 @@
 using Application.Common.Interfaces;
 using Application.DataTransferObjects.Booking.Requests;
 using Application.DataTransferObjects.VnPay;
+using Application.Repositories.Booking;
+using Application.Services.Booking;
 using AutoMapper;
 using Infrastructure.Common.Responses;
 using MediatR;
@@ -14,11 +16,13 @@ public class BookingController : ControllerBase
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
     private readonly IVnPayService _vnPayService;
-    public BookingController(IMediator mediator, IMapper mapper, IVnPayService vnPayService)
+    private readonly IBookingManagementService _bookingManagementService;
+    public BookingController(IMediator mediator, IMapper mapper, IVnPayService vnPayService, IBookingManagementService bookingManagementService)
     {
         _mediator = mediator;
         _mapper = mapper;
         _vnPayService = vnPayService;
+        _bookingManagementService = bookingManagementService;
     }
     
     [HttpPost]
@@ -35,6 +39,25 @@ public class BookingController : ControllerBase
             if (result.Succeeded)
                 return Ok(new SuccessResponse(data: new {result.Data}));
             return Accepted(new FailureResponse(result.Errors));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    [HttpPut]
+    [Route("update-received-booking/{id}")]
+    public async Task<IActionResult> UpdateReceicedBookingAsync(Guid id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _bookingManagementService.UpdateReceivedBookingAsync(id, cancellationToken);
+            if (!result.Succeeded) return Accepted(result);
+            if (result.Data != null)
+                return Ok(result);
+            return Accepted(result);
         }
         catch (Exception e)
         {
@@ -62,5 +85,44 @@ public class BookingController : ControllerBase
             result = "http://localhost:3000/payment-success";
         }
         return Redirect(result);
+    }
+    
+    [HttpGet]
+    [Route("view-list-booking-by-user")]
+    // [Cached]
+    public async Task<IActionResult>? ViewListCategoriesAsync([FromQuery] ViewListBookingByUserRequest request, CancellationToken cancellationToken = default(CancellationToken))
+    {
+        try
+        {
+            var result = await _bookingManagementService.ViewListBookingsByUserAsync(request, cancellationToken);
+            if (!result.Succeeded) return Accepted(result);
+            if (result.Data != null)
+                return Ok(result);
+            return Accepted(result);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    [HttpGet]
+    [Route("view-list-booking-by-admin")]
+    // [Cached]
+    public async Task<IActionResult>? ViewListCategoriesByAdminAsync([FromQuery] ViewListBookingByAdminRequest request, CancellationToken cancellationToken = default(CancellationToken))
+    {
+        try
+        {
+            var result = await _bookingManagementService.ViewListBookingsByAdminAsync(request, cancellationToken);
+            if (!result.Succeeded) return Accepted(result);
+            if (result.Data != null)
+                return Ok(result);
+            return Accepted(result);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

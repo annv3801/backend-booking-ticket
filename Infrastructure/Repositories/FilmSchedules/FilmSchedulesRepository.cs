@@ -29,7 +29,7 @@ public class FilmSchedulesRepository : Repository<Domain.Entities.FilmSchedule>,
     public async Task<IQueryable<FilmSchedule>> ViewListFilmSchedulesByTimeAsync(ViewListFilmSchedulesByTimeQuery request, CancellationToken cancellationToken = default(CancellationToken))
     {
         await Task.CompletedTask;
-        return _applicationDbContext.FilmSchedules
+        return _applicationDbContext.FilmSchedules.Where(x => x.StartTime <= DateTime.UtcNow)
             .AsSplitQuery()
             .AsQueryable();
     }

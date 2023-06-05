@@ -6,7 +6,6 @@ namespace Domain.Entities;
 public class Booking : AuditableEntity
 {
     public Guid Id { get; set; }
-    public string BookingId { get; set; }
     public Guid AccountId { get; set; }
     public Account Account { get; set; }
     public double Total { get; set; }

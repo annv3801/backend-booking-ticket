@@ -262,3 +262,4 @@ D:\Learn\backend-booking-ticket\WebApi\obj\Debug\net7.0\refint\WebApi.dll
 D:\Learn\backend-booking-ticket\WebApi\obj\Debug\net7.0\WebApi.pdb
 D:\Learn\backend-booking-ticket\WebApi\obj\Debug\net7.0\WebApi.genruntimeconfig.cache
 D:\Learn\backend-booking-ticket\WebApi\obj\Debug\net7.0\ref\WebApi.dll
+D:\Learn\backend-booking-ticket\WebApi\bin\Debug\net7.0\QRCoder.dll

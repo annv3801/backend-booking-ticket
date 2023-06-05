@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "gQGTtsmZ/IqwFbQgap+6IfB+fHWIWdiqd92Mq/TGv+kBGU73iJ8XQERz7G1dzY/bTLnHQOJabFfqtquuYQ4QbQ==",
+  "dgSpecHash": "hU+IgfAF1OYlI5lI4pPzW3ImfMTSc0coWN9U/XK6a1pg1nlyPyBe9gIEe5M9wSa3bZCI3tIRRZAnxv2bHbHpmg==",
   "success": true,
   "projectFilePath": "D:\\Learn\\backend-booking-ticket\\Infrastructure\\Infrastructure.csproj",
   "expectedPackageFiles": [
@@ -95,6 +95,7 @@
     "C:\\Users\\An\\.nuget\\packages\\mimekit\\4.0.0\\mimekit.4.0.0.nupkg.sha512",
     "C:\\Users\\An\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
     "C:\\Users\\An\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\An\\.nuget\\packages\\qrcoder\\1.4.1\\qrcoder.1.4.1.nupkg.sha512",
     "C:\\Users\\An\\.nuget\\packages\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\An\\.nuget\\packages\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\An\\.nuget\\packages\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",

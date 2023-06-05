@@ -1,0 +1,58 @@
+appsettings.Development.json
+#*/Migrations/*
+#Migrations
+#/Migrations
+server-configs/mysql_data/
+server-configs/redis_data/
+testresults
+coveragereport
+.config
+tools
+packages
+
+.lock
+.idea
+.idea/*
+.idea/*.*
+.git/*.*
+.vs
+.vs/*.*
+*.lock
+yarn.lock
+*.DS_Store
+*/DS_Store
+.vscode
+.vscode/*.*
+.idea/.idea.QuotationSysten/.idea/riderModule.iml
+# Build and objects
+bin
+obj
+build
+build/*                             
+mysql_data.zip
+
+# Solution file
+*.sln.DotSettings
+
+# Visual Paradigm
+*.vpp.bak_*
+*.vpp.lck
+docs/*.vpp.lck
+*.log*
+*/Logs/*
+*/UserFiles/*
+
+# node_modules
+node_modules
+*/node_modules/*
+*.user
+
+# Redis data
+*/redis_data/*
+
+# Upload folder
+*/Upload/*
+*/Export/*
+Upload
+QuotationSystem.sln.DotSettings.user
+edi-be.code-workspace

@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  bookingticket:
+    image: bookingticket:lastest
+    container_name: booking-ticket-lastest
+    restart: always
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "19081:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development

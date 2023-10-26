@@ -18,13 +18,13 @@ public class CurrentAccountService : ICurrentAccountService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public Guid Id
+    public long Id
     {
         get
         {
-            Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(JwtClaimTypes.UserId),
+            long.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(JwtClaimTypes.UserId),
                 out var userId);
-            if (userId == Guid.Empty)
+            if (userId == 0)
             {
                 throw new AccountNotFoundException("You are not logged in yet");
             }

@@ -1,21 +1,18 @@
 using System.Diagnostics.CodeAnalysis;
-using Domain.Common;
-using Domain.Common.Attributes.Sortable;
+using Domain.Common.Attributes;
+using Domain.Common.Entities;
 using Domain.Enums;
 
 namespace Domain.Entities.Identity;
 [ExcludeFromCodeCoverage]
-public class Account : AuditableEntity
+public class Account : Entity<long>
 {
-    public Guid Id { get; set; }
-    [Sortable(OrderBy = "Email")]  public string Email { get; set; }
+    public long Id { get; set; }
+    [Sortable]  public string Email { get; set; }
     public string NormalizedEmail { get; set; }
     public bool EmailConfirmed { get; set; }
     public string? AvatarPhoto { get; set; }
-    public string? CoverPhoto { get; set; }
-    public string? FirstName { get; set; }
-    public string? MiddleName { get; set; }
-    public string? LastName { get; set; }
+    public string? FullName { get; set; }
     public bool PasswordChangeRequired { get; set; } = false;
     public DateTime? PasswordValidUntilDate { get; set; }
     public string? PasswordHashTemporary { get; set; }

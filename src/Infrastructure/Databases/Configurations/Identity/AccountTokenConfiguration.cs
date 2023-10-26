@@ -13,6 +13,6 @@ public class AccountTokenConfiguration : IEntityTypeConfiguration<AccountToken>
         builder.Property(u => u.LoginProvider).IsRequired().IsUnicode()
             .HasMaxLength(Constants.FieldLength.TextMaxLength);
         builder.Property(u => u.Name).IsRequired().IsUnicode().HasMaxLength(Constants.FieldLength.TextMaxLength);
-        builder.ToTable("Identity_AccountTokens");
+        builder.ToTable("AccountTokens", "Identity");
     }
 }

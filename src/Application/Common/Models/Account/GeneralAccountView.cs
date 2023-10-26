@@ -5,9 +5,7 @@ namespace Application.Common.Models.Account;
 public class GeneralAccountView
 {
     public Guid? Id { get; set; }
-    public string? FirstName { get; set; }
-    public string? MiddleName { get; set; }
-    public string? LastName { get; set; }
+    public string? FullName { get; set; }
     public string? AvatarPhoto { get; set; }
     public string? PhoneNumber { get; set; }
 }

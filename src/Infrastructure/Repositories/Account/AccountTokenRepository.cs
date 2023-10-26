@@ -1,22 +1,23 @@
-﻿using Application.Repositories.Account;
+﻿using Application.Interface;
+using Application.Repositories.Account;
+using Domain.Common.Repository;
 using Domain.Entities.Identity;
-using Infrastructure.Common.Repositories;
 using Infrastructure.Databases;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories.Account;
-public class AccountTokenRepository : Repository<AccountToken>, IAccountTokenRepository
+public class AccountTokenRepository : Repository<AccountToken, ApplicationDbContext>, IAccountTokenRepository
 {
-    private readonly ApplicationDbContext _applicationDbContext;
+    private readonly DbSet<AccountToken> _accountsTokens;
 
-    public AccountTokenRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
+    public AccountTokenRepository(ApplicationDbContext context, ISnowflakeIdService snowflakeIdService) : base(context, snowflakeIdService)
     {
-        _applicationDbContext = applicationDbContext;
+        _accountsTokens = context.Set<Domain.Entities.Identity.AccountToken>();
     }
 
-    public async Task<List<AccountToken>> GetAccountTokensByAccountAsync(Guid accountId, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<List<AccountToken>> GetAccountTokensByAccountAsync(long accountId, CancellationToken cancellationToken = default(CancellationToken))
     {
-        return await _applicationDbContext.AccountTokens
+        return await _accountsTokens
             .Include(at => at.Account)
             .AsSplitQuery()
             .Where(at => at.AccountId == accountId).ToListAsync(cancellationToken);
@@ -24,6 +25,6 @@ public class AccountTokenRepository : Repository<AccountToken>, IAccountTokenRep
 
     public async Task<AccountToken> GetAccountTokensByTokenAsync(string token, CancellationToken cancellationToken = default(CancellationToken))
     {
-        return await _applicationDbContext.AccountTokens.FirstOrDefaultAsync(t=>t.Token==token,cancellationToken);
+        return await _accountsTokens.FirstOrDefaultAsync(t=>t.Token == token,cancellationToken);
     }
 }

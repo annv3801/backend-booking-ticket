@@ -7,16 +7,13 @@ using Application.Common.Models;
 using Application.DataTransferObjects.Account.Requests;
 using Application.DataTransferObjects.Account.Responses;
 using Application.Logging.ActionLog.Services;
-using Application.Repositories;
 using Application.Repositories.Account;
-using Application.Services;
 using Application.Services.Account;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities.Identity;
 using Domain.Enums;
 using Infrastructure.Databases;
-using Infrastructure.Validators;
 using Infrastructure.Validators.Account;
 using Microsoft.Extensions.Options;
 
@@ -57,7 +54,7 @@ public class AccountManagementService : IAccountManagementService
         _accountTokenRepository = accountTokenRepository;
     }
 
-    public async Task<Result<AccountResult>> CreateAccountByAdminAsync(Domain.Entities.Identity.Account account, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<Result<AccountResult>> CreateAccountByAdminAsync(Account account, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
@@ -65,13 +62,12 @@ public class AccountManagementService : IAccountManagementService
             var validation = await validator.ValidateAsync(account, cancellationToken);
             if (!validation.IsValid)
                 return Result<AccountResult>.Fail(validation.Errors.BuildArray());
-            var duplicatedEnumerable = await _accountRepository.FindAsync(x => x.NormalizedUserName == account.NormalizedUserName, cancellationToken);
-            if (duplicatedEnumerable.Any())
-            {
+            var duplicatedEnumerable = await _accountRepository.IsDuplicatedUserNameAsync(account.Id, account.UserName, cancellationToken);
+            if (duplicatedEnumerable)
                 return Result<AccountResult>.Fail(Constants.DuplicatedItem);
-            }
+            
             await _accountRepository.AddAsync(account, cancellationToken);
-            var result = await _applicationDbContext.SaveChangesAsync(account, cancellationToken);
+            var result = await _accountRepository.SaveChangesAsync(cancellationToken);
             if (result > 0)
                 return Result<AccountResult>.Succeed(new AccountResult());
             return Result<AccountResult>.Fail(Constants.CommitFailed);
@@ -109,7 +105,7 @@ public class AccountManagementService : IAccountManagementService
 
             _mapper.Map(account, existedAccount);
 
-            _accountRepository.Update(existedAccount);
+            await _accountRepository.UpdateAsync(existedAccount, cancellationToken);
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)
                 return Result<AccountResult>.Succeed();
@@ -122,7 +118,7 @@ public class AccountManagementService : IAccountManagementService
         }
     }
 
-    public async Task<Result<ViewAccountResponse>> ViewAccountDetailByAdminAsync(Guid accountId, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<Result<ViewAccountResponse>> ViewAccountDetailByAdminAsync(long accountId, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
@@ -141,139 +137,12 @@ public class AccountManagementService : IAccountManagementService
         }
     }
 
-    public async Task<Result<AccountResult>> DeleteAccountAsync(Guid accountId, CancellationToken cancellationToken = default(CancellationToken))
-    {
-        try
-        {
-            // Check user id
-            var existedAccount = await _accountRepository.FindByIdAsync(accountId, cancellationToken);
-            if (existedAccount == null)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value
-                    .ToErrors(_localizationService));
-
-            if (existedAccount.Status == AccountStatus.Deleted)
-                return Result<AccountResult>.Fail(
-                    _localizationService[LocalizationString.Account.AccountIsDeleted].Value.ToErrors(_localizationService));
-
-            existedAccount.Status = AccountStatus.Deleted;
-
-            // remove all jwt token to force user logout
-            var listAccountTokens =
-                await _accountTokenRepository.GetAccountTokensByAccountAsync(accountId, cancellationToken);
-            _accountTokenRepository.RemoveRange(listAccountTokens);
-            _accountRepository.Update(existedAccount);
-            var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
-            if (result > 0) // Enable Succeeded 
-                return Result<AccountResult>.Succeed();
-
-            return Result<AccountResult>.Fail(Constants.CommitFailed);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    /// <inheritdoc />
-    public async Task<Result<AccountResult>> ActivateAccountAsync(Guid accountId, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<Result<AccountResult>> UnlockAccountAsync(long accountId, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
             // Check account id
-            var existedAccount = await _accountRepository.FindByIdAsync(accountId, cancellationToken);
-            if (existedAccount == null)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value.ToErrors(_localizationService));
-
-            // Check that user only can be enabled if its current status is inactive
-            if (existedAccount.Status != AccountStatus.Inactive)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.AccountIsNotInActive].Value.ToErrors(_localizationService));
-
-            existedAccount.Status = AccountStatus.Active;
-            // Add event enable account
-
-            _accountRepository.Update(existedAccount);
-            var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
-            if (result > 0) // Enable Succeeded 
-                return Result<AccountResult>.Succeed();
-            return Result<AccountResult>.Fail(Constants.CommitFailed);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    public async Task<Result<AccountResult>> DeactivateAccountAsync(Guid accountId, CancellationToken cancellationToken = default(CancellationToken))
-    {
-        try
-        {
-            // Check user id
-            var existedAccount = await _accountRepository.FindByIdAsync(accountId, cancellationToken: cancellationToken);
-            if (existedAccount == null)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value.ToErrors(_localizationService));
-
-            if (existedAccount.Status == AccountStatus.Inactive)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.AccountIsDeactivate].Value.ToErrors(_localizationService));
-
-            existedAccount.Status = AccountStatus.Inactive;
-
-            // remove all jwt token to force user logout
-            var listAccountTokens = await _accountTokenRepository.GetAccountTokensByAccountAsync(accountId, cancellationToken);
-            _accountTokenRepository.RemoveRange(listAccountTokens);
-            _accountRepository.Update(existedAccount);
-            var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
-            if (result > 0) // Enable Succeeded 
-                return Result<AccountResult>.Succeed();
-            return Result<AccountResult>.Fail(Constants.CommitFailed);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    public async Task<Result<AccountResult>> LockAccountAsync(Guid accountId, CancellationToken cancellationToken = default(CancellationToken))
-    {
-        try
-        {
-            // Check account id
-            var existedAccount = await _accountRepository.FindByIdAsync(accountId, cancellationToken);
-            if (existedAccount == null)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value.ToErrors(_localizationService));
-
-            if (existedAccount.Status == AccountStatus.Locked)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.LockedYet].Value.ToErrors(_localizationService));
-            existedAccount.Status = AccountStatus.Locked;
-            // remove all jwt token to force user logout
-            var listAccountTokens = await _accountTokenRepository.GetAccountTokensByAccountAsync(accountId, cancellationToken);
-            _accountTokenRepository.RemoveRange(listAccountTokens);
-
-            // Delete user firebase token associated with current access token
-            _accountRepository.Update(existedAccount);
-            var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
-            if (result > 0) // Lock Succeeded 
-            {
-                return Result<AccountResult>.Succeed();
-            }
-
-            return Result<AccountResult>.Fail(Constants.CommitFailed);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    public async Task<Result<AccountResult>> UnlockAccountAsync(Guid accountId, CancellationToken cancellationToken = default(CancellationToken))
-    {
-        try
-        {
-            // Check account id
-            var existedAccount = await _accountRepository.FindByIdAsync(accountId, cancellationToken);
+            var existedAccount = await _accountRepository.ViewMyAccountAsync(accountId, cancellationToken);
             if (existedAccount == null)
                 return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value.ToErrors(_localizationService));
 
@@ -283,7 +152,7 @@ public class AccountManagementService : IAccountManagementService
 
             existedAccount.Status = AccountStatus.Active;
 
-            _accountRepository.Update(existedAccount);
+            await _accountRepository.UpdateAsync(existedAccount, cancellationToken);
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0) // Unlock Succeeded 
                 return Result<AccountResult>.Succeed();
@@ -303,7 +172,7 @@ public class AccountManagementService : IAccountManagementService
         {
             var currentAccountId = _currentAccountService.Id;
 
-            var currentAccount = await _accountRepository.FindByIdAsync(currentAccountId, cancellationToken);
+            var currentAccount = await _accountRepository.ViewMyAccountAsync(currentAccountId, cancellationToken);
 
             // Check current password
             var isCurrentPassword = _passwordGeneratorService.VerifyHashPassword(currentAccount?.PasswordHash, request.CurrentPassword);
@@ -318,7 +187,7 @@ public class AccountManagementService : IAccountManagementService
             {
                 // remove all jwt token to force user logout
                 var listAccountTokens = await _accountTokenRepository.GetAccountTokensByAccountAsync(currentAccountId, cancellationToken);
-                _accountTokenRepository.RemoveRange(listAccountTokens);
+                await _accountTokenRepository.RemoveRangeAsync(listAccountTokens, cancellationToken);
 
                 // Delete user firebase token associated with current access token
             }
@@ -329,10 +198,10 @@ public class AccountManagementService : IAccountManagementService
                 var token = _currentAccountService.GetJwtToken();
                 var accountToken = await _accountTokenRepository.GetAccountTokensByTokenAsync(token, cancellationToken);
                 // Get token firebase by token
-                _accountTokenRepository.Remove(accountToken);
+                await _accountTokenRepository.RemoveAsync(accountToken, cancellationToken);
             }
 
-            _accountRepository.Update(currentAccount);
+            await _accountRepository.UpdateAsync(currentAccount, cancellationToken);
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)
                 return Result<AccountResult>.Succeed();
@@ -346,7 +215,7 @@ public class AccountManagementService : IAccountManagementService
         }
     }
 
-    public async Task<Result<AccountResult>> UpdateMyAccountAsync(Domain.Entities.Identity.Account account, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<Result<AccountResult>> UpdateMyAccountAsync(Account account, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
@@ -371,7 +240,7 @@ public class AccountManagementService : IAccountManagementService
             //Using automapper
             _mapper.Map(account, existedAccount);
 
-            _accountRepository.Update(existedAccount);
+            await _accountRepository.UpdateAsync(existedAccount, cancellationToken);
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)
                 return Result<AccountResult>.Succeed();
@@ -417,13 +286,13 @@ public class AccountManagementService : IAccountManagementService
                     {
                         account.LockoutEnd = _dateTime.UtcNow.AddMinutes(_appOption.LockoutDurationInMin);
                         account.Status = AccountStatus.Locked;
-                        _accountRepository.Update(account);
-                        await _applicationDbContext.SaveChangesAsync(account, cancellationToken);
+                        await _accountRepository.UpdateAsync(account, cancellationToken);
+                        await _applicationDbContext.SaveChangesAsync(cancellationToken);
                         return Result<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountLockedOut].Value.ToErrors(_localizationService));
                     }
 
-                    _accountRepository.Update(account);
-                    await _applicationDbContext.SaveChangesAsync(account, cancellationToken);
+                    await _accountRepository.UpdateAsync(account, cancellationToken);
+                    await _applicationDbContext.SaveChangesAsync(cancellationToken);
                     return Result<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.UserNameOrPasswordIncorrectWithLockoutEnabled, _appOption.LockoutLimit - account.AccessFailedCount].Value.ToErrors(_localizationService));
                 }
 
@@ -458,14 +327,22 @@ public class AccountManagementService : IAccountManagementService
             // Reset failed count and locked out date
             account.AccessFailedCount = 0;
             account.LockoutEnd = null;
-            _accountRepository.Update(account);
+            await _accountRepository.UpdateAsync(account, cancellationToken);
 
-            var result = await _applicationDbContext.SaveChangesAsync(account, cancellationToken);
+            var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)
             {
                 return Result<SignInWithPhoneNumberResponse>.Succeed(new SignInWithPhoneNumberResponse()
                 {
-                    Token = tokenResponse.Data.Token,
+                    Profile = new ProfileAccount()
+                    {
+                        Email = account.Email,
+                        PhoneNumber = account.PhoneNumber,
+                        Gender = account.Gender,
+                        Avatar = account.AvatarPhoto,
+                        FullName = account.FullName,
+                    },
+                    AccessToken = tokenResponse.Data.Token,
                     RefreshToken = tokenResponse.Data.RefreshToken
                 });
             }
@@ -482,14 +359,14 @@ public class AccountManagementService : IAccountManagementService
         try
         {
             var currentAccountId = _currentAccountService.Id;
-            var account = await _accountRepository.FindByIdAsync(currentAccountId, cancellationToken);
+            var account = await _accountRepository.ViewMyAccountAsync(currentAccountId, cancellationToken);
             if (account == null)
                 return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value.ToErrors(_localizationService));
             if (forceEndOtherSessions)
             {
                 // remove all jwt token to force user logout
                 var listAccountTokens = await _accountTokenRepository.GetAccountTokensByAccountAsync(currentAccountId, cancellationToken);
-                _accountTokenRepository.RemoveRange(listAccountTokens);
+                await _accountTokenRepository.RemoveRangeAsync(listAccountTokens, cancellationToken);
             }
 
             if (!forceEndOtherSessions)
@@ -498,10 +375,10 @@ public class AccountManagementService : IAccountManagementService
                 var token = _currentAccountService.GetJwtToken();
                 var accountToken = await _accountTokenRepository.GetAccountTokensByTokenAsync(token, cancellationToken);
                 // Get token firebase by token
-                _accountTokenRepository.Remove(accountToken);
+                await _accountTokenRepository.RemoveAsync(accountToken, cancellationToken);
             }
 
-            _accountRepository.Update(account);
+            await _accountRepository.UpdateAsync(account, cancellationToken);
 
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)

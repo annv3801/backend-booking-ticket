@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Domain.Common.Repository;
 using Domain.Entities.Identity;
 
 namespace Application.Repositories.Account;

@@ -8,5 +8,5 @@ namespace Application.Queries.Account;
 public class ViewAccountQuery: IRequest<Result<ViewAccountResponse>>
 {
     // Should be used in the controller as input parameters
-    public Guid AccountId { get; set; }
+    public long AccountId { get; set; }
 }

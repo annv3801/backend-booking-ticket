@@ -1,52 +1,17 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Reflection;
 using System.Text;
 using Application.Common.Configurations;
 using Application.Common.Interfaces;
 using Application.Common.Models;
+using Application.Implementations;
+using Application.Interface;
 using Application.Logging.ActionLog.Services;
-using Application.Repositories;
 using Application.Repositories.Account;
-using Application.Repositories.Booking;
-using Application.Repositories.Category;
-using Application.Repositories.Coupon;
-using Application.Repositories.Film;
-using Application.Repositories.FilmSchedules;
-using Application.Repositories.News;
-using Application.Repositories.Room;
-using Application.Repositories.Seat;
-using Application.Repositories.Slider;
-using Application.Repositories.Theater;
-using Application.Repositories.Ticket;
-using Application.Services;
 using Application.Services.Account;
-using Application.Services.Booking;
-using Application.Services.Category;
-using Application.Services.Coupon;
-using Application.Services.Film;
-using Application.Services.FilmSchedules;
-using Application.Services.News;
-using Application.Services.Room;
-using Application.Services.Seat;
-using Application.Services.Slider;
-using Application.Services.Theater;
-using Application.Services.Ticket;
 using Domain.Extensions;
-using IdentityModel;
 using Infrastructure.Databases;
 using Infrastructure.Logging.ActionLog.Services;
-using Infrastructure.Repositories;
 using Infrastructure.Repositories.Account;
-using Infrastructure.Repositories.Booking;
-using Infrastructure.Repositories.Category;
-using Infrastructure.Repositories.Film;
-using Infrastructure.Repositories.FilmSchedules;
-using Infrastructure.Repositories.News;
-using Infrastructure.Repositories.Room;
-using Infrastructure.Repositories.Seat;
-using Infrastructure.Repositories.Slider;
-using Infrastructure.Repositories.Theater;
-using Infrastructure.Repositories.Ticket;
 using Infrastructure.Services;
 using Infrastructure.Services.Common;
 using MediatR;
@@ -57,13 +22,14 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using WebApi.Services;
+using DateTimeService = Infrastructure.Services.Common.DateTimeService;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationDbContext"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("ApplicationDbContext"));
 });
 // Add services to the container.
 builder.Services.AddOptions();
@@ -98,57 +64,12 @@ builder.Services.AddScoped<IPaginationService, PaginationService>();
 builder.Services.AddScoped<IJsonSerializerService, JsonSerializerService>();
 builder.Services.AddScoped<IActionLogService, ActionLogService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<ISnowflakeIdService, SnowflakeIdService>();
 
 // Account
 builder.Services.AddScoped<IAccountManagementService, AccountManagementService>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();    
 builder.Services.AddScoped<IAccountTokenRepository, AccountTokenRepository>();
-
-// Category
-builder.Services.AddScoped<ICategoryManagementService, CategoryManagementService>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-
-// Film
-builder.Services.AddScoped<IFilmManagementService, FilmManagementService>();
-builder.Services.AddScoped<IFilmRepository, FilmRepository>();
-
-// Coupon
-builder.Services.AddScoped<ICouponManagementService, CouponManagementService>();
-builder.Services.AddScoped<ICouponRepository, CouponRepository>();
-
-// FilmSchedules
-builder.Services.AddScoped<IFilmSchedulesManagementService, FilmScheduleManagementService>();
-builder.Services.AddScoped<IFilmSchedulesRepository, FilmSchedulesRepository>();
-
-// News
-builder.Services.AddScoped<INewsManagementService, NewsManagementService>();
-builder.Services.AddScoped<INewsRepository, NewsRepository>();
-
-// Room
-builder.Services.AddScoped<IRoomManagementService, RoomManagementService>();
-builder.Services.AddScoped<IRoomRepository, RoomRepository>();
-
-// Seat
-builder.Services.AddScoped<ISeatManagementService, SeatManagementService>();
-builder.Services.AddScoped<ISeatRepository, SeatRepository>();
-
-// Slider
-builder.Services.AddScoped<ISliderManagementService, SliderManagementService>();
-builder.Services.AddScoped<ISliderRepository, SliderRepository>();
-
-// Theater
-builder.Services.AddScoped<ITheaterManagementService, TheaterManagementService>();
-builder.Services.AddScoped<ITheaterRepository, TheaterRepository>();
-
-// Ticket
-builder.Services.AddScoped<ITicketManagementService, TicketManagementService>();
-builder.Services.AddScoped<ITicketRepository, TicketRepository>();
-
-// Booking
-builder.Services.AddScoped<IBookingManagementService, BookingManagementService>();
-builder.Services.AddScoped<IBookingRepository, BookingRepository>();
-builder.Services.AddScoped<IVnPayService, VnPayService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
 
 #endregion
 
@@ -216,7 +137,7 @@ builder.Services.AddAuthentication(config =>
 
             // Check the token from the db
             if (!await accountRepository.IsValidJwtAsync(
-                Guid.Parse(userIdClaim?.Value ?? string.Empty), token,
+                long.Parse(userIdClaim?.Value), token,
                 "SELF", CancellationToken.None))
             {
                 context.Fail("JWT Token is invalid or no longer exists.");

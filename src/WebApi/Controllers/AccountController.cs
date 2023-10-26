@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 [ApiController]
+[Route("Account")]
 public class AccountController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -29,7 +30,7 @@ public class AccountController : ControllerBase
     }
     
     [HttpPost]
-    [Route("Identity/Account")]
+    [Route("Create-Account")]
     [Produces("application/json")]
 
     public async Task<IActionResult> CreateAccountAsync(CreateAccountRequest createAccountRequest, CancellationToken cancellationToken)
@@ -50,7 +51,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet]
-    [Route("Identity/Account/MyProfile")]
+    [Route("View-My-Account")]
     [Produces("application/json")]
 
     public async Task<IActionResult> ViewMyAccountAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -73,7 +74,7 @@ public class AccountController : ControllerBase
         }
     }
     [HttpPut]
-    [Route("Identity/Account/ChangePassword")]
+    [Route("Change-Password")]
     [Produces("application/json")]
     public async Task<IActionResult> ChangePasswordAsync(ChangePasswordRequest changePasswordRequest, CancellationToken cancellationToken = default(CancellationToken))
     {
@@ -93,7 +94,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost]
-    [Route("Identity/Account/SignInWithPhoneNumber")]
+    [Route("Sign-In")]
     [Produces("application/json")]
     public async Task<IActionResult> SignInWithPhoneNumberAsync(SignInWithPhoneNumberRequest signInWithUserNameRequest, CancellationToken cancellationToken = default(CancellationToken))
     {
@@ -112,45 +113,9 @@ public class AccountController : ControllerBase
         }
     }
     
-    private static ClaimsIdentity BuildClaimsIdentity(Domain.Entities.Identity.Account account)
-    {
-        var claims = new List<Claim>();
-
-        claims.Add(new Claim(JwtClaimTypes.IdentityProvider, Constants.LoginProviders.Self));
-        claims.Add(new Claim(JwtClaimTypes.UserId, account.Id.ToString()));
-
-        var claimsIdentity = new ClaimsIdentity(claims);
-        return claimsIdentity;
-    }
-    private  string DecryptText(string cipherText, string encryptionPrivateKey = "") 
-    {
-        if (String.IsNullOrEmpty(cipherText))
-            return cipherText;
-
-    
-        var tDESalg = new TripleDESCryptoServiceProvider();
-        tDESalg.Key = Encoding.ASCII.GetBytes(encryptionPrivateKey.Substring(0, 16));
-        tDESalg.IV = Encoding.ASCII.GetBytes(encryptionPrivateKey.Substring(8, 8));
-
-        byte[] buffer = Convert.FromBase64String(cipherText);
-        return DecryptTextFromMemory(buffer, tDESalg.Key, tDESalg.IV);
-    }
-    private string DecryptTextFromMemory(byte[] data, byte[] key, byte[] iv) 
-    {
-        using (var ms = new MemoryStream(data)) {
-            using (var cs = new CryptoStream(ms, new TripleDESCryptoServiceProvider().CreateDecryptor(key, iv), CryptoStreamMode.Read))
-            {
-                using (var sr = new StreamReader(cs, Encoding.Unicode))
-                {
-                    return sr.ReadLine();
-                }
-            }
-        }
-    }
-
     [HttpDelete]
     // [Permissions]
-    [Route("Identity/Account/Logout")]
+    [Route("Logout")]
     [Produces("application/json")]
     public async Task<IActionResult> LogoutAsync([FromQuery] bool forceEndOtherSessions, CancellationToken cancellationToken = default(CancellationToken))
     {

@@ -1,63 +1,71 @@
+using Application.Interface;
 using Application.Repositories.Account;
+using Domain.Common.Repository;
 using Domain.Enums;
-using Infrastructure.Common.Repositories;
 using Infrastructure.Databases;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories.Account;
-public class AccountRepository : Repository<Domain.Entities.Identity.Account>, IAccountRepository
+public class AccountRepository : Repository<Domain.Entities.Identity.Account, ApplicationDbContext>, IAccountRepository
 {
-    private readonly ApplicationDbContext _applicationDbContext;
+    private readonly DbSet<Domain.Entities.Identity.Account> _accounts;
+    private readonly DbSet<Domain.Entities.Identity.AccountToken> _accountsTokens;
 
-    public AccountRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
+    public AccountRepository(ApplicationDbContext context, ISnowflakeIdService snowflakeIdService) : base(context, snowflakeIdService)
     {
-        _applicationDbContext = applicationDbContext;
+        _accounts = context.Set<Domain.Entities.Identity.Account>();
+        _accountsTokens = context.Set<Domain.Entities.Identity.AccountToken>();
     }
 
     public async Task<Domain.Entities.Identity.Account?> GetAccountByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken = default(CancellationToken))
     {
-        return await _applicationDbContext.Accounts
+        return await _accounts
             .AsSplitQuery()
             .FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber && u.Status != AccountStatus.Inactive, cancellationToken);
     }
 
     public async Task<Domain.Entities.Identity.Account?> GetAccountByUserNameAsync(string userName, CancellationToken cancellationToken = default(CancellationToken))
     {
-        return await _applicationDbContext.Accounts
+        return await _accounts
             .AsSplitQuery()
             .FirstOrDefaultAsync(u => u.UserName == userName && u.Status != AccountStatus.Deleted, cancellationToken);
 
     }
 
-    public async Task<bool> IsDuplicatedEmailAsync(Guid accountId, string email, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<bool> IsDuplicatedEmailAsync(long accountId, string email, CancellationToken cancellationToken = default(CancellationToken))
     {
-        return await _applicationDbContext.Accounts.AnyAsync(u => u.NormalizedEmail == email.ToUpper() && u.Id != accountId && u.Status != AccountStatus.Deleted, cancellationToken);
+        return await _accounts.AnyAsync(u => u.NormalizedEmail == email.ToUpper() && u.Id != accountId && u.Status != AccountStatus.Deleted, cancellationToken);
+    }
+    
+    public async Task<bool> IsDuplicatedUserNameAsync(long accountId, string userName, CancellationToken cancellationToken = default(CancellationToken))
+    {
+        return await _accounts.AnyAsync(u => u.NormalizedUserName == userName.ToUpper() && u.Id != accountId && u.Status != AccountStatus.Deleted, cancellationToken);
     }
 
-    public async Task<bool> IsDuplicatedPhoneNumberAsync(Guid accountId, string? phoneNumber, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<bool> IsDuplicatedPhoneNumberAsync(long accountId, string? phoneNumber, CancellationToken cancellationToken = default(CancellationToken))
     {
-        return await _applicationDbContext.Accounts.AnyAsync(u => u.PhoneNumber == phoneNumber && u.Id != accountId && u.Status != AccountStatus.Deleted, cancellationToken);
+        return await _accounts.AnyAsync(u => u.PhoneNumber == phoneNumber && u.Id != accountId && u.Status != AccountStatus.Deleted, cancellationToken);
     }
 
     public async Task<Domain.Entities.Identity.Account?> GetAccountByEmailAsync(string email, CancellationToken cancellationToken = default(CancellationToken))
     {
-        return await _applicationDbContext.Accounts.FirstOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper() || u.Email == email.ToUpper(), cancellationToken);
+        return await _accounts.FirstOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper() || u.Email == email.ToUpper(), cancellationToken);
     }
 
-    public async Task<Domain.Entities.Identity.Account?> GetAccountByEmailForCheckDuplicateAsync(Guid accountId, string email, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<Domain.Entities.Identity.Account?> GetAccountByEmailForCheckDuplicateAsync(long accountId, string email, CancellationToken cancellationToken = default(CancellationToken))
     {
-        return await _applicationDbContext.Accounts.FirstOrDefaultAsync(u => (u.NormalizedEmail == email.ToUpper() || u.Email == email.ToUpper()) && u.Id != accountId && u.Status != AccountStatus.Deleted, cancellationToken);
+        return await _accounts.FirstOrDefaultAsync(u => (u.NormalizedEmail == email.ToUpper() || u.Email == email.ToUpper()) && u.Id != accountId && u.Status != AccountStatus.Deleted, cancellationToken);
     }
 
-    public async Task<Domain.Entities.Identity.Account?> GetAccountByPhoneForCheckDuplicateAsync(Guid accountId, string phoneNumber, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<Domain.Entities.Identity.Account?> GetAccountByPhoneForCheckDuplicateAsync(long accountId, string phoneNumber, CancellationToken cancellationToken = default(CancellationToken))
     {
-        return await _applicationDbContext.Accounts.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber && u.Id != accountId && u.Status != AccountStatus.Deleted, cancellationToken);
+        return await _accounts.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber && u.Id != accountId && u.Status != AccountStatus.Deleted, cancellationToken);
     }
-    public async Task<bool> IsValidJwtAsync(Guid accountId, string jwt, string loginProvider, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<bool> IsValidJwtAsync(long accountId, string jwt, string loginProvider, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
-            return await _applicationDbContext.AccountTokens.AnyAsync(t => t.AccountId == accountId && t.Token == jwt && t.LoginProvider == loginProvider, cancellationToken);
+            return await _accountsTokens.AnyAsync(t => t.AccountId == accountId && t.Token == jwt && t.LoginProvider == loginProvider, cancellationToken);
         }
         catch (Exception e)
         {
@@ -66,9 +74,9 @@ public class AccountRepository : Repository<Domain.Entities.Identity.Account>, I
         }
     }
 
-    public async Task<Domain.Entities.Identity.Account?> ViewAccountDetailByAdmin(Guid userId, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<Domain.Entities.Identity.Account?> ViewAccountDetailByAdmin(long userId, CancellationToken cancellationToken = default(CancellationToken))
     {
-        return await _applicationDbContext.Accounts
+        return await _accounts
             .AsSplitQuery()
             .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
     }
@@ -76,14 +84,14 @@ public class AccountRepository : Repository<Domain.Entities.Identity.Account>, I
     public async Task<IQueryable<Domain.Entities.Identity.Account>> ViewListAccountsByAdminAsync(CancellationToken cancellationToken = default(CancellationToken))
     {
         await Task.CompletedTask;
-        return _applicationDbContext.Accounts
+        return _accounts
             .AsSplitQuery()
             .AsQueryable();
     }
 
-    public async Task<Domain.Entities.Identity.Account?> ViewMyAccountAsync(Guid userId, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<Domain.Entities.Identity.Account?> ViewMyAccountAsync(long userId, CancellationToken cancellationToken = default(CancellationToken))
     {
-        return await _applicationDbContext.Accounts
+        return await _accounts
             .AsSplitQuery()
             .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
     }

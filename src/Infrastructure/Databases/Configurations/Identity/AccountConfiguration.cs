@@ -18,24 +18,21 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
 
         builder.Property(u => u.Email).IsRequired().IsUnicode().HasMaxLength(Constants.FieldLength.TextMaxLength);
         builder.Property(u => u.NormalizedEmail).IsRequired().IsUnicode().HasMaxLength(Constants.FieldLength.TextMaxLength);
-        builder.Property(t => t.EmailConfirmed).HasDefaultValueSql("1");
+        builder.Property(t => t.EmailConfirmed).HasDefaultValueSql("true");
         builder.Property(t => t.AvatarPhoto).HasMaxLength(Constants.FieldLength.UrlMaxLength);
-        builder.Property(t => t.CoverPhoto).HasMaxLength(Constants.FieldLength.UrlMaxLength);
 
-        builder.Property(u => u.FirstName).IsUnicode().HasMaxLength(Constants.FieldLength.MiddleTextLength);
-        builder.Property(u => u.MiddleName).IsUnicode().HasMaxLength(Constants.FieldLength.MiddleTextLength);
-        builder.Property(u => u.LastName).IsUnicode().HasMaxLength(Constants.FieldLength.MiddleTextLength);
+        builder.Property(u => u.FullName).IsUnicode().HasMaxLength(Constants.FieldLength.MiddleTextLength);
 
         builder.Property(u => u.UserName).IsUnicode().HasMaxLength(Constants.FieldLength.TextMaxLength);
         builder.Property(u => u.NormalizedUserName).IsUnicode().HasMaxLength(Constants.FieldLength.TextMaxLength);
 
         builder.Property(u => u.PhoneNumber).IsUnicode().HasMaxLength(Constants.FieldLength.MiddleTextLength);
-        builder.Property(u => u.PhoneNumberConfirmed).HasDefaultValueSql("1");
+        builder.Property(u => u.PhoneNumberConfirmed).HasDefaultValueSql("true");
 
-        builder.Property(t => t.PasswordChangeRequired).HasDefaultValueSql("0");
-        builder.Property(t => t.Gender).HasDefaultValueSql("1");
-        builder.Property(t => t.TwoFactorEnabled).HasDefaultValueSql("0");
-        builder.Property(t => t.LockoutEnabled).HasDefaultValueSql("1");
+        builder.Property(t => t.PasswordChangeRequired).HasDefaultValueSql("false");
+        builder.Property(t => t.Gender).HasDefaultValueSql("true");
+        builder.Property(t => t.TwoFactorEnabled).HasDefaultValueSql("false");
+        builder.Property(t => t.LockoutEnabled).HasDefaultValueSql("true");
         builder.Property(t => t.AccessFailedCount).HasDefaultValueSql("0");
         builder.Property(t => t.Status).HasDefaultValueSql(((int) AccountStatus.Active).ToString());
 
@@ -44,26 +41,24 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
 
         builder.Property(u => u.SecurityStamp).HasMaxLength(36);
         // builder.Property(u => u.SecurityStamp).HasDefaultValue(Guid.NewGuid().ToString());
-        builder.ToTable("Identity_Accounts");
+        builder.ToTable("Account", "Identity");
+
 
         var records = new List<Account>();
         var accountSystem = new Account()
         {
-            Id = Guid.Parse("49e3275a-d497-4b45-bbcb-3214f3769d7f"),
+            Id = 921946681335811,
             Email = "nva030801@gmail.com",
             NormalizedEmail = "NVA030801@GMAIL.COM",
             Gender = true,
             Status = AccountStatus.Active,
             AvatarPhoto = null,
-            CoverPhoto = null,
-            CreatedById = Guid.Parse("49e3275a-d497-4b45-bbcb-3214f3769d7f"),
-            LastModifiedById = Guid.Parse("49e3275a-d497-4b45-bbcb-3214f3769d7f"),
-            LastModified = DateTime.UtcNow,
-            Created = DateTime.UtcNow,
+            CreatedBy = 921946681335812,
+            ModifiedBy = 921946681335812,
+            ModifiedTime = DateTime.UtcNow,
+            CreatedTime = DateTime.UtcNow,
             EmailConfirmed = true,
-            FirstName = "Nguyen",
-            MiddleName = "Van",
-            LastName = "An",
+            FullName = "Nguyen Van An",
             PhoneNumber = "0966093801",
             UserName = "admin",
             PasswordHash = "AMJoiJQ9xLazxisVPXx+lBDRw7wfWBerhXipsLpHNGLXGAAKIeCnwi5XhIRbTbqovA==", //Abc@123456

@@ -21,4 +21,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Account> Accounts { get; set; }
     public DbSet<AccountToken> AccountTokens { get; set; }
     public DbSet<AccountLogin> AccountLogins { get; set; }
+    public DbSet<AccountCategoryEntity> AccountCategory { get; set; }
+    public DbSet<CategoryEntity> Category { get; set; }
+    public DbSet<GroupEntity> Group { get; set; }
 }

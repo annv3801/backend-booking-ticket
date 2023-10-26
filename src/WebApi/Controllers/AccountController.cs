@@ -1,11 +1,15 @@
 ﻿using Application.Commands.Account;
 using Application.Common.Interfaces;
 using Application.DataTransferObjects.Account.Requests;
+using Application.DataTransferObjects.Category.Requests;
 using Application.Queries.Account;
+using Application.Services.Account;
 using AutoMapper;
+using Domain.Common.Interface;
 using Infrastructure.Common.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Nobi.Core.Responses;
 
 namespace WebApi.Controllers;
 [ApiController]
@@ -15,12 +19,16 @@ public class AccountController : ControllerBase
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
     private readonly ICurrentAccountService _currentAccountService;
+    private readonly IAccountManagementService _accountManagementService;
+    private readonly ILoggerService _loggerService;
 
-    public AccountController(IMediator mediator, IMapper mapper, ICurrentAccountService currentAccountService)
+    public AccountController(IMediator mediator, IMapper mapper, ICurrentAccountService currentAccountService, IAccountManagementService accountManagementService, ILoggerService loggerService)
     {
         _mediator = mediator;
         _mapper = mapper;
         _currentAccountService = currentAccountService;
+        _accountManagementService = accountManagementService;
+        _loggerService = loggerService;
     }
     
     [HttpPost]
@@ -126,6 +134,21 @@ public class AccountController : ControllerBase
         catch (Exception e)
         {
             Console.WriteLine(e);
+            throw;
+        }
+    }
+    [HttpPost]
+    [Route("Create-Or-Update-Account-Category")]
+    public async Task<RequestResult<bool>?> CreateOrUpdateAccountCategoryAsync(CreateAndUpdateAccountCategoryRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _accountManagementService.CreateAndUpdateAccountCategoryAsync(request,  cancellationToken);
+            return result;
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(CreateOrUpdateAccountCategoryAsync));
             throw;
         }
     }

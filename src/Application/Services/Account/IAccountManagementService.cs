@@ -1,3 +1,4 @@
+using Application.Commands.Account;
 using Application.Common;
 using Application.Common.Models;
 using Application.DataTransferObjects.Account.Requests;
@@ -13,4 +14,5 @@ public interface IAccountManagementService
     Task<RequestResult<AccountResult>> ChangePasswordAsync(ChangePasswordRequest request, CancellationToken cancellationToken = default(CancellationToken));
     Task<RequestResult<SignInWithPhoneNumberResponse>> SignInWithPhoneNumberAsync(SignInWithPhoneNumberRequest request, CancellationToken cancellationToken = default(CancellationToken));
     Task<RequestResult<AccountResult>> LogOutAsync(bool forceEndOtherSessions=false,CancellationToken cancellationToken = default(CancellationToken));
+    Task<RequestResult<bool>> CreateAndUpdateAccountCategoryAsync(CreateAndUpdateAccountCategoryRequest request, CancellationToken cancellationToken);
 }

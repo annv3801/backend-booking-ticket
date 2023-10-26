@@ -6,6 +6,7 @@ using Application.Common.Models;
 using Application.Implementations;
 using Application.Interface;
 using Application.Repositories.Account;
+using Application.Repositories.AccountCategory;
 using Application.Repositories.Category;
 using Application.Repositories.Group;
 using Application.Services.Account;
@@ -16,6 +17,7 @@ using Domain.Common.Interface;
 using Domain.Extensions;
 using Infrastructure.Databases;
 using Infrastructure.Repositories.Account;
+using Infrastructure.Repositories.AccountCategory;
 using Infrastructure.Repositories.Category;
 using Infrastructure.Repositories.Group;
 using Infrastructure.Services;
@@ -83,6 +85,9 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 // Group
 builder.Services.AddScoped<IGroupManagementService, GroupManagementService>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();    
+
+// Account Category
+builder.Services.AddScoped<IAccountCategoryRepository, AccountCategoryRepository>();    
 
 #endregion
 

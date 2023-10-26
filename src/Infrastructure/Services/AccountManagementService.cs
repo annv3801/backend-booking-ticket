@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Application.Commands.Account;
 using Application.Common;
 using Application.Common.Configurations;
 using Application.Common.Extensions;
@@ -15,6 +16,7 @@ using Domain.Entities.Identity;
 using Domain.Enums;
 using Infrastructure.Databases;
 using Infrastructure.Validators.Account;
+using MediatR;
 using Microsoft.Extensions.Options;
 using Nobi.Core.Responses;
 
@@ -33,11 +35,12 @@ public class AccountManagementService : IAccountManagementService
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly IAccountRepository _accountRepository;
     private readonly IAccountTokenRepository _accountTokenRepository;
+    private readonly IMediator _mediator;
     
     public AccountManagementService(IDateTimeService dateTime,
         IStringLocalizationService localizationService, 
         IOptions<ApplicationConfiguration> appOption, IPasswordGeneratorService passwordGeneratorService,
-        IJwtService jwtService, IJsonSerializerService jsonSerializerService, IMapper mapper, IPaginationService paginationService, ICurrentAccountService currentAccountService, ApplicationDbContext applicationDbContext, IAccountRepository accountRepository, IAccountTokenRepository accountTokenRepository)
+        IJwtService jwtService, IJsonSerializerService jsonSerializerService, IMapper mapper, IPaginationService paginationService, ICurrentAccountService currentAccountService, ApplicationDbContext applicationDbContext, IAccountRepository accountRepository, IAccountTokenRepository accountTokenRepository, IMediator mediator)
     {
         _dateTime = dateTime;
         _localizationService = localizationService;
@@ -51,6 +54,7 @@ public class AccountManagementService : IAccountManagementService
         _applicationDbContext = applicationDbContext;
         _accountRepository = accountRepository;
         _accountTokenRepository = accountTokenRepository;
+        _mediator = mediator;
     }
 
     public async Task<RequestResult<AccountResult>> CreateAccountByAdminAsync(Account account, CancellationToken cancellationToken = default(CancellationToken))
@@ -390,6 +394,19 @@ public class AccountManagementService : IAccountManagementService
             throw;
         }
     }
+
+    public async Task<RequestResult<bool>> CreateAndUpdateAccountCategoryAsync(CreateAndUpdateAccountCategoryRequest request, CancellationToken cancellationToken)
+    {
+        var resultUpdateCategory = await _mediator.Send(new CreateAndUpdateAccountCategoryCommand()
+        {
+            AccountId = _currentAccountService.Id,
+            CategoryIds = request.CategoryIds
+        }, cancellationToken);
+        if (resultUpdateCategory <= 0)
+            return RequestResult<bool>.Fail("Save data failed");
+        return RequestResult<bool>.Succeed("Save data success");
+    }
+
     private static ClaimsIdentity BuildClaimsIdentity(Domain.Entities.Identity.Account account)
     {
         var claims = new List<Claim>();

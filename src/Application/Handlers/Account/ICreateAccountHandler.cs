@@ -2,8 +2,9 @@ using Application.Commands.Account;
 using Application.Common.Models;
 using Application.DataTransferObjects.Account.Responses;
 using MediatR;
+using Nobi.Core.Responses;
 
 namespace Application.Handlers.Account;
-public interface ICreateAccountHandler : IRequestHandler<CreateAccountCommand, Result<CreateAccountResponse>>
+public interface ICreateAccountHandler : IRequestHandler<CreateAccountCommand, RequestResult<CreateAccountResponse>>
 {
 }

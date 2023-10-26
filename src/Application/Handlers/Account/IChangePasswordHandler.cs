@@ -2,8 +2,9 @@
 using Application.Common;
 using Application.Common.Models;
 using MediatR;
+using Nobi.Core.Responses;
 
 namespace Application.Handlers.Account;
-public interface IChangePasswordHandler : IRequestHandler<ChangePasswordCommand, Result<AccountResult>>
+public interface IChangePasswordHandler : IRequestHandler<ChangePasswordCommand, RequestResult<AccountResult>>
 {
 }

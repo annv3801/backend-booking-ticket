@@ -2,10 +2,11 @@
 using Application.Common.Models;
 using Application.DataTransferObjects.Account.Responses;
 using MediatR;
+using Nobi.Core.Responses;
 
 namespace Application.Queries.Account;
 [ExcludeFromCodeCoverage]
-public class GetMyAccountQuery : IRequest<Result<ViewAccountResponse>>
+public class GetMyAccountQuery : IRequest<RequestResult<ViewAccountResponse>>
 {
     public Guid UserId { get; set; }
 }

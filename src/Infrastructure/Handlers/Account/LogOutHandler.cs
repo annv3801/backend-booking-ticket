@@ -5,6 +5,7 @@ using Application.Common.Models;
 using Application.Handlers.Account;
 using Application.Services;
 using Application.Services.Account;
+using Nobi.Core.Responses;
 
 namespace Infrastructure.Handlers.Account;
 [ExcludeFromCodeCoverage]
@@ -17,7 +18,7 @@ public class LogOutHandler : ILogOutHandler
         _accountManagementService = accountManagementService;
     }
 
-    public async Task<Result<AccountResult>> Handle(LogOutCommand command, CancellationToken cancellationToken)
+    public async Task<RequestResult<AccountResult>> Handle(LogOutCommand command, CancellationToken cancellationToken)
     {
         try
         {
@@ -27,7 +28,7 @@ public class LogOutHandler : ILogOutHandler
         {
             Console.WriteLine(e);
             var errorItem = new ErrorItem { Error = e.Message };
-            return Result<AccountResult>.Fail(new List<ErrorItem> { errorItem });
+            return RequestResult<AccountResult>.Fail("Fail", new List<ErrorItem> { errorItem });
         }
     }
 }

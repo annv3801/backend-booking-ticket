@@ -6,6 +6,7 @@ using Application.Handlers.Account;
 using Application.Services;
 using Application.Services.Account;
 using AutoMapper;
+using Nobi.Core.Responses;
 
 namespace Infrastructure.Handlers.Account;
 [ExcludeFromCodeCoverage]
@@ -20,7 +21,7 @@ public class UpdateAccountHandler: IUpdateAccountHandler
         _mapper = mapper;
     }
 
-    public async Task<Result<AccountResult>> Handle(UpdateAccountCommand command, CancellationToken cancellationToken)
+    public async Task<RequestResult<AccountResult>> Handle(UpdateAccountCommand command, CancellationToken cancellationToken)
     {
         try
         {
@@ -31,7 +32,7 @@ public class UpdateAccountHandler: IUpdateAccountHandler
         {
             Console.WriteLine(e);
             var errorItem = new ErrorItem { Error = e.Message };
-            return Result<AccountResult>.Fail(new List<ErrorItem> { errorItem });
+            return RequestResult<AccountResult>.Fail("Fail", new List<ErrorItem> { errorItem });
         }
     }
 }

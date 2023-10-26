@@ -6,7 +6,7 @@ using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.DataTransferObjects.Account.Requests;
 using Application.DataTransferObjects.Account.Responses;
-using Application.Logging.ActionLog.Services;
+using Application.Interface;
 using Application.Repositories.Account;
 using Application.Services.Account;
 using AutoMapper;
@@ -16,13 +16,13 @@ using Domain.Enums;
 using Infrastructure.Databases;
 using Infrastructure.Validators.Account;
 using Microsoft.Extensions.Options;
+using Nobi.Core.Responses;
 
 namespace Infrastructure.Services;
 public class AccountManagementService : IAccountManagementService
 {
-    private readonly IDateTime _dateTime;
+    private readonly IDateTimeService _dateTime;
     private readonly IStringLocalizationService _localizationService;
-    private readonly IActionLogService _actionLogService;
     private readonly ApplicationConfiguration _appOption;
     private readonly IPasswordGeneratorService _passwordGeneratorService;
     private readonly IJwtService _jwtService;
@@ -34,14 +34,13 @@ public class AccountManagementService : IAccountManagementService
     private readonly IAccountRepository _accountRepository;
     private readonly IAccountTokenRepository _accountTokenRepository;
     
-    public AccountManagementService(IDateTime dateTime,
-        IStringLocalizationService localizationService, IActionLogService actionLogService,
+    public AccountManagementService(IDateTimeService dateTime,
+        IStringLocalizationService localizationService, 
         IOptions<ApplicationConfiguration> appOption, IPasswordGeneratorService passwordGeneratorService,
         IJwtService jwtService, IJsonSerializerService jsonSerializerService, IMapper mapper, IPaginationService paginationService, ICurrentAccountService currentAccountService, ApplicationDbContext applicationDbContext, IAccountRepository accountRepository, IAccountTokenRepository accountTokenRepository)
     {
         _dateTime = dateTime;
         _localizationService = localizationService;
-        _actionLogService = actionLogService;
         _appOption = appOption.Value;
         _passwordGeneratorService = passwordGeneratorService;
         _jwtService = jwtService;
@@ -54,23 +53,23 @@ public class AccountManagementService : IAccountManagementService
         _accountTokenRepository = accountTokenRepository;
     }
 
-    public async Task<Result<AccountResult>> CreateAccountByAdminAsync(Account account, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<RequestResult<AccountResult>> CreateAccountByAdminAsync(Account account, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
             var validator = new CreateAccountEntityValidator(_localizationService, _accountRepository);
             var validation = await validator.ValidateAsync(account, cancellationToken);
             if (!validation.IsValid)
-                return Result<AccountResult>.Fail(validation.Errors.BuildArray());
+                return RequestResult<AccountResult>.Fail("Fail");
             var duplicatedEnumerable = await _accountRepository.IsDuplicatedUserNameAsync(account.Id, account.UserName, cancellationToken);
             if (duplicatedEnumerable)
-                return Result<AccountResult>.Fail(Constants.DuplicatedItem);
+                return RequestResult<AccountResult>.Fail("Duplicated Item");
             
             await _accountRepository.AddAsync(account, cancellationToken);
             var result = await _accountRepository.SaveChangesAsync(cancellationToken);
             if (result > 0)
-                return Result<AccountResult>.Succeed(new AccountResult());
-            return Result<AccountResult>.Fail(Constants.CommitFailed);
+                return RequestResult<AccountResult>.Succeed("Success", new AccountResult());
+            return RequestResult<AccountResult>.Fail("Save Fail");
         }
         catch (Exception e)
         {
@@ -79,7 +78,7 @@ public class AccountManagementService : IAccountManagementService
         }
     }
 
-    public async Task<Result<AccountResult>> UpdateAccountAsync(Domain.Entities.Identity.Account account, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<RequestResult<AccountResult>> UpdateAccountAsync(Domain.Entities.Identity.Account account, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
@@ -87,17 +86,17 @@ public class AccountManagementService : IAccountManagementService
             var existedAccount = await _accountRepository.ViewAccountDetailByAdmin(account.Id, cancellationToken);
 
             if (existedAccount == null)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value.ToErrors(_localizationService));
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value);
 
             //Check duplicated email 
             var emailCheck = await _accountRepository.IsDuplicatedEmailAsync(existedAccount.Id, existedAccount.Email, cancellationToken);
             if (emailCheck)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.DuplicatedEmail].Value.ToErrors(_localizationService));
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.DuplicatedEmail].Value);
 
             //Check duplicated phone 
             var phoneCheck = await _accountRepository.IsDuplicatedPhoneNumberAsync(existedAccount.Id, account.PhoneNumber, cancellationToken);
             if (phoneCheck)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.DuplicatedPhoneNumber].Value.ToErrors(_localizationService));
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.DuplicatedPhoneNumber].Value);
 
             // Check current account permission
             // If account is sysadmin --> can update
@@ -108,8 +107,8 @@ public class AccountManagementService : IAccountManagementService
             await _accountRepository.UpdateAsync(existedAccount, cancellationToken);
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)
-                return Result<AccountResult>.Succeed();
-            return Result<AccountResult>.Fail(Constants.CommitFailed);
+                return RequestResult<AccountResult>.Succeed();
+            return RequestResult<AccountResult>.Fail("Save Fail");
         }
         catch (Exception e)
         {
@@ -118,17 +117,17 @@ public class AccountManagementService : IAccountManagementService
         }
     }
 
-    public async Task<Result<ViewAccountResponse>> ViewAccountDetailByAdminAsync(long accountId, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<RequestResult<ViewAccountResponse>> ViewAccountDetailByAdminAsync(long accountId, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
             var existedAccount = await _accountRepository.ViewAccountDetailByAdmin(accountId, cancellationToken);
             if (existedAccount == null)
             {
-                return Result<ViewAccountResponse>.Fail(_localizationService[LocalizationString.Account.NotFound].Value.ToErrors(_localizationService));
+                return RequestResult<ViewAccountResponse>.Fail(_localizationService[LocalizationString.Account.NotFound].Value);
             }
             var accountDetailResponse = _mapper.Map<ViewAccountResponse>(existedAccount);
-            return Result<ViewAccountResponse>.Succeed(accountDetailResponse);
+            return RequestResult<ViewAccountResponse>.Succeed("Success", accountDetailResponse);
         }
         catch (Exception e)
         {
@@ -137,27 +136,27 @@ public class AccountManagementService : IAccountManagementService
         }
     }
 
-    public async Task<Result<AccountResult>> UnlockAccountAsync(long accountId, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<RequestResult<AccountResult>> UnlockAccountAsync(long accountId, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
             // Check account id
             var existedAccount = await _accountRepository.ViewMyAccountAsync(accountId, cancellationToken);
             if (existedAccount == null)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value.ToErrors(_localizationService));
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value);
 
             // Check that account only can be unlocked if its current status is locked
             if (existedAccount.Status != AccountStatus.Locked)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotLockedYet].Value.ToErrors(_localizationService));
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotLockedYet].Value);
 
             existedAccount.Status = AccountStatus.Active;
 
             await _accountRepository.UpdateAsync(existedAccount, cancellationToken);
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0) // Unlock Succeeded 
-                return Result<AccountResult>.Succeed();
+                return RequestResult<AccountResult>.Succeed();
 
-            return Result<AccountResult>.Fail(Constants.CommitFailed);
+            return RequestResult<AccountResult>.Fail("Save Fail");
         }
         catch (Exception e)
         {
@@ -166,7 +165,7 @@ public class AccountManagementService : IAccountManagementService
         }
     }
 
-    public async Task<Result<AccountResult>> ChangePasswordAsync(ChangePasswordRequest request, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<RequestResult<AccountResult>> ChangePasswordAsync(ChangePasswordRequest request, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
@@ -177,7 +176,7 @@ public class AccountManagementService : IAccountManagementService
             // Check current password
             var isCurrentPassword = _passwordGeneratorService.VerifyHashPassword(currentAccount?.PasswordHash, request.CurrentPassword);
             if (!isCurrentPassword)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.PasswordIncorrect].Value.ToErrors(_localizationService));
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.PasswordIncorrect].Value);
 
             // Change password
             currentAccount.PasswordHash = _passwordGeneratorService.HashPassword(request.NewPassword);
@@ -204,9 +203,9 @@ public class AccountManagementService : IAccountManagementService
             await _accountRepository.UpdateAsync(currentAccount, cancellationToken);
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)
-                return Result<AccountResult>.Succeed();
+                return RequestResult<AccountResult>.Succeed();
 
-            return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.FailedToChangePassword].Value.ToErrors(_localizationService));
+            return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.FailedToChangePassword].Value);
         }
         catch (Exception e)
         {
@@ -215,7 +214,7 @@ public class AccountManagementService : IAccountManagementService
         }
     }
 
-    public async Task<Result<AccountResult>> UpdateMyAccountAsync(Account account, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<RequestResult<AccountResult>> UpdateMyAccountAsync(Account account, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
@@ -225,17 +224,17 @@ public class AccountManagementService : IAccountManagementService
             // Check account 
             var existedAccount = await _accountRepository.ViewMyAccountAsync(currentAccountId, cancellationToken);
             if (existedAccount == null)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value.ToErrors(_localizationService));
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value);
 
             //Check duplicated email only
             var emailCheck = await _accountRepository.IsDuplicatedEmailAsync(existedAccount.Id, account.Email, cancellationToken);
             if (emailCheck)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.DuplicatedEmail].Value.ToErrors(_localizationService));
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.DuplicatedEmail].Value);
 
             //Check duplicated phone 
             var phoneCheck = await _accountRepository.IsDuplicatedPhoneNumberAsync(existedAccount.Id, account.PhoneNumber, cancellationToken);
             if (phoneCheck)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.DuplicatedPhoneNumber].Value.ToErrors(_localizationService));
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.DuplicatedPhoneNumber].Value);
 
             //Using automapper
             _mapper.Map(account, existedAccount);
@@ -243,8 +242,8 @@ public class AccountManagementService : IAccountManagementService
             await _accountRepository.UpdateAsync(existedAccount, cancellationToken);
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)
-                return Result<AccountResult>.Succeed();
-            return Result<AccountResult>.Fail(Constants.CommitFailed);
+                return RequestResult<AccountResult>.Succeed();
+            return RequestResult<AccountResult>.Fail("Save Fail");
         }
         catch (Exception e)
         {
@@ -253,25 +252,25 @@ public class AccountManagementService : IAccountManagementService
         }
     }
 
-    public async Task<Result<SignInWithPhoneNumberResponse>> SignInWithPhoneNumberAsync(SignInWithPhoneNumberRequest request, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<RequestResult<SignInWithPhoneNumberResponse>> SignInWithPhoneNumberAsync(SignInWithPhoneNumberRequest request, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
             // Find the user with status is not inactive
             var account = await _accountRepository.GetAccountByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
             if (account == null)
-                return Result<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.NotFound].Value.ToErrors(_localizationService));
+                return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.NotFound].Value);
             // If user is not active, return error
             switch (account.Status)
             {
                 case AccountStatus.Inactive:
-                    return Result<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsNotActive].Value.ToErrors(_localizationService));
+                    return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsNotActive].Value);
                 case AccountStatus.PendingApproval:
-                    return Result<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsPendingApproval].Value.ToErrors(_localizationService));
+                    return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsPendingApproval].Value);
                 // case AccountStatus.Locked:
-                //     return Result<SignInWithUserNameResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsLocked].Value.ToErrors(_localizationService));
+                //     return Result<SignInWithUserNameResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsLocked].Value);
                 case AccountStatus.PendingConfirmation:
-                    return Result<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsPendingConfirmation].Value.ToErrors(_localizationService));
+                    return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsPendingConfirmation].Value);
             }
 
             // Verify password or temporary password, if both of them are wrong, return
@@ -284,30 +283,30 @@ public class AccountManagementService : IAccountManagementService
                     account.AccessFailedCount += 1;
                     if (account.AccessFailedCount > _appOption.LockoutLimit - 1)
                     {
-                        account.LockoutEnd = _dateTime.UtcNow.AddMinutes(_appOption.LockoutDurationInMin);
+                        account.LockoutEnd = DateTime.UtcNow.AddMinutes(_appOption.LockoutDurationInMin);
                         account.Status = AccountStatus.Locked;
                         await _accountRepository.UpdateAsync(account, cancellationToken);
                         await _applicationDbContext.SaveChangesAsync(cancellationToken);
-                        return Result<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountLockedOut].Value.ToErrors(_localizationService));
+                        return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountLockedOut]);
                     }
 
                     await _accountRepository.UpdateAsync(account, cancellationToken);
                     await _applicationDbContext.SaveChangesAsync(cancellationToken);
-                    return Result<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.UserNameOrPasswordIncorrectWithLockoutEnabled, _appOption.LockoutLimit - account.AccessFailedCount].Value.ToErrors(_localizationService));
+                    return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.UserNameOrPasswordIncorrectWithLockoutEnabled, _appOption.LockoutLimit - account.AccessFailedCount]);
                 }
 
-                return Result<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.UserNameOrPasswordIncorrectWithoutLockOut].Value.ToErrors(_localizationService));
+                return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.UserNameOrPasswordIncorrectWithoutLockOut]);
             }
 
             // Check lockout time, return error if we're still in the locked period
-            if (account.LockoutEnd != null && account.LockoutEnd > _dateTime.UtcNow)
-                return Result<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.LockedOutAffected, account.LockoutEnd.ToFormattedString()].Value.ToErrors(_localizationService));
+            if (account.LockoutEnd != null && account.LockoutEnd > DateTime.UtcNow)
+                return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.LockedOutAffected]);
             // Check password expiration 
-            if (account.PasswordValidUntilDate != null && account.PasswordValidUntilDate < _dateTime.UtcNow)
-                return Result<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.PasswordExpired].Value.ToErrors(_localizationService));
+            if (account.PasswordValidUntilDate != null && account.PasswordValidUntilDate < DateTime.UtcNow)
+                return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.PasswordExpired]);
             // If we need to change password at first log in, force them to change
             if (account.PasswordChangeRequired)
-                return Result<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.ChangePasswordRequired].Value.ToErrors(_localizationService));
+                return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.ChangePasswordRequired]);
 
             // Get roles + permissions
 
@@ -332,7 +331,7 @@ public class AccountManagementService : IAccountManagementService
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)
             {
-                return Result<SignInWithPhoneNumberResponse>.Succeed(new SignInWithPhoneNumberResponse()
+                return RequestResult<SignInWithPhoneNumberResponse>.Succeed("Success", new SignInWithPhoneNumberResponse()
                 {
                     Profile = new ProfileAccount()
                     {
@@ -346,7 +345,7 @@ public class AccountManagementService : IAccountManagementService
                     RefreshToken = tokenResponse.Data.RefreshToken
                 });
             }
-            return Result<SignInWithPhoneNumberResponse>.Fail(Constants.CommitFailed);
+            return RequestResult<SignInWithPhoneNumberResponse>.Fail("Save Fail");
         }
         catch (Exception e)
         {
@@ -354,14 +353,14 @@ public class AccountManagementService : IAccountManagementService
             throw;
         }
     }
-    public async Task<Result<AccountResult>> LogOutAsync(bool forceEndOtherSessions = false, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<RequestResult<AccountResult>> LogOutAsync(bool forceEndOtherSessions = false, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
             var currentAccountId = _currentAccountService.Id;
             var account = await _accountRepository.ViewMyAccountAsync(currentAccountId, cancellationToken);
             if (account == null)
-                return Result<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value.ToErrors(_localizationService));
+                return RequestResult<AccountResult>.Fail("Account is not found, deactivated or deleted");
             if (forceEndOtherSessions)
             {
                 // remove all jwt token to force user logout
@@ -382,8 +381,8 @@ public class AccountManagementService : IAccountManagementService
 
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)
-                return Result<AccountResult>.Succeed();
-            return Result<AccountResult>.Fail(Constants.CommitFailed);
+                return RequestResult<AccountResult>.Succeed();
+            return RequestResult<AccountResult>.Fail("Save fail");
         }
         catch (Exception e)
         {

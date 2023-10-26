@@ -6,24 +6,26 @@ using Application.Common.Configurations;
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.DataTransferObjects.Jwt.Responses;
+using Application.Interface;
 using Domain.Constants;
 using Domain.Entities.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Nobi.Core.Responses;
 
 namespace Infrastructure.Services.Common;
 public class JwtService : IJwtService
 {
     private readonly JwtConfiguration _jwtOptions;
-    private readonly IDateTime _dateTime;
+    private readonly IDateTimeService _dateTime;
 
-    public JwtService(IOptions<JwtConfiguration> jwtOptions, IDateTime dateTime)
+    public JwtService(IOptions<JwtConfiguration> jwtOptions, IDateTimeService dateTime)
     {
         _jwtOptions = jwtOptions.Value;
         _dateTime = dateTime;
     }
 
-    public async Task<Result<CreateJwtResponse>> GenerateJwtAsync(Account account, ClaimsIdentity claimsIdentity, CancellationToken cancellationToken)
+    public async Task<RequestResult<CreateJwtResponse>> GenerateJwtAsync(Account account, ClaimsIdentity claimsIdentity, CancellationToken cancellationToken)
     {
         try
         {
@@ -35,12 +37,12 @@ public class JwtService : IJwtService
                 Audience = _jwtOptions.Audience,
                 Issuer = _jwtOptions.Issuer,
                 Subject = claimsIdentity,
-                Expires = _dateTime.UtcNow.AddHours(_jwtOptions.Expires),
+                Expires = DateTime.Now.AddHours(_jwtOptions.Expires),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };
             await Task.CompletedTask;
-            return Result<CreateJwtResponse>.Succeed(new CreateJwtResponse()
+            return RequestResult<CreateJwtResponse>.Succeed("Success", new CreateJwtResponse()
             {
                 Token = tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor)),
                 RefreshToken = GenerateRefreshJwtToken(account, cancellationToken)
@@ -69,7 +71,7 @@ public class JwtService : IJwtService
                 Audience = _jwtOptions.Audience,
                 Issuer = _jwtOptions.Issuer,
                 Subject = new ClaimsIdentity(claims),
-                Expires = _dateTime.UtcNow.AddHours(_jwtOptions.RefreshTokenExpires),
+                Expires = DateTime.UtcNow.AddHours(_jwtOptions.RefreshTokenExpires),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };

@@ -2,8 +2,9 @@
 using Application.Common;
 using Application.Common.Models;
 using MediatR;
+using Nobi.Core.Responses;
 
 namespace Application.Handlers.Account;
-public interface IUnlockAccountHandler: IRequestHandler<UnlockAccountCommand, Result<AccountResult>>
+public interface IUnlockAccountHandler: IRequestHandler<UnlockAccountCommand, RequestResult<AccountResult>>
 {
 }

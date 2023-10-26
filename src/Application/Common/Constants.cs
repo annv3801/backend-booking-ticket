@@ -55,28 +55,4 @@ public static class Constants
         public const string DefaultOrderBy = "";
     }
     public static string JsonDateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ";
-    public static readonly ErrorItem[] CommitFailed = new ErrorItem[]
-    {
-        new ErrorItem()
-        {
-            Error = LocalizationString.Common.CommitFailed,
-            FieldName = LocalizationString.Common.UnknownFieldName
-        }
-    };
-    public static readonly ErrorItem[] ViewListFailed = new ErrorItem[]
-    {
-        new ErrorItem()
-        {
-            Error = LocalizationString.Common.ViewListFailed,
-            FieldName = LocalizationString.Common.UnknownFieldName
-        }
-    };
-    public static readonly ErrorItem[] DuplicatedItem = new ErrorItem[]
-    {
-        new ErrorItem()
-        {
-            Error = LocalizationString.Common.DuplicatedItem,
-            FieldName = LocalizationString.Common.UnknownFieldName
-        }
-    };
 }

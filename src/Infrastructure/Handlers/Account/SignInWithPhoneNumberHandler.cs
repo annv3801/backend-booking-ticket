@@ -6,6 +6,7 @@ using Application.Handlers.Account;
 using Application.Services;
 using Application.Services.Account;
 using AutoMapper;
+using Nobi.Core.Responses;
 
 namespace Infrastructure.Handlers.Account;
 public class SignInWithPhoneNumberHandler : ISignInWithPhoneNumberHandler
@@ -19,20 +20,20 @@ public class SignInWithPhoneNumberHandler : ISignInWithPhoneNumberHandler
         _mapper = mapper;
     }
 
-    public async Task<Result<SignInWithPhoneNumberResponse>> Handle(SignInWithPhoneNumberCommand signInWithUserNameCommand, CancellationToken cancellationToken)
+    public async Task<RequestResult<SignInWithPhoneNumberResponse>> Handle(SignInWithPhoneNumberCommand signInWithUserNameCommand, CancellationToken cancellationToken)
     {
         try
         {
             var request = _mapper.Map<SignInWithPhoneNumberRequest>(signInWithUserNameCommand);
 
             var result = await _accountManagementService.SignInWithPhoneNumberAsync(request, cancellationToken);
-            return result.Succeeded ? Result<SignInWithPhoneNumberResponse>.Succeed(result.Data) : Result<SignInWithPhoneNumberResponse>.Fail(result.Errors);
+            return result != null ? RequestResult<SignInWithPhoneNumberResponse>.Succeed("Success", result.Data) : RequestResult<SignInWithPhoneNumberResponse>.Fail("Fail", result.Errors);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             var errorItem = new ErrorItem { Error = e.Message };
-            return Result<SignInWithPhoneNumberResponse>.Fail(new List<ErrorItem> { errorItem });
+            return RequestResult<SignInWithPhoneNumberResponse>.Fail("Fail", new List<ErrorItem> { errorItem });
         }
     }
 }

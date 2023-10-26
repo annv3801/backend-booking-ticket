@@ -4,9 +4,9 @@ using Application.Common;
 using Application.Common.Models;
 using Application.DataTransferObjects.Account.Requests;
 using Application.Handlers.Account;
-using Application.Services;
 using Application.Services.Account;
 using AutoMapper;
+using Nobi.Core.Responses;
 
 namespace Infrastructure.Handlers.Account;
 [ExcludeFromCodeCoverage]
@@ -21,7 +21,7 @@ public class ChangePasswordHandler : IChangePasswordHandler
         _accountManagementService = accountManagementService;
     }
 
-    public async Task<Result<AccountResult>> Handle(ChangePasswordCommand command, CancellationToken cancellationToken)
+    public async Task<RequestResult<AccountResult>> Handle(ChangePasswordCommand command, CancellationToken cancellationToken)
     {
         try
         {
@@ -32,7 +32,7 @@ public class ChangePasswordHandler : IChangePasswordHandler
         {
             Console.WriteLine(e);
             var errorItem = new ErrorItem { Error = e.Message };
-            return Result<AccountResult>.Fail(new List<ErrorItem> { errorItem });
+            return RequestResult<AccountResult>.Fail("Fail", new List<ErrorItem> { errorItem });
         }
     }
 }

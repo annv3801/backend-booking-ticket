@@ -5,13 +5,16 @@ using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Implementations;
 using Application.Interface;
-using Application.Logging.ActionLog.Services;
 using Application.Repositories.Account;
+using Application.Repositories.Category;
 using Application.Services.Account;
+using Application.Services.Category;
+using Domain.Common.Implementations;
+using Domain.Common.Interface;
 using Domain.Extensions;
 using Infrastructure.Databases;
-using Infrastructure.Logging.ActionLog.Services;
 using Infrastructure.Repositories.Account;
+using Infrastructure.Repositories.Category;
 using Infrastructure.Services;
 using Infrastructure.Services.Common;
 using MediatR;
@@ -22,7 +25,6 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using WebApi.Services;
-using DateTimeService = Infrastructure.Services.Common.DateTimeService;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 
@@ -59,17 +61,21 @@ builder.Services.AddSingleton<IStringLocalizationService, StringLocalizationServ
 builder.Services.AddSingleton<ICurrentAccountService, CurrentAccountService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
-builder.Services.AddScoped<IDateTime, DateTimeService>();
 builder.Services.AddScoped<IPaginationService, PaginationService>();
 builder.Services.AddScoped<IJsonSerializerService, JsonSerializerService>();
-builder.Services.AddScoped<IActionLogService, ActionLogService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ISnowflakeIdService, SnowflakeIdService>();
+builder.Services.AddScoped<ILoggerService, LoggerService>();
+builder.Services.AddScoped<IDateTimeService, DateTimeService>();
 
 // Account
 builder.Services.AddScoped<IAccountManagementService, AccountManagementService>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();    
 builder.Services.AddScoped<IAccountTokenRepository, AccountTokenRepository>();
+
+// Category
+builder.Services.AddScoped<ICategoryManagementService, CategoryManagementService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();    
 
 #endregion
 

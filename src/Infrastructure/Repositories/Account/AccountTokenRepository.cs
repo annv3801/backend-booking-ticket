@@ -12,7 +12,7 @@ public class AccountTokenRepository : Repository<AccountToken, ApplicationDbCont
 
     public AccountTokenRepository(ApplicationDbContext context, ISnowflakeIdService snowflakeIdService) : base(context, snowflakeIdService)
     {
-        _accountsTokens = context.Set<Domain.Entities.Identity.AccountToken>();
+        _accountsTokens = context.Set<AccountToken>();
     }
 
     public async Task<List<AccountToken>> GetAccountTokensByAccountAsync(long accountId, CancellationToken cancellationToken = default(CancellationToken))

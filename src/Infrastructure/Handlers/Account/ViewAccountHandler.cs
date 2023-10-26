@@ -1,11 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
-using Application.Common.Models;
 using Application.DataTransferObjects.Account.Responses;
 using Application.Handlers.Account;
-using Application.Queries;
 using Application.Queries.Account;
-using Application.Services;
 using Application.Services.Account;
+using Nobi.Core.Responses;
 
 namespace Infrastructure.Handlers.Account;
 [ExcludeFromCodeCoverage]
@@ -21,7 +19,7 @@ public class ViewAccountHandler : IViewAccountHandler
         _accountManagementService = accountManagementService;
     }
     
-    public async Task<Result<ViewAccountResponse>> Handle(ViewAccountQuery request, CancellationToken cancellationToken)
+    public async Task<RequestResult<ViewAccountResponse>> Handle(ViewAccountQuery request, CancellationToken cancellationToken)
     {
         return  await _accountManagementService.ViewAccountDetailByAdminAsync(request.AccountId, cancellationToken);
     }

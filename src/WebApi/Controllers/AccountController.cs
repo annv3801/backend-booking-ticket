@@ -1,14 +1,8 @@
-﻿using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using Application.Commands.Account;
-using Application.Common;
+﻿using Application.Commands.Account;
 using Application.Common.Interfaces;
 using Application.DataTransferObjects.Account.Requests;
-using Application.Queries;
 using Application.Queries.Account;
 using AutoMapper;
-using Domain.Constants;
 using Infrastructure.Common.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +33,7 @@ public class AccountController : ControllerBase
         {
             var createUserCommand = _mapper.Map<CreateAccountCommand>(createAccountRequest);
             var result = await _mediator.Send(createUserCommand, cancellationToken);
-            if (result.Succeeded)
+            if (result != null)
                 return Ok(new SuccessResponse(data: new {result.Data}));
             return Accepted(new FailureResponse(result.Errors));
         }
@@ -63,7 +57,7 @@ public class AccountController : ControllerBase
             {
                 AccountId = currentUserId
             }, cancellationToken);
-            if (result.Succeeded)
+            if (result != null)
                 return Ok(new SuccessResponse(data: result.Data));
             return Accepted(new FailureResponse(result.Errors));
         }
@@ -82,7 +76,7 @@ public class AccountController : ControllerBase
         {
             var command = _mapper.Map<ChangePasswordCommand>(changePasswordRequest);
             var result = await _mediator.Send(command, cancellationToken);
-            if (result.Succeeded)
+            if (result != null)
                 return Ok(new SuccessResponse());
             return Accepted(new FailureResponse(result.Errors));
         }
@@ -102,7 +96,7 @@ public class AccountController : ControllerBase
         {
             var command = _mapper.Map<SignInWithPhoneNumberCommand>(signInWithUserNameRequest);
             var result = await _mediator.Send(command, cancellationToken);
-            if (result.Succeeded)
+            if (result != null)
                 return Ok(new SuccessResponse(data: result.Data));
             return Accepted(new FailureResponse(result.Errors));
         }
@@ -125,7 +119,7 @@ public class AccountController : ControllerBase
             {
                 ForceEndOtherSessions = forceEndOtherSessions
             }, cancellationToken);
-            if (result.Succeeded)
+            if (result != null)
                 return Ok(new SuccessResponse());
             return Accepted(new FailureResponse(result.Errors));
         }

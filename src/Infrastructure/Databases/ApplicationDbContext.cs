@@ -8,10 +8,8 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 namespace Infrastructure.Databases;
 public class ApplicationDbContext : DbContext
 {
-    private readonly ICurrentAccountService _currentAccountService;
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentAccountService currentAccountService) : base(options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
-        _currentAccountService = currentAccountService;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

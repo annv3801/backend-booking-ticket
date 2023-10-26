@@ -7,14 +7,17 @@ using Application.Implementations;
 using Application.Interface;
 using Application.Repositories.Account;
 using Application.Repositories.Category;
+using Application.Repositories.Group;
 using Application.Services.Account;
 using Application.Services.Category;
+using Application.Services.Group;
 using Domain.Common.Implementations;
 using Domain.Common.Interface;
 using Domain.Extensions;
 using Infrastructure.Databases;
 using Infrastructure.Repositories.Account;
 using Infrastructure.Repositories.Category;
+using Infrastructure.Repositories.Group;
 using Infrastructure.Services;
 using Infrastructure.Services.Common;
 using MediatR;
@@ -76,6 +79,10 @@ builder.Services.AddScoped<IAccountTokenRepository, AccountTokenRepository>();
 // Category
 builder.Services.AddScoped<ICategoryManagementService, CategoryManagementService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();    
+
+// Group
+builder.Services.AddScoped<IGroupManagementService, GroupManagementService>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();    
 
 #endregion
 

@@ -29,7 +29,6 @@ public class AccountManagementService : IAccountManagementService
     private readonly IPasswordGeneratorService _passwordGeneratorService;
     private readonly IJwtService _jwtService;
     private readonly IJsonSerializerService _jsonSerializerService;
-    private readonly IPaginationService _paginationService;
     private readonly IMapper _mapper;
     private readonly ICurrentAccountService _currentAccountService;
     private readonly ApplicationDbContext _applicationDbContext;
@@ -40,7 +39,7 @@ public class AccountManagementService : IAccountManagementService
     public AccountManagementService(IDateTimeService dateTime,
         IStringLocalizationService localizationService, 
         IOptions<ApplicationConfiguration> appOption, IPasswordGeneratorService passwordGeneratorService,
-        IJwtService jwtService, IJsonSerializerService jsonSerializerService, IMapper mapper, IPaginationService paginationService, ICurrentAccountService currentAccountService, ApplicationDbContext applicationDbContext, IAccountRepository accountRepository, IAccountTokenRepository accountTokenRepository, IMediator mediator)
+        IJwtService jwtService, IJsonSerializerService jsonSerializerService, IMapper mapper, ICurrentAccountService currentAccountService, ApplicationDbContext applicationDbContext, IAccountRepository accountRepository, IAccountTokenRepository accountTokenRepository, IMediator mediator)
     {
         _dateTime = dateTime;
         _localizationService = localizationService;
@@ -49,7 +48,6 @@ public class AccountManagementService : IAccountManagementService
         _jwtService = jwtService;
         _jsonSerializerService = jsonSerializerService;
         _mapper = mapper;
-        _paginationService = paginationService;
         _currentAccountService = currentAccountService;
         _applicationDbContext = applicationDbContext;
         _accountRepository = accountRepository;

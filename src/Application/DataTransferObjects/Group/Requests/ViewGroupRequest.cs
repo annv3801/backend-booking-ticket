@@ -1,9 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
-using Application.DataTransferObjects.Pagination.Requests;
+using Domain.Common.Pagination.OffsetBased;
 
 namespace Application.DataTransferObjects.Group.Requests;
 
 [ExcludeFromCodeCoverage]
-public class ViewGroupRequest : PaginationBaseRequest
+public class ViewGroupRequest : OffsetPaginationRequest
 {
 }

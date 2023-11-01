@@ -3,15 +3,20 @@ using System.Text;
 using Application.Common.Configurations;
 using Application.Common.Interfaces;
 using Application.Common.Models;
+using Application.DataTransferObjects.Film.Responses;
 using Application.Implementations;
 using Application.Interface;
 using Application.Repositories.Account;
 using Application.Repositories.AccountCategory;
 using Application.Repositories.Category;
+using Application.Repositories.Film;
 using Application.Repositories.Group;
+using Application.Repositories.Theater;
 using Application.Services.Account;
 using Application.Services.Category;
+using Application.Services.Film;
 using Application.Services.Group;
+using Application.Services.Theater;
 using Domain.Common.Implementations;
 using Domain.Common.Interface;
 using Domain.Extensions;
@@ -19,7 +24,9 @@ using Infrastructure.Databases;
 using Infrastructure.Repositories.Account;
 using Infrastructure.Repositories.AccountCategory;
 using Infrastructure.Repositories.Category;
+using Infrastructure.Repositories.Film;
 using Infrastructure.Repositories.Group;
+using Infrastructure.Repositories.Theater;
 using Infrastructure.Services;
 using Infrastructure.Services.Common;
 using MediatR;
@@ -34,6 +41,8 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
+var environment = builder.Environment;
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("ApplicationDbContext"));
@@ -66,7 +75,6 @@ builder.Services.AddSingleton<IStringLocalizationService, StringLocalizationServ
 builder.Services.AddSingleton<ICurrentAccountService, CurrentAccountService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
-builder.Services.AddScoped<IPaginationService, PaginationService>();
 builder.Services.AddScoped<IJsonSerializerService, JsonSerializerService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ISnowflakeIdService, SnowflakeIdService>();
@@ -89,6 +97,18 @@ builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 // Account Category
 builder.Services.AddScoped<IAccountCategoryRepository, AccountCategoryRepository>();    
 
+// Group
+builder.Services.AddScoped<IFilmManagementService, FilmManagementService>();
+builder.Services.AddScoped<IFilmRepository, FilmRepository>();    
+
+// Group
+builder.Services.AddScoped<ITheaterRepository, TheaterRepository>();    
+builder.Services.AddScoped<ITheaterManagementService, TheaterManagementService>();    
+
+// Film feedback
+builder.Services.AddScoped<IFeedbackFilmRepository, FeedbackFilmRepository>();    
+
+builder.Services.AddSingleton<IFileService>(sp => new FileService(environment));
 #endregion
 
 #region JWT

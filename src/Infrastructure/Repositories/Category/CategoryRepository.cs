@@ -1,4 +1,4 @@
-using Application.DataTransferObjects.Category.Responses;
+﻿using Application.DataTransferObjects.Category.Responses;
 using Application.Interface;
 using Application.Repositories.Category;
 using AutoMapper;
@@ -26,7 +26,7 @@ public class CategoryRepository : Repository<CategoryEntity, ApplicationDbContex
 
     public async Task<OffsetPaginationResponse<CategoryResponse>> GetListCategoriesAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
     {
-        var query = _categoryEntities.OrderBy(x => x.Name.ToLower()).Select(x => new CategoryResponse()
+        var query = _categoryEntities.Where(x => !x.Deleted).OrderBy(x => x.Name.ToLower()).Select(x => new CategoryResponse()
             {
                 Name = x.Name,
                 Status = x.Status,

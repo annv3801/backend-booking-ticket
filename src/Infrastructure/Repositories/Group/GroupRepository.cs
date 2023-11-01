@@ -26,7 +26,7 @@ public class GroupRepository : Repository<GroupEntity, ApplicationDbContext>, IG
 
     public async Task<OffsetPaginationResponse<GroupResponse>> GetListGroupsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
     {
-        var query = _groupEntities.OrderBy(x => x.Title.ToLower()).Select(x => new GroupResponse()
+        var query = _groupEntities.Where(x => !x.Deleted).OrderBy(x => x.Title.ToLower()).Select(x => new GroupResponse()
             {
                 Title = x.Title,
                 Status = x.Status,

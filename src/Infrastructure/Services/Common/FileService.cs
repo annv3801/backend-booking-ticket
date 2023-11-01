@@ -46,7 +46,7 @@ public class FileService : IFileService
     {
         try
         {
-            var wwwPath = this._environment.WebRootPath;
+            var wwwPath = this._environment.ContentRootPath;
             var path = Path.Combine(wwwPath, "Uploads\\", imageFileName);
             if (System.IO.File.Exists(path))
             {

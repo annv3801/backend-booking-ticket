@@ -7,5 +7,5 @@ if [ $1 = '--help' ]; then
   exit;
 fi
 export ASPNETCORE_ENVIRONMENT=$1
-dotnet ef migrations add "$2" --project src/Infrastructure --startup-project src/WebApi --output-dir Databases/Migrations --context ApplicationDbContext
+dotnet ef migrations add Init --project src/Infrastructure --startup-project src/WebApi --output-dir Databases/Migrations --context ApplicationDbContext
 $SHELL

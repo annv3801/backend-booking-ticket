@@ -53,12 +53,12 @@ public class GroupManagementService : IGroupManagementService
                 return RequestResult<bool>.Fail("Item is duplicated");
 
             // Create Group 
-            var GroupEntity = _mapper.Map<GroupEntity>(request);
+            var groupEntity = _mapper.Map<GroupEntity>(request);
 
-            GroupEntity.CreatedBy = _currentAccountService.Id;
-            GroupEntity.CreatedTime = _dateTimeService.NowUtc;
+            groupEntity.CreatedBy = _currentAccountService.Id;
+            groupEntity.CreatedTime = _dateTimeService.NowUtc;
 
-            var resultCreateGroup = await _mediator.Send(new CreateGroupCommand {Entity = GroupEntity}, cancellationToken);
+            var resultCreateGroup = await _mediator.Send(new CreateGroupCommand {Entity = groupEntity}, cancellationToken);
             if (resultCreateGroup <= 0)
                 return RequestResult<bool>.Fail("Save data failed");
             return RequestResult<bool>.Succeed("Save data success");

@@ -148,8 +148,8 @@ namespace Infrastructure.Databases.Migrations
                     b.Property<string>("Director")
                         .HasColumnType("text");
 
-                    b.Property<string>("Duration")
-                        .HasColumnType("text");
+                    b.Property<double>("Duration")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Genre")
                         .HasColumnType("text");
@@ -250,6 +250,63 @@ namespace Infrastructure.Databases.Migrations
                     b.ToTable("FilmFeedback", "Film");
                 });
 
+            modelBuilder.Entity("Domain.Entities.FoodEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("GroupEntityId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupEntityId");
+
+                    b.HasIndex("Title")
+                        .IsUnique();
+
+                    b.ToTable("Foods", "Food");
+                });
+
             modelBuilder.Entity("Domain.Entities.GroupEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -287,6 +344,10 @@ namespace Infrastructure.Databases.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -450,7 +511,7 @@ namespace Infrastructure.Databases.Migrations
                             Id = 921946681335811L,
                             AccessFailedCount = 0,
                             CreatedBy = 921946681335812L,
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 1, 16, 8, 26, 191, DateTimeKind.Unspecified).AddTicks(7028), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 23, 3, 21, 22, 851, DateTimeKind.Unspecified).AddTicks(8022), new TimeSpan(0, 0, 0, 0, 0)),
                             Deleted = false,
                             Email = "nva030801@gmail.com",
                             EmailConfirmed = true,
@@ -458,7 +519,7 @@ namespace Infrastructure.Databases.Migrations
                             Gender = true,
                             LockoutEnabled = true,
                             ModifiedBy = 921946681335812L,
-                            ModifiedTime = new DateTimeOffset(new DateTime(2023, 11, 1, 16, 8, 26, 191, DateTimeKind.Unspecified).AddTicks(7017), new TimeSpan(0, 0, 0, 0, 0)),
+                            ModifiedTime = new DateTimeOffset(new DateTime(2023, 11, 23, 3, 21, 22, 851, DateTimeKind.Unspecified).AddTicks(8011), new TimeSpan(0, 0, 0, 0, 0)),
                             NormalizedEmail = "NVA030801@GMAIL.COM",
                             NormalizedUserName = "NVA3801",
                             Otp = "000000",
@@ -468,7 +529,7 @@ namespace Infrastructure.Databases.Migrations
                             PasswordHash = "AMJoiJQ9xLazxisVPXx+lBDRw7wfWBerhXipsLpHNGLXGAAKIeCnwi5XhIRbTbqovA==",
                             PhoneNumber = "0966093801",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "85678ADD-1221-4382-A30B-FA696DCDEFE5",
+                            SecurityStamp = "669F9299-4973-49FA-A7A5-61B6605FDC35",
                             Status = 3,
                             TwoFactorEnabled = false,
                             UserName = "admin"
@@ -538,6 +599,115 @@ namespace Infrastructure.Databases.Migrations
                     b.HasIndex("LoginProvider", "Name", "AccountId");
 
                     b.ToTable("AccountTokens", "Identity");
+                });
+
+            modelBuilder.Entity("Domain.Entities.RoomEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("TheaterId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("TheaterId");
+
+                    b.ToTable("Rooms", "Room");
+                });
+
+            modelBuilder.Entity("Domain.Entities.SchedulerEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("EndTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("FilmId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("RoomId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("StartTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("TheaterId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmId");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("TheaterId");
+
+                    b.ToTable("Schedulers", "Scheduler");
                 });
 
             modelBuilder.Entity("Domain.Entities.TheaterEntity", b =>
@@ -677,6 +847,17 @@ namespace Infrastructure.Databases.Migrations
                     b.Navigation("Film");
                 });
 
+            modelBuilder.Entity("Domain.Entities.FoodEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.GroupEntity", "GroupEntity")
+                        .WithMany()
+                        .HasForeignKey("GroupEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroupEntity");
+                });
+
             modelBuilder.Entity("Domain.Entities.Identity.AccountLogin", b =>
                 {
                     b.HasOne("Domain.Entities.Identity.Account", "Account")
@@ -695,6 +876,44 @@ namespace Infrastructure.Databases.Migrations
                         .IsRequired();
 
                     b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("Domain.Entities.RoomEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.TheaterEntity", "Theater")
+                        .WithMany()
+                        .HasForeignKey("TheaterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Theater");
+                });
+
+            modelBuilder.Entity("Domain.Entities.SchedulerEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.FilmEntity", "Film")
+                        .WithMany()
+                        .HasForeignKey("FilmId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.RoomEntity", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.TheaterEntity", "Theater")
+                        .WithMany()
+                        .HasForeignKey("TheaterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Film");
+
+                    b.Navigation("Room");
+
+                    b.Navigation("Theater");
                 });
 
             modelBuilder.Entity("Domain.Entities.Identity.Account", b =>

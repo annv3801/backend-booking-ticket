@@ -123,11 +123,11 @@ public class GroupController : ControllerBase
     /// <returns></returns>
     [HttpGet]
     [Route("View-List-Groups")]
-    public async Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> ViewListGroupsAsync([FromQuery] OffsetPaginationRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> ViewListGroupsAsync([FromQuery] OffsetPaginationRequest request, string type, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _groupManagementService.GetListGroupsAsync(request, cancellationToken);
+            var result = await _groupManagementService.GetListGroupsAsync(request, type, cancellationToken);
             return result;
         }
         catch (Exception e)

@@ -3,6 +3,7 @@ using Application.Common.Interfaces;
 using Application.DataTransferObjects.Theater.Requests;
 using Application.DataTransferObjects.Theater.Responses;
 using Application.Interface;
+using Application.Queries.Scheduler;
 using Application.Queries.Theater;
 using Application.Repositories.Theater;
 using Application.Services.Theater;
@@ -45,8 +46,6 @@ public class TheaterManagementService : ITheaterManagementService
     {
         try
         {
-            var parentPath = string.Empty;
-
             // Check duplicate Theater name
             if (await _mediator.Send(new CheckDuplicatedTheaterByNameQuery
                 {

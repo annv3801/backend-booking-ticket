@@ -1,12 +1,12 @@
 ﻿using Application.Commands.Account;
+using Application.Common;
 using Application.Common.Interfaces;
 using Application.DataTransferObjects.Account.Requests;
-using Application.DataTransferObjects.Category.Requests;
+using Application.DataTransferObjects.Account.Responses;
 using Application.Queries.Account;
 using Application.Services.Account;
 using AutoMapper;
 using Domain.Common.Interface;
-using Infrastructure.Common.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Nobi.Core.Responses;
@@ -35,15 +35,16 @@ public class AccountController : ControllerBase
     [Route("Create-Account")]
     [Produces("application/json")]
 
-    public async Task<IActionResult> CreateAccountAsync(CreateAccountRequest createAccountRequest, CancellationToken cancellationToken)
+    public async Task<RequestResult<CreateAccountResponse>> CreateAccountAsync(CreateAccountRequest createAccountRequest, CancellationToken cancellationToken)
     {
         try
         {
             var createUserCommand = _mapper.Map<CreateAccountCommand>(createAccountRequest);
             var result = await _mediator.Send(createUserCommand, cancellationToken);
             if (result != null)
-                return Ok(new SuccessResponse(data: new {result.Data}));
-            return Accepted(new FailureResponse(result.Errors));
+                return RequestResult<CreateAccountResponse>.Succeed("Save success");
+            return RequestResult<CreateAccountResponse>.Fail("Save data fail");
+
         }
         catch (Exception e)
         {
@@ -56,7 +57,7 @@ public class AccountController : ControllerBase
     [Route("View-My-Account")]
     [Produces("application/json")]
 
-    public async Task<IActionResult> ViewMyAccountAsync(CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<RequestResult<ViewAccountResponse>> ViewMyAccountAsync(CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
@@ -66,8 +67,8 @@ public class AccountController : ControllerBase
                 AccountId = currentUserId
             }, cancellationToken);
             if (result != null)
-                return Ok(new SuccessResponse(data: result.Data));
-            return Accepted(new FailureResponse(result.Errors));
+                return RequestResult<ViewAccountResponse>.Succeed(null, result.Data);
+            return RequestResult<ViewAccountResponse>.Fail(null, result.Errors);
         }
         catch (Exception e)
         {
@@ -78,15 +79,15 @@ public class AccountController : ControllerBase
     [HttpPut]
     [Route("Change-Password")]
     [Produces("application/json")]
-    public async Task<IActionResult> ChangePasswordAsync(ChangePasswordRequest changePasswordRequest, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<RequestResult<AccountResult>> ChangePasswordAsync(ChangePasswordRequest changePasswordRequest, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
             var command = _mapper.Map<ChangePasswordCommand>(changePasswordRequest);
             var result = await _mediator.Send(command, cancellationToken);
             if (result != null)
-                return Ok(new SuccessResponse());
-            return Accepted(new FailureResponse(result.Errors));
+                return RequestResult<AccountResult>.Succeed("Save data success");
+            return RequestResult<AccountResult>.Fail(null, result.Errors);
         }
         catch (Exception e)
         {
@@ -98,15 +99,15 @@ public class AccountController : ControllerBase
     [HttpPost]
     [Route("Sign-In")]
     [Produces("application/json")]
-    public async Task<IActionResult> SignInWithPhoneNumberAsync(SignInWithPhoneNumberRequest signInWithUserNameRequest, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<RequestResult<SignInWithPhoneNumberResponse>> SignInWithPhoneNumberAsync(SignInWithPhoneNumberRequest signInWithUserNameRequest, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
             var command = _mapper.Map<SignInWithPhoneNumberCommand>(signInWithUserNameRequest);
             var result = await _mediator.Send(command, cancellationToken);
             if (result != null)
-                return Ok(new SuccessResponse(data: result.Data));
-            return Accepted(new FailureResponse(result.Errors));
+                return RequestResult<SignInWithPhoneNumberResponse>.Succeed(null, result.Data);
+            return RequestResult<SignInWithPhoneNumberResponse>.Fail(null, result.Errors);
         }
         catch (Exception e)
         {
@@ -119,7 +120,7 @@ public class AccountController : ControllerBase
     // [Permissions]
     [Route("Logout")]
     [Produces("application/json")]
-    public async Task<IActionResult> LogoutAsync([FromQuery] bool forceEndOtherSessions, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<RequestResult<AccountResult>> LogoutAsync([FromQuery] bool forceEndOtherSessions, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
@@ -128,8 +129,8 @@ public class AccountController : ControllerBase
                 ForceEndOtherSessions = forceEndOtherSessions
             }, cancellationToken);
             if (result != null)
-                return Ok(new SuccessResponse());
-            return Accepted(new FailureResponse(result.Errors));
+                return RequestResult<AccountResult>.Succeed("Log out success");
+            return RequestResult<AccountResult>.Fail("Log out fail");
         }
         catch (Exception e)
         {
@@ -137,6 +138,7 @@ public class AccountController : ControllerBase
             throw;
         }
     }
+    
     [HttpPost]
     [Route("Create-Or-Update-Account-Category")]
     public async Task<RequestResult<bool>?> CreateOrUpdateAccountCategoryAsync(CreateAndUpdateAccountCategoryRequest request, CancellationToken cancellationToken)

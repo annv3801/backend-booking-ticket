@@ -8,4 +8,5 @@ public class GroupResponse
     public string Title { get; set; } = string.Empty;
     public int Index { get; set; }
     public string Status { get; set; } = EntityStatus.Active;
+    public string Type { get; set; } = EntityGroup.Film;
 }

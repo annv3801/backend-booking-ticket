@@ -10,12 +10,18 @@ using Application.Repositories.Account;
 using Application.Repositories.AccountCategory;
 using Application.Repositories.Category;
 using Application.Repositories.Film;
+using Application.Repositories.Food;
 using Application.Repositories.Group;
+using Application.Repositories.Room;
+using Application.Repositories.Scheduler;
 using Application.Repositories.Theater;
 using Application.Services.Account;
 using Application.Services.Category;
 using Application.Services.Film;
+using Application.Services.Food;
 using Application.Services.Group;
+using Application.Services.Room;
+using Application.Services.Scheduler;
 using Application.Services.Theater;
 using Domain.Common.Implementations;
 using Domain.Common.Interface;
@@ -25,7 +31,10 @@ using Infrastructure.Repositories.Account;
 using Infrastructure.Repositories.AccountCategory;
 using Infrastructure.Repositories.Category;
 using Infrastructure.Repositories.Film;
+using Infrastructure.Repositories.Food;
 using Infrastructure.Repositories.Group;
+using Infrastructure.Repositories.Room;
+using Infrastructure.Repositories.Scheduler;
 using Infrastructure.Repositories.Theater;
 using Infrastructure.Services;
 using Infrastructure.Services.Common;
@@ -101,9 +110,21 @@ builder.Services.AddScoped<IAccountCategoryRepository, AccountCategoryRepository
 builder.Services.AddScoped<IFilmManagementService, FilmManagementService>();
 builder.Services.AddScoped<IFilmRepository, FilmRepository>();    
 
-// Group
+// Theater
 builder.Services.AddScoped<ITheaterRepository, TheaterRepository>();    
 builder.Services.AddScoped<ITheaterManagementService, TheaterManagementService>();    
+
+//  Room
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();    
+builder.Services.AddScoped<IRoomManagementService, RoomManagementService>();   
+
+// Scheduler
+builder.Services.AddScoped<ISchedulerRepository, SchedulerRepository>();    
+builder.Services.AddScoped<ISchedulerManagementService, SchedulerManagementService>();  
+
+// Food
+builder.Services.AddScoped<IFoodRepository, FoodRepository>();    
+builder.Services.AddScoped<IFoodManagementService, FoodManagementService>();  
 
 // Film feedback
 builder.Services.AddScoped<IFeedbackFilmRepository, FeedbackFilmRepository>();    

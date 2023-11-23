@@ -42,7 +42,7 @@ public class TheaterRepository : Repository<TheaterEntity, ApplicationDbContext>
         return new OffsetPaginationResponse<TheaterResponse>()
         {
             Data = response.Data,
-            PageSize = response.CurrentPage,
+            PageSize = response.PageSize,
             Total = response.Total,
             CurrentPage = response.CurrentPage
         };

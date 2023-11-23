@@ -37,7 +37,7 @@ public class CategoryRepository : Repository<CategoryEntity, ApplicationDbContex
         return new OffsetPaginationResponse<CategoryResponse>()
         {
             Data = response.Data,
-            PageSize = response.CurrentPage,
+            PageSize = response.PageSize,
             Total = response.Total,
             CurrentPage = response.CurrentPage
         };

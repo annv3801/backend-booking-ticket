@@ -11,7 +11,6 @@ using Domain.Common.Interface;
 using Domain.Common.Pagination.OffsetBased;
 using Domain.Entities;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Nobi.Core.Responses;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
@@ -43,8 +42,6 @@ public class GroupManagementService : IGroupManagementService
     {
         try
         {
-            var parentPath = string.Empty;
-
             // Check duplicate Group name
             if (await _mediator.Send(new CheckDuplicatedGroupByNameQuery
                 {
@@ -74,7 +71,6 @@ public class GroupManagementService : IGroupManagementService
     {
         try
         {
-            var parentPath = string.Empty;
             // Check duplicate Group name
             if (await _mediator.Send(new CheckDuplicatedGroupByNameAndIdQuery
                 {
@@ -113,8 +109,8 @@ public class GroupManagementService : IGroupManagementService
         try
         {
             // Check for existence
-            var GroupToDelete = await _groupRepository.GetGroupByIdAsync(id, cancellationToken);
-            if (GroupToDelete == null)
+            var groupToDelete = await _groupRepository.GetGroupByIdAsync(id, cancellationToken);
+            if (groupToDelete == null)
                 return RequestResult<bool>.Fail("Group is not found");
 
 
@@ -138,14 +134,14 @@ public class GroupManagementService : IGroupManagementService
     {
         try
         {
-            var Group = await _mediator.Send(new GetGroupByIdQuery
+            var group = await _mediator.Send(new GetGroupByIdQuery
             {
                 Id = id,
             }, cancellationToken);
-            if (Group == null)
+            if (group == null)
                 return RequestResult<GroupResponse>.Fail("Group is not found");
 
-            return RequestResult<GroupResponse>.Succeed(null, _mapper.Map<GroupResponse>(Group));
+            return RequestResult<GroupResponse>.Succeed(null, _mapper.Map<GroupResponse>(group));
         }
         catch (Exception e)
         {
@@ -154,17 +150,18 @@ public class GroupManagementService : IGroupManagementService
         }
     }
 
-    public async Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> GetListGroupsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> GetListGroupsAsync(OffsetPaginationRequest request, string type, CancellationToken cancellationToken)
     {
         try
         {
             // check tenant valid
-            var Group = await _mediator.Send(new GetListCategoriesQuery
+            var group = await _mediator.Send(new GetListCategoriesQuery
             {
                 OffsetPaginationRequest = request,
+                Type = type
             }, cancellationToken);
 
-            return RequestResult<OffsetPaginationResponse<GroupResponse>>.Succeed(null, Group);
+            return RequestResult<OffsetPaginationResponse<GroupResponse>>.Succeed(null, group);
         }
         catch (Exception e)
         {

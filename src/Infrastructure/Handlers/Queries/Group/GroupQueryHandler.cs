@@ -26,7 +26,7 @@ public class GroupQueryHandler :
     
     public async Task<OffsetPaginationResponse<GroupResponse>> Handle(GetListCategoriesQuery request, CancellationToken cancellationToken)
     {
-        return await _groupRepository.GetListGroupsAsync(request.OffsetPaginationRequest, cancellationToken);
+        return await _groupRepository.GetListGroupsAsync(request.OffsetPaginationRequest, request.Type, cancellationToken);
     }
     
     public async Task<bool> Handle(CheckDuplicatedGroupByNameAndIdQuery request, CancellationToken cancellationToken)

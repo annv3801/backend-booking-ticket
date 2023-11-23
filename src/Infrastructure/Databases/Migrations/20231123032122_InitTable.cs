@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Databases.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class InitTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,7 +23,16 @@ namespace Infrastructure.Databases.Migrations
                 name: "Film");
 
             migrationBuilder.EnsureSchema(
+                name: "Food");
+
+            migrationBuilder.EnsureSchema(
                 name: "Group");
+
+            migrationBuilder.EnsureSchema(
+                name: "Room");
+
+            migrationBuilder.EnsureSchema(
+                name: "Scheduler");
 
             migrationBuilder.EnsureSchema(
                 name: "Theater");
@@ -103,6 +112,7 @@ namespace Infrastructure.Databases.Migrations
                     Title = table.Column<string>(type: "text", nullable: false),
                     Index = table.Column<int>(type: "integer", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
                     CreatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<long>(type: "bigint", nullable: true),
                     ModifiedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -231,7 +241,7 @@ namespace Infrastructure.Databases.Migrations
                     Actor = table.Column<string>(type: "text", nullable: true),
                     Genre = table.Column<string>(type: "text", nullable: true),
                     Premiere = table.Column<string>(type: "text", nullable: true),
-                    Duration = table.Column<string>(type: "text", nullable: true),
+                    Duration = table.Column<double>(type: "double precision", nullable: false),
                     Language = table.Column<string>(type: "text", nullable: true),
                     Rated = table.Column<string>(type: "text", nullable: true),
                     Trailer = table.Column<string>(type: "text", nullable: true),
@@ -254,6 +264,68 @@ namespace Infrastructure.Databases.Migrations
                         column: x => x.GroupEntityId,
                         principalSchema: "Group",
                         principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Foods",
+                schema: "Food",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    GroupEntityId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: true),
+                    ModifiedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<long>(type: "bigint", nullable: true),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedBy = table.Column<long>(type: "bigint", nullable: true),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Foods", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Foods_Groups_GroupEntityId",
+                        column: x => x.GroupEntityId,
+                        principalSchema: "Group",
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rooms",
+                schema: "Room",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    TheaterId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: true),
+                    ModifiedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<long>(type: "bigint", nullable: true),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedBy = table.Column<long>(type: "bigint", nullable: true),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rooms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Rooms_Theaters_TheaterId",
+                        column: x => x.TheaterId,
+                        principalSchema: "Theater",
+                        principalTable: "Theaters",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -332,11 +404,58 @@ namespace Infrastructure.Databases.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Schedulers",
+                schema: "Scheduler",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RoomId = table.Column<long>(type: "bigint", nullable: false),
+                    FilmId = table.Column<long>(type: "bigint", nullable: false),
+                    TheaterId = table.Column<long>(type: "bigint", nullable: false),
+                    StartTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    EndTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    CreatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: true),
+                    ModifiedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<long>(type: "bigint", nullable: true),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedBy = table.Column<long>(type: "bigint", nullable: true),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Schedulers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Schedulers_Films_FilmId",
+                        column: x => x.FilmId,
+                        principalSchema: "Film",
+                        principalTable: "Films",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Schedulers_Rooms_RoomId",
+                        column: x => x.RoomId,
+                        principalSchema: "Room",
+                        principalTable: "Rooms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Schedulers_Theaters_TheaterId",
+                        column: x => x.TheaterId,
+                        principalSchema: "Theater",
+                        principalTable: "Theaters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 schema: "Identity",
                 table: "Account",
                 columns: new[] { "Id", "AvatarPhoto", "CreatedBy", "CreatedTime", "Deleted", "DeletedBy", "DeletedTime", "Email", "EmailConfirmed", "FullName", "Gender", "LockoutEnabled", "LockoutEnd", "ModifiedBy", "ModifiedTime", "NormalizedEmail", "NormalizedUserName", "Otp", "OtpCount", "OtpValidEnd", "PasswordHash", "PasswordHashTemporary", "PasswordValidUntilDate", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Status", "UserName" },
-                values: new object[] { 921946681335811L, null, 921946681335812L, new DateTimeOffset(new DateTime(2023, 11, 1, 16, 8, 26, 191, DateTimeKind.Unspecified).AddTicks(7028), new TimeSpan(0, 0, 0, 0, 0)), false, null, null, "nva030801@gmail.com", true, "Nguyen Van An", true, true, null, 921946681335812L, new DateTimeOffset(new DateTime(2023, 11, 1, 16, 8, 26, 191, DateTimeKind.Unspecified).AddTicks(7017), new TimeSpan(0, 0, 0, 0, 0)), "NVA030801@GMAIL.COM", "NVA3801", "000000", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "AMJoiJQ9xLazxisVPXx+lBDRw7wfWBerhXipsLpHNGLXGAAKIeCnwi5XhIRbTbqovA==", null, null, "0966093801", true, "85678ADD-1221-4382-A30B-FA696DCDEFE5", 3, "admin" });
+                values: new object[] { 921946681335811L, null, 921946681335812L, new DateTimeOffset(new DateTime(2023, 11, 23, 3, 21, 22, 851, DateTimeKind.Unspecified).AddTicks(8022), new TimeSpan(0, 0, 0, 0, 0)), false, null, null, "nva030801@gmail.com", true, "Nguyen Van An", true, true, null, 921946681335812L, new DateTimeOffset(new DateTime(2023, 11, 23, 3, 21, 22, 851, DateTimeKind.Unspecified).AddTicks(8011), new TimeSpan(0, 0, 0, 0, 0)), "NVA030801@GMAIL.COM", "NVA3801", "000000", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "AMJoiJQ9xLazxisVPXx+lBDRw7wfWBerhXipsLpHNGLXGAAKIeCnwi5XhIRbTbqovA==", null, null, "0966093801", true, "669F9299-4973-49FA-A7A5-61B6605FDC35", 3, "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Account_Email",
@@ -438,11 +557,55 @@ namespace Infrastructure.Databases.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Foods_GroupEntityId",
+                schema: "Food",
+                table: "Foods",
+                column: "GroupEntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Foods_Title",
+                schema: "Food",
+                table: "Foods",
+                column: "Title",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Groups_Title",
                 schema: "Group",
                 table: "Groups",
                 column: "Title",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rooms_Name",
+                schema: "Room",
+                table: "Rooms",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rooms_TheaterId",
+                schema: "Room",
+                table: "Rooms",
+                column: "TheaterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Schedulers_FilmId",
+                schema: "Scheduler",
+                table: "Schedulers",
+                column: "FilmId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Schedulers_RoomId",
+                schema: "Scheduler",
+                table: "Schedulers",
+                column: "RoomId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Schedulers_TheaterId",
+                schema: "Scheduler",
+                table: "Schedulers",
+                column: "TheaterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Theaters_Name",
@@ -476,12 +639,16 @@ namespace Infrastructure.Databases.Migrations
                 schema: "Film");
 
             migrationBuilder.DropTable(
-                name: "Categories",
-                schema: "Category");
+                name: "Foods",
+                schema: "Food");
 
             migrationBuilder.DropTable(
-                name: "Theaters",
-                schema: "Theater");
+                name: "Schedulers",
+                schema: "Scheduler");
+
+            migrationBuilder.DropTable(
+                name: "Categories",
+                schema: "Category");
 
             migrationBuilder.DropTable(
                 name: "Account",
@@ -492,8 +659,16 @@ namespace Infrastructure.Databases.Migrations
                 schema: "Film");
 
             migrationBuilder.DropTable(
+                name: "Rooms",
+                schema: "Room");
+
+            migrationBuilder.DropTable(
                 name: "Groups",
                 schema: "Group");
+
+            migrationBuilder.DropTable(
+                name: "Theaters",
+                schema: "Theater");
         }
     }
 }

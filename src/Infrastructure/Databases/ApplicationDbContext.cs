@@ -1,9 +1,6 @@
-﻿using Application.Common.Interfaces;
-using Domain.Common;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Infrastructure.Databases;
 public class ApplicationDbContext : DbContext
@@ -28,4 +25,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<GroupEntity> Group { get; set; }
     public DbSet<TheaterEntity> Theater { get; set; }
     public DbSet<FilmEntity> Film { get; set; }
+    public DbSet<RoomEntity> Room { get; set; }
+    public DbSet<SchedulerEntity> Scheduler { get; set; }
+    public DbSet<FoodEntity> Food { get; set; }
 }

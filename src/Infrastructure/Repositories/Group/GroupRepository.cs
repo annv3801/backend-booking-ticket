@@ -24,20 +24,21 @@ public class GroupRepository : Repository<GroupEntity, ApplicationDbContext>, IG
         _groupEntities = applicationDbContext.Set<GroupEntity>();
     }
 
-    public async Task<OffsetPaginationResponse<GroupResponse>> GetListGroupsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
+    public async Task<OffsetPaginationResponse<GroupResponse>> GetListGroupsAsync(OffsetPaginationRequest request, string type, CancellationToken cancellationToken)
     {
-        var query = _groupEntities.Where(x => !x.Deleted).OrderBy(x => x.Title.ToLower()).Select(x => new GroupResponse()
+        var query = _groupEntities.Where(x => !x.Deleted && x.Type.ToLower() == type.ToLower()).OrderBy(x => x.Title.ToLower()).Select(x => new GroupResponse()
             {
                 Title = x.Title,
                 Status = x.Status,
                 Id = x.Id,
+                Type = x.Type
             });
         
         var response = await query.PaginateAsync<GroupEntity,GroupResponse>(request, cancellationToken);
         return new OffsetPaginationResponse<GroupResponse>()
         {
             Data = response.Data,
-            PageSize = response.CurrentPage,
+            PageSize = response.PageSize,
             Total = response.Total,
             CurrentPage = response.CurrentPage
         };

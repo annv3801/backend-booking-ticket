@@ -4,6 +4,8 @@ using Domain.Common.Pagination.OffsetBased;
 namespace Application.DataTransferObjects.Group.Requests;
 
 [ExcludeFromCodeCoverage]
-public class ViewGroupRequest : OffsetPaginationRequest
+public class ViewGroupRequest
 {
+    public OffsetPaginationRequest Request { get; set; }
+    public string Type { get; set; }
 }

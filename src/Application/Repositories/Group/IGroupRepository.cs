@@ -6,7 +6,7 @@ using Domain.Entities;
 namespace Application.Repositories.Group;
 public interface IGroupRepository : IRepository<GroupEntity>
 {
-    Task<OffsetPaginationResponse<GroupResponse>> GetListGroupsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken);
+    Task<OffsetPaginationResponse<GroupResponse>> GetListGroupsAsync(OffsetPaginationRequest request, string type, CancellationToken cancellationToken);
     Task<GroupResponse?> GetGroupByIdAsync(long id, CancellationToken cancellationToken);
     Task<GroupEntity?> GetGroupEntityByIdAsync(long id, CancellationToken cancellationToken);
     Task<bool> IsDuplicatedGroupByNameAndIdAsync(string name, long id, CancellationToken cancellationToken);

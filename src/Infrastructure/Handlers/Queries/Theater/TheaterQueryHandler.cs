@@ -1,4 +1,5 @@
 using Application.DataTransferObjects.Theater.Responses;
+using Application.Queries.Scheduler;
 using Application.Queries.Theater;
 using Application.Repositories.Theater;
 using Domain.Common.Pagination.OffsetBased;

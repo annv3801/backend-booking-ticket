@@ -13,6 +13,7 @@ using Application.Repositories.Film;
 using Application.Repositories.Food;
 using Application.Repositories.Group;
 using Application.Repositories.Room;
+using Application.Repositories.RoomSeat;
 using Application.Repositories.Scheduler;
 using Application.Repositories.Theater;
 using Application.Repositories.Ticket;
@@ -22,6 +23,7 @@ using Application.Services.Film;
 using Application.Services.Food;
 using Application.Services.Group;
 using Application.Services.Room;
+using Application.Services.RoomSeat;
 using Application.Services.Scheduler;
 using Application.Services.Theater;
 using Application.Services.Ticket;
@@ -36,6 +38,7 @@ using Infrastructure.Repositories.Film;
 using Infrastructure.Repositories.Food;
 using Infrastructure.Repositories.Group;
 using Infrastructure.Repositories.Room;
+using Infrastructure.Repositories.RoomSeat;
 using Infrastructure.Repositories.Scheduler;
 using Infrastructure.Repositories.Theater;
 using Infrastructure.Repositories.Ticket;
@@ -132,6 +135,10 @@ builder.Services.AddScoped<IFoodManagementService, FoodManagementService>();
 // Ticket
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();    
 builder.Services.AddScoped<ITicketManagementService, TicketManagementService>();  
+
+// Ticket
+builder.Services.AddScoped<IRoomSeatRepository, RoomSeatRepository>();    
+builder.Services.AddScoped<IRoomSeatManagementService, RoomSeatManagementService>();  
 
 // Film feedback
 builder.Services.AddScoped<IFeedbackFilmRepository, FeedbackFilmRepository>();    

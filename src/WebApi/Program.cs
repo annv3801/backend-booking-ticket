@@ -15,6 +15,7 @@ using Application.Repositories.Group;
 using Application.Repositories.Room;
 using Application.Repositories.Scheduler;
 using Application.Repositories.Theater;
+using Application.Repositories.Ticket;
 using Application.Services.Account;
 using Application.Services.Category;
 using Application.Services.Film;
@@ -23,6 +24,7 @@ using Application.Services.Group;
 using Application.Services.Room;
 using Application.Services.Scheduler;
 using Application.Services.Theater;
+using Application.Services.Ticket;
 using Domain.Common.Implementations;
 using Domain.Common.Interface;
 using Domain.Extensions;
@@ -36,6 +38,7 @@ using Infrastructure.Repositories.Group;
 using Infrastructure.Repositories.Room;
 using Infrastructure.Repositories.Scheduler;
 using Infrastructure.Repositories.Theater;
+using Infrastructure.Repositories.Ticket;
 using Infrastructure.Services;
 using Infrastructure.Services.Common;
 using MediatR;
@@ -125,6 +128,10 @@ builder.Services.AddScoped<ISchedulerManagementService, SchedulerManagementServi
 // Food
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();    
 builder.Services.AddScoped<IFoodManagementService, FoodManagementService>();  
+
+// Ticket
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();    
+builder.Services.AddScoped<ITicketManagementService, TicketManagementService>();  
 
 // Film feedback
 builder.Services.AddScoped<IFeedbackFilmRepository, FeedbackFilmRepository>();    

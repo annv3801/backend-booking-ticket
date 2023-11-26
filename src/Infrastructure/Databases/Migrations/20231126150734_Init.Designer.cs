@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Databases.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231123032122_InitTable")]
-    partial class InitTable
+    [Migration("20231126150734_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -514,7 +514,7 @@ namespace Infrastructure.Databases.Migrations
                             Id = 921946681335811L,
                             AccessFailedCount = 0,
                             CreatedBy = 921946681335812L,
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 23, 3, 21, 22, 851, DateTimeKind.Unspecified).AddTicks(8022), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 26, 15, 7, 34, 494, DateTimeKind.Unspecified).AddTicks(6817), new TimeSpan(0, 0, 0, 0, 0)),
                             Deleted = false,
                             Email = "nva030801@gmail.com",
                             EmailConfirmed = true,
@@ -522,7 +522,7 @@ namespace Infrastructure.Databases.Migrations
                             Gender = true,
                             LockoutEnabled = true,
                             ModifiedBy = 921946681335812L,
-                            ModifiedTime = new DateTimeOffset(new DateTime(2023, 11, 23, 3, 21, 22, 851, DateTimeKind.Unspecified).AddTicks(8011), new TimeSpan(0, 0, 0, 0, 0)),
+                            ModifiedTime = new DateTimeOffset(new DateTime(2023, 11, 26, 15, 7, 34, 494, DateTimeKind.Unspecified).AddTicks(6805), new TimeSpan(0, 0, 0, 0, 0)),
                             NormalizedEmail = "NVA030801@GMAIL.COM",
                             NormalizedUserName = "NVA3801",
                             Otp = "000000",
@@ -532,7 +532,7 @@ namespace Infrastructure.Databases.Migrations
                             PasswordHash = "AMJoiJQ9xLazxisVPXx+lBDRw7wfWBerhXipsLpHNGLXGAAKIeCnwi5XhIRbTbqovA==",
                             PhoneNumber = "0966093801",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "669F9299-4973-49FA-A7A5-61B6605FDC35",
+                            SecurityStamp = "20B3F053-768A-4EF6-8378-DC42FF4E87C4",
                             Status = 3,
                             TwoFactorEnabled = false,
                             UserName = "admin"
@@ -772,6 +772,58 @@ namespace Infrastructure.Databases.Migrations
                         .IsUnique();
 
                     b.ToTable("Theaters", "Theater");
+                });
+
+            modelBuilder.Entity("Domain.Entities.TicketEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Price")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Title")
+                        .IsUnique();
+
+                    b.ToTable("Tickets", "Ticket");
                 });
 
             modelBuilder.Entity("Domain.Entities.AccountCategoryEntity", b =>

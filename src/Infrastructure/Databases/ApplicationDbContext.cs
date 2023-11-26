@@ -28,4 +28,5 @@ public class ApplicationDbContext : DbContext
     public DbSet<RoomEntity> Room { get; set; }
     public DbSet<SchedulerEntity> Scheduler { get; set; }
     public DbSet<FoodEntity> Food { get; set; }
+    public DbSet<TicketEntity> Ticket { get; set; }
 }

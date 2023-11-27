@@ -3,12 +3,12 @@ using Domain.Constants;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace Application.DataTransferObjects.RoomSeat.Requests;
+namespace Application.DataTransferObjects.Seat.Requests;
 
 [ExcludeFromCodeCoverage]
-public class UpdateRoomSeatRequest
+public class UpdateSeatRequest
 {
     public long Id { get; set; }
-    public required string Name { get; set; }
-    public long RoomId { get; set; }
+    public long SchedulerId { get; set; }
+    public long RoomSeatId { get; set; }
 }

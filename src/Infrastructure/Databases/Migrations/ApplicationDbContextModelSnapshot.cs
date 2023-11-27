@@ -511,7 +511,7 @@ namespace Infrastructure.Databases.Migrations
                             Id = 921946681335811L,
                             AccessFailedCount = 0,
                             CreatedBy = 921946681335812L,
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 26, 15, 7, 34, 494, DateTimeKind.Unspecified).AddTicks(6817), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 27, 2, 7, 32, 708, DateTimeKind.Unspecified).AddTicks(3948), new TimeSpan(0, 0, 0, 0, 0)),
                             Deleted = false,
                             Email = "nva030801@gmail.com",
                             EmailConfirmed = true,
@@ -519,7 +519,7 @@ namespace Infrastructure.Databases.Migrations
                             Gender = true,
                             LockoutEnabled = true,
                             ModifiedBy = 921946681335812L,
-                            ModifiedTime = new DateTimeOffset(new DateTime(2023, 11, 26, 15, 7, 34, 494, DateTimeKind.Unspecified).AddTicks(6805), new TimeSpan(0, 0, 0, 0, 0)),
+                            ModifiedTime = new DateTimeOffset(new DateTime(2023, 11, 27, 2, 7, 32, 708, DateTimeKind.Unspecified).AddTicks(3932), new TimeSpan(0, 0, 0, 0, 0)),
                             NormalizedEmail = "NVA030801@GMAIL.COM",
                             NormalizedUserName = "NVA3801",
                             Otp = "000000",
@@ -529,7 +529,7 @@ namespace Infrastructure.Databases.Migrations
                             PasswordHash = "AMJoiJQ9xLazxisVPXx+lBDRw7wfWBerhXipsLpHNGLXGAAKIeCnwi5XhIRbTbqovA==",
                             PhoneNumber = "0966093801",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "20B3F053-768A-4EF6-8378-DC42FF4E87C4",
+                            SecurityStamp = "9571E36F-E3C0-43BD-A652-8E88AED2348A",
                             Status = 3,
                             TwoFactorEnabled = false,
                             UserName = "admin"
@@ -649,6 +649,56 @@ namespace Infrastructure.Databases.Migrations
                     b.HasIndex("TheaterId");
 
                     b.ToTable("Rooms", "Room");
+                });
+
+            modelBuilder.Entity("Domain.Entities.RoomSeatEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("RoomId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("RoomSeats", "RoomSeat");
                 });
 
             modelBuilder.Entity("Domain.Entities.SchedulerEntity", b =>
@@ -939,6 +989,17 @@ namespace Infrastructure.Databases.Migrations
                         .IsRequired();
 
                     b.Navigation("Theater");
+                });
+
+            modelBuilder.Entity("Domain.Entities.RoomSeatEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.RoomEntity", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("Domain.Entities.SchedulerEntity", b =>

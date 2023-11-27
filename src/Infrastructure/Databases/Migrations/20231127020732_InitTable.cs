@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Databases.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class InitTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,6 +30,9 @@ namespace Infrastructure.Databases.Migrations
 
             migrationBuilder.EnsureSchema(
                 name: "Room");
+
+            migrationBuilder.EnsureSchema(
+                name: "RoomSeat");
 
             migrationBuilder.EnsureSchema(
                 name: "Scheduler");
@@ -432,6 +435,36 @@ namespace Infrastructure.Databases.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RoomSeats",
+                schema: "RoomSeat",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    RoomId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: true),
+                    ModifiedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<long>(type: "bigint", nullable: true),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedBy = table.Column<long>(type: "bigint", nullable: true),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoomSeats", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RoomSeats_Rooms_RoomId",
+                        column: x => x.RoomId,
+                        principalSchema: "Room",
+                        principalTable: "Rooms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Schedulers",
                 schema: "Scheduler",
                 columns: table => new
@@ -482,7 +515,7 @@ namespace Infrastructure.Databases.Migrations
                 schema: "Identity",
                 table: "Account",
                 columns: new[] { "Id", "AvatarPhoto", "CreatedBy", "CreatedTime", "Deleted", "DeletedBy", "DeletedTime", "Email", "EmailConfirmed", "FullName", "Gender", "LockoutEnabled", "LockoutEnd", "ModifiedBy", "ModifiedTime", "NormalizedEmail", "NormalizedUserName", "Otp", "OtpCount", "OtpValidEnd", "PasswordHash", "PasswordHashTemporary", "PasswordValidUntilDate", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Status", "UserName" },
-                values: new object[] { 921946681335811L, null, 921946681335812L, new DateTimeOffset(new DateTime(2023, 11, 26, 15, 7, 34, 494, DateTimeKind.Unspecified).AddTicks(6817), new TimeSpan(0, 0, 0, 0, 0)), false, null, null, "nva030801@gmail.com", true, "Nguyen Van An", true, true, null, 921946681335812L, new DateTimeOffset(new DateTime(2023, 11, 26, 15, 7, 34, 494, DateTimeKind.Unspecified).AddTicks(6805), new TimeSpan(0, 0, 0, 0, 0)), "NVA030801@GMAIL.COM", "NVA3801", "000000", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "AMJoiJQ9xLazxisVPXx+lBDRw7wfWBerhXipsLpHNGLXGAAKIeCnwi5XhIRbTbqovA==", null, null, "0966093801", true, "20B3F053-768A-4EF6-8378-DC42FF4E87C4", 3, "admin" });
+                values: new object[] { 921946681335811L, null, 921946681335812L, new DateTimeOffset(new DateTime(2023, 11, 27, 2, 7, 32, 708, DateTimeKind.Unspecified).AddTicks(3948), new TimeSpan(0, 0, 0, 0, 0)), false, null, null, "nva030801@gmail.com", true, "Nguyen Van An", true, true, null, 921946681335812L, new DateTimeOffset(new DateTime(2023, 11, 27, 2, 7, 32, 708, DateTimeKind.Unspecified).AddTicks(3932), new TimeSpan(0, 0, 0, 0, 0)), "NVA030801@GMAIL.COM", "NVA3801", "000000", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "AMJoiJQ9xLazxisVPXx+lBDRw7wfWBerhXipsLpHNGLXGAAKIeCnwi5XhIRbTbqovA==", null, null, "0966093801", true, "9571E36F-E3C0-43BD-A652-8E88AED2348A", 3, "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Account_Email",
@@ -617,6 +650,19 @@ namespace Infrastructure.Databases.Migrations
                 column: "TheaterId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RoomSeats_Name",
+                schema: "RoomSeat",
+                table: "RoomSeats",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoomSeats_RoomId",
+                schema: "RoomSeat",
+                table: "RoomSeats",
+                column: "RoomId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Schedulers_FilmId",
                 schema: "Scheduler",
                 table: "Schedulers",
@@ -675,6 +721,10 @@ namespace Infrastructure.Databases.Migrations
             migrationBuilder.DropTable(
                 name: "Foods",
                 schema: "Food");
+
+            migrationBuilder.DropTable(
+                name: "RoomSeats",
+                schema: "RoomSeat");
 
             migrationBuilder.DropTable(
                 name: "Schedulers",

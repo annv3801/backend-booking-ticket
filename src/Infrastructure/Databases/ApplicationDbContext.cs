@@ -30,4 +30,5 @@ public class ApplicationDbContext : DbContext
     public DbSet<FoodEntity> Food { get; set; }
     public DbSet<TicketEntity> Ticket { get; set; }
     public DbSet<RoomSeatEntity> RoomSeat { get; set; }
+    public DbSet<SeatEntity> Seat { get; set; }
 }

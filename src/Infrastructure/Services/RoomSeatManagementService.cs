@@ -79,14 +79,13 @@ public class RoomSeatManagementService : IRoomSeatManagementService
                 }, cancellationToken))
                 return RequestResult<bool>.Fail("Item is duplicated");
 
-
             var existedRoomSeat = await _roomSeatRepository.GetRoomSeatEntityByIdAsync(request.Id, cancellationToken);
             if (existedRoomSeat == null)
                 return RequestResult<bool>.Fail("RoomSeat is not found");
-
             
             // Update value to existed RoomSeat
             existedRoomSeat.Name = request.Name;
+            existedRoomSeat.RoomId = request.RoomId;
 
             var resultUpdateRoomSeat = await _mediator.Send(new UpdateRoomSeatCommand
             {

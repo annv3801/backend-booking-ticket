@@ -82,12 +82,10 @@ public class RoomManagementService : IRoomManagementService
                 }, cancellationToken))
                 return RequestResult<bool>.Fail("Item is duplicated");
 
-
             var existedRoom = await _roomRepository.GetRoomEntityByIdAsync(request.Id, cancellationToken);
             if (existedRoom == null)
                 return RequestResult<bool>.Fail("Room is not found");
 
-            
             // Update value to existed Room
             existedRoom.Name = request.Name;
             existedRoom.TheaterId = request.TheaterId;

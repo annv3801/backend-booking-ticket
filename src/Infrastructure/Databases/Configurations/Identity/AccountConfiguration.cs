@@ -41,7 +41,7 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
 
         builder.Property(u => u.SecurityStamp).HasMaxLength(36);
         // builder.Property(u => u.SecurityStamp).HasDefaultValue(Guid.NewGuid().ToString());
-        builder.ToTable("Account", "Identity");
+        builder.ToTable("Account", "Film");
 
 
         var records = new List<Account>();

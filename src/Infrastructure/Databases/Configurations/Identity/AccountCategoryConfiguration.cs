@@ -8,6 +8,6 @@ public class AccountCategoryConfiguration : IEntityTypeConfiguration<AccountCate
     public void Configure(EntityTypeBuilder<AccountCategoryEntity> builder)
     {
         builder.HasKey(u => new {u.AccountId, u.CategoryId});
-        builder.ToTable("AccountCategory", "Identity");
+        builder.ToTable("AccountCategory", "Film");
     }
 }

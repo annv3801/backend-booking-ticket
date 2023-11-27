@@ -12,6 +12,6 @@ public class TicketEntityConfiguration : IEntityTypeConfiguration<TicketEntity>
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id).ValueGeneratedOnAdd();
         builder.HasIndex(r => r.Title).IsUnique();
-        builder.ToTable("Tickets", "Ticket");
+        builder.ToTable("Tickets", "Film");
     }
 }

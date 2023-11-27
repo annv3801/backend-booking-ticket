@@ -12,6 +12,6 @@ public class TheaterEntityConfiguration : IEntityTypeConfiguration<TheaterEntity
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id).ValueGeneratedOnAdd();
         builder.HasIndex(r => r.Name).IsUnique();
-        builder.ToTable("Theaters", "Theater");
+        builder.ToTable("Theaters", "Film");
     }
 }

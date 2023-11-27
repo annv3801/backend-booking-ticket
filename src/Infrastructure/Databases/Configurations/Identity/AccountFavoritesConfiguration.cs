@@ -8,6 +8,6 @@ public class AccountFavoritesConfiguration : IEntityTypeConfiguration<AccountFav
     public void Configure(EntityTypeBuilder<AccountFavoritesEntity> builder)
     {
         builder.HasKey(u => u.Id);
-        builder.ToTable("AccountFavorites", "Identity");
+        builder.ToTable("AccountFavorites", "Film");
     }
 }

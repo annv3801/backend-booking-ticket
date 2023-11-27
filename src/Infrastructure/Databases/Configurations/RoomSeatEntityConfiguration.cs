@@ -12,6 +12,6 @@ public class RoomSeatEntityConfiguration : IEntityTypeConfiguration<RoomSeatEnti
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id).ValueGeneratedOnAdd();
         builder.HasIndex(r => r.Name).IsUnique();
-        builder.ToTable("RoomSeats", "RoomSeat");
+        builder.ToTable("RoomSeats", "Film");
     }
 }

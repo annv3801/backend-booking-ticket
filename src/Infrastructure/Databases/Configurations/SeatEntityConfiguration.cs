@@ -12,6 +12,6 @@ public class SeatEntityConfiguration : IEntityTypeConfiguration<SeatEntity>
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id).ValueGeneratedOnAdd();
         builder.HasIndex(x => new { x.SchedulerId, x.RoomSeatId });
-        builder.ToTable("Seats", "Seat");
+        builder.ToTable("Seats", "Film");
     }
 }

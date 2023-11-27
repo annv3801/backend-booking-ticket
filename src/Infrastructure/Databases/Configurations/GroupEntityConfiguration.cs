@@ -12,6 +12,6 @@ public class GroupEntityConfiguration : IEntityTypeConfiguration<GroupEntity>
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id).ValueGeneratedOnAdd();
         builder.HasIndex(r => r.Title).IsUnique();
-        builder.ToTable("Groups", "Group");
+        builder.ToTable("Groups", "Film");
     }
 }

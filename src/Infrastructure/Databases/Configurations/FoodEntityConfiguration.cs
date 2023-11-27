@@ -12,6 +12,6 @@ public class FoodEntityConfiguration : IEntityTypeConfiguration<FoodEntity>
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id).ValueGeneratedOnAdd();
         builder.HasIndex(r => r.Title).IsUnique();
-        builder.ToTable("Foods", "Food");
+        builder.ToTable("Foods", "Film");
     }
 }

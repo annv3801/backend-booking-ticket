@@ -17,7 +17,7 @@ public class AccountLoginConfiguration : IEntityTypeConfiguration<AccountLogin>
             .HasMaxLength(Constants.FieldLength.TextMaxLength);
         builder.Property(u => u.ProviderDisplayName).IsUnicode()
             .HasMaxLength(Constants.FieldLength.DescriptionMaxLength);
-        builder.ToTable("AccountLogin", "Identity");
+        builder.ToTable("AccountLogin", "Film");
         // builder.HasOne<Account>().WithMany().HasForeignKey(table => table.AccountId);
     }
 }

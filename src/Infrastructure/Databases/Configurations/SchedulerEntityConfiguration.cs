@@ -11,6 +11,6 @@ public class SchedulerEntityConfiguration : IEntityTypeConfiguration<SchedulerEn
     {
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id).ValueGeneratedOnAdd();
-        builder.ToTable("Schedulers", "Scheduler");
+        builder.ToTable("Schedulers", "Film");
     }
 }

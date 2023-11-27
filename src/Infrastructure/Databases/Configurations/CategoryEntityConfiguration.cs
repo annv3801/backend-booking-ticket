@@ -12,6 +12,6 @@ public class CategoryEntityConfiguration : IEntityTypeConfiguration<CategoryEnti
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id).ValueGeneratedOnAdd();
         builder.HasIndex(r => r.Name).IsUnique();
-        builder.ToTable("Categories", "Category");
+        builder.ToTable("Categories", "Film");
     }
 }

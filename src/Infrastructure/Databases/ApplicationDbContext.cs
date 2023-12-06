@@ -31,4 +31,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<TicketEntity> Ticket { get; set; }
     public DbSet<RoomSeatEntity> RoomSeat { get; set; }
     public DbSet<SeatEntity> Seat { get; set; }
+    public DbSet<BookingEntity> Booking { get; set; }
+    public DbSet<BookingDetailEntity> BookingDetail { get; set; }
 }

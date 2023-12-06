@@ -66,6 +66,110 @@ namespace Infrastructure.Databases.Migrations
                     b.ToTable("AccountFavorites", "Film");
                 });
 
+            modelBuilder.Entity("Domain.Entities.BookingDetailEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("BookingId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("SeatId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingId");
+
+                    b.HasIndex("SeatId");
+
+                    b.ToTable("BookingDetails", "Film");
+                });
+
+            modelBuilder.Entity("Domain.Entities.BookingEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("AccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("CouponId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double>("Discount")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("IsReceived")
+                        .HasColumnType("integer");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Total")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("TotalBeforeDiscount")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("Bookings", "Film");
+                });
+
             modelBuilder.Entity("Domain.Entities.CategoryEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -511,7 +615,7 @@ namespace Infrastructure.Databases.Migrations
                             Id = 921946681335811L,
                             AccessFailedCount = 0,
                             CreatedBy = 921946681335812L,
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 27, 3, 34, 27, 638, DateTimeKind.Unspecified).AddTicks(8433), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 29, 2, 21, 3, 416, DateTimeKind.Unspecified).AddTicks(5006), new TimeSpan(0, 0, 0, 0, 0)),
                             Deleted = false,
                             Email = "nva030801@gmail.com",
                             EmailConfirmed = true,
@@ -519,7 +623,7 @@ namespace Infrastructure.Databases.Migrations
                             Gender = true,
                             LockoutEnabled = true,
                             ModifiedBy = 921946681335812L,
-                            ModifiedTime = new DateTimeOffset(new DateTime(2023, 11, 27, 3, 34, 27, 638, DateTimeKind.Unspecified).AddTicks(8421), new TimeSpan(0, 0, 0, 0, 0)),
+                            ModifiedTime = new DateTimeOffset(new DateTime(2023, 11, 29, 2, 21, 3, 416, DateTimeKind.Unspecified).AddTicks(4991), new TimeSpan(0, 0, 0, 0, 0)),
                             NormalizedEmail = "NVA030801@GMAIL.COM",
                             NormalizedUserName = "NVA3801",
                             Otp = "000000",
@@ -529,7 +633,7 @@ namespace Infrastructure.Databases.Migrations
                             PasswordHash = "AMJoiJQ9xLazxisVPXx+lBDRw7wfWBerhXipsLpHNGLXGAAKIeCnwi5XhIRbTbqovA==",
                             PhoneNumber = "0966093801",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "7A21E9D1-D5F4-4F70-B8D2-04D1A2F7F106",
+                            SecurityStamp = "2B24C758-E247-483A-B7C9-DF1195F25C69",
                             Status = 3,
                             TwoFactorEnabled = false,
                             UserName = "admin"
@@ -965,6 +1069,36 @@ namespace Infrastructure.Databases.Migrations
                     b.Navigation("Film");
 
                     b.Navigation("Theater");
+                });
+
+            modelBuilder.Entity("Domain.Entities.BookingDetailEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.BookingEntity", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.SeatEntity", "Seat")
+                        .WithMany()
+                        .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Seat");
+                });
+
+            modelBuilder.Entity("Domain.Entities.BookingEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.Identity.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("Domain.Entities.FilmEntity", b =>

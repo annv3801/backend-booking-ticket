@@ -8,6 +8,7 @@ using Application.Implementations;
 using Application.Interface;
 using Application.Repositories.Account;
 using Application.Repositories.AccountCategory;
+using Application.Repositories.Booking;
 using Application.Repositories.Category;
 using Application.Repositories.Film;
 using Application.Repositories.Food;
@@ -19,6 +20,7 @@ using Application.Repositories.Seat;
 using Application.Repositories.Theater;
 using Application.Repositories.Ticket;
 using Application.Services.Account;
+using Application.Services.Booking;
 using Application.Services.Category;
 using Application.Services.Film;
 using Application.Services.Food;
@@ -35,6 +37,7 @@ using Domain.Extensions;
 using Infrastructure.Databases;
 using Infrastructure.Repositories.Account;
 using Infrastructure.Repositories.AccountCategory;
+using Infrastructure.Repositories.Booking;
 using Infrastructure.Repositories.Category;
 using Infrastructure.Repositories.Film;
 using Infrastructure.Repositories.Food;
@@ -146,6 +149,13 @@ builder.Services.AddScoped<IRoomSeatManagementService, RoomSeatManagementService
 // Seat
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();    
 builder.Services.AddScoped<ISeatManagementService, SeatManagementService>();
+
+// Booking
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();    
+builder.Services.AddScoped<IBookingManagementService, BookingManagementService>();
+
+// Booking Detail
+builder.Services.AddScoped<IBookingDetailRepository, BookingDetailRepository>();    
 
 // Film feedback
 builder.Services.AddScoped<IFeedbackFilmRepository, FeedbackFilmRepository>();    

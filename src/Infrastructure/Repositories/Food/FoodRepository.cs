@@ -35,7 +35,8 @@ public class FoodRepository : Repository<FoodEntity, ApplicationDbContext>, IFoo
                 Description = x.Description,
                 Price = x.Price,
                 GroupEntityId = x.GroupEntityId,
-                GroupEntity = x.GroupEntity
+                GroupEntity = x.GroupEntity,
+                Image = x.Image
             });
         
         var response = await query.PaginateAsync<FoodEntity,FoodResponse>(request, cancellationToken);

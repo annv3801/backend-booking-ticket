@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Domain.Common.Attributes;
 using Domain.Common.Entities;
 using Domain.Constants;
 using Microsoft.AspNetCore.Http;
@@ -8,8 +9,8 @@ namespace Domain.Entities;
 public class FilmEntity : Entity<long>
 {
     public long Id { get; set; }
-    public string Name { get; set; }
-    public string Slug { get; set; }
+    [Searchable] [Sortable]public string Name { get; set; }
+    [Searchable] [Sortable]public string Slug { get; set; }
     public long GroupEntityId { get; set; }
     public GroupEntity GroupEntity { get; set; }
     public List<long> CategoryIds { get; set; }

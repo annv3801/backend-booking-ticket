@@ -11,6 +11,7 @@ public class BookingDetailEntityConfiguration : IEntityTypeConfiguration<Booking
     {
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id).ValueGeneratedOnAdd();
+        builder.Property(r => r.Foods).IsUnicode().HasColumnType("jsonb");
         builder.ToTable("BookingDetails", "Film");
     }
 }

@@ -1,6 +1,8 @@
-﻿using Domain.Common;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Domain.Common;
 using Domain.Common.Entities;
 using Domain.Constants;
+using Microsoft.AspNetCore.Http;
 
 namespace Domain.Entities;
 
@@ -13,4 +15,7 @@ public class FoodEntity : Entity<long>
     public string Status { get; set; } = EntityStatus.Active;
     public long GroupEntityId { get; set; }
     public GroupEntity GroupEntity { get; set; }
+    public string? Image { get; set; }
+    [NotMapped]
+    public IFormFile? ImageFile { get; set; }
 }

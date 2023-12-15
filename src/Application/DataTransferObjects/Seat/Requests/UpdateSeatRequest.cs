@@ -11,4 +11,5 @@ public class UpdateSeatRequest
     public long Id { get; set; }
     public long SchedulerId { get; set; }
     public long RoomSeatId { get; set; }
+    public long TicketId { get; set; }
 }

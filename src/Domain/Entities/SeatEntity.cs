@@ -10,5 +10,7 @@ public class SeatEntity : Entity<long>
     public RoomSeatEntity RoomSeat { get; set; }
     public long SchedulerId { get; set; }
     public SchedulerEntity Scheduler { get; set; }
+    public long TicketId { get; set; }
+    public TicketEntity Ticket { get; set; }
     public string Status { get; set; } = EntityStatus.Active;
 }

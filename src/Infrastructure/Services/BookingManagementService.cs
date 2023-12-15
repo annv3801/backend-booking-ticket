@@ -5,6 +5,7 @@ using Application.DataTransferObjects.Booking.Responses;
 using Application.Interface;
 using Application.Queries.Booking;
 using Application.Repositories.Booking;
+using Application.Repositories.Food;
 using Application.Repositories.Seat;
 using Application.Services.Booking;
 using AutoMapper;
@@ -12,6 +13,7 @@ using Domain.Common.Interface;
 using Domain.Common.Pagination.OffsetBased;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Nobi.Core.Responses;
 
@@ -31,9 +33,10 @@ public class BookingManagementService : IBookingManagementService
     private readonly ISnowflakeIdService _snowflakeIdService;
     private readonly IBookingDetailRepository _bookingDetailRepository;
     private readonly ISeatRepository _seatRepository;
+    private readonly IFoodRepository _foodRepository;
 
     public BookingManagementService(IMapper mapper, IMediator mediator, ILoggerService loggerService, IBookingRepository bookingRepository,
-        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService, ISnowflakeIdService snowflakeIdService, IBookingDetailRepository bookingDetailRepository, ISeatRepository seatRepository)
+        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService, ISnowflakeIdService snowflakeIdService, IBookingDetailRepository bookingDetailRepository, ISeatRepository seatRepository, IFoodRepository foodRepository)
     {
         _mapper = mapper;
         _mediator = mediator;
@@ -44,18 +47,21 @@ public class BookingManagementService : IBookingManagementService
         _snowflakeIdService = snowflakeIdService;
         _bookingDetailRepository = bookingDetailRepository;
         _seatRepository = seatRepository;
+        _foodRepository = foodRepository;
     }
 
     public async Task<RequestResult<bool>> CreateBookingAsync(CreateBookingRequest request, CancellationToken cancellationToken)
     {
         try
         {
+            if (request.SeatId.Count <= 0)
+                return RequestResult<bool>.Fail("Not Found Seats");
             // Create Booking 
             var bookingEntity = _mapper.Map<BookingEntity>(request);
             bookingEntity.Id = await _snowflakeIdService.GenerateId(cancellationToken);
-            bookingEntity.Discount = request.Discount;
-            bookingEntity.Total = request.Total;
-            bookingEntity.TotalBeforeDiscount = request.TotalBeforeDiscont;
+            bookingEntity.Discount = 0;
+            bookingEntity.Total = 0;
+            bookingEntity.TotalBeforeDiscount = 0;
             bookingEntity.CouponId = request.CouponId;
             bookingEntity.PaymentMethod = request.PaymentMethod;
             bookingEntity.AccountId = _currentAccountService.Id;
@@ -65,8 +71,28 @@ public class BookingManagementService : IBookingManagementService
             bookingEntity.ModifiedTime = _dateTimeService.NowUtc;
             
             var resultCreateBooking = await _mediator.Send(new CreateBookingCommand {Entity = bookingEntity}, cancellationToken);
+            var getBooking = await _bookingRepository.GetBookingEntityByIdAsync(bookingEntity.Id, cancellationToken);
+            
             if (resultCreateBooking > 0)
             {
+                var seatResponse = await _seatRepository.GetSeatEntityByIdAsync(request.SeatId.First(), cancellationToken);
+                
+                var totalFood = (double)0;
+                if (request.Foods.Count > 0)
+                {
+                    foreach (var item in request.Foods)
+                    {
+                        var foodResponse = await _foodRepository.GetFoodByIdAsync(item.FoodId, cancellationToken);
+                        totalFood += foodResponse.Price * item.Quantity;
+                    }
+                }
+                
+                getBooking.Total = seatResponse.Ticket.Price * request.SeatId.Count + totalFood;
+                getBooking.TotalBeforeDiscount = seatResponse.Ticket.Price * request.SeatId.Count + totalFood;
+                
+                if (request.Total != bookingEntity.Total)
+                    return RequestResult<bool>.Fail("Total not exist");
+                
                 foreach (var item in request.SeatId)
                 {
                     await _bookingDetailRepository.AddAsync(new BookingDetailEntity()
@@ -74,6 +100,11 @@ public class BookingManagementService : IBookingManagementService
                         Id = await _snowflakeIdService.GenerateId(cancellationToken),
                         BookingId = bookingEntity.Id,
                         SeatId = item,
+                        Foods = request.Foods.Select(x => new FoodRequest()
+                        {
+                            Quantity = x.Quantity,
+                            FoodId = x.FoodId
+                        }).ToList(), 
                         CreatedBy = _currentAccountService.Id,
                         CreatedTime = _dateTimeService.NowUtc,
                         ModifiedBy = _currentAccountService.Id,
@@ -83,6 +114,7 @@ public class BookingManagementService : IBookingManagementService
                     seat.Status = "BOOKED";
                     await _seatRepository.UpdateAsync(seat, cancellationToken);
                 }
+                await _bookingRepository.UpdateAsync(getBooking, cancellationToken);
                 await _bookingDetailRepository.SaveChangesAsync(cancellationToken);
                 return RequestResult<bool>.Succeed("Save data success");
             }

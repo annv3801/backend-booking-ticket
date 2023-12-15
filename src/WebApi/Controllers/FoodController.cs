@@ -34,7 +34,7 @@ public class FoodController : ControllerBase
     /// <returns></returns>
     [HttpPost]
     [Route("Create-Food")]
-    public async Task<RequestResult<bool>?> CreateFoodAsync(CreateFoodRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResult<bool>?> CreateFoodAsync([FromForm]CreateFoodRequest request, CancellationToken cancellationToken)
     {
         try
         {
@@ -56,7 +56,7 @@ public class FoodController : ControllerBase
     /// <returns></returns>
     [HttpPut]
     [Route("Update-Food")]
-    public async Task<RequestResult<bool>?> UpdateFoodAsync(UpdateFoodRequest updateFoodRequest, CancellationToken cancellationToken)
+    public async Task<RequestResult<bool>?> UpdateFoodAsync([FromForm]UpdateFoodRequest updateFoodRequest, CancellationToken cancellationToken)
     {
         try
         {
@@ -121,9 +121,9 @@ public class FoodController : ControllerBase
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpPost]
     [Route("View-List-Foods")]
-    public async Task<RequestResult<OffsetPaginationResponse<FoodResponse>>> ViewListFoodsAsync([FromQuery] ViewFoodRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<FoodResponse>>> ViewListFoodsAsync(ViewFoodRequest request, CancellationToken cancellationToken)
     {
         try
         {

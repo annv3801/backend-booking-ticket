@@ -53,6 +53,11 @@ public class SeatRepository : Repository<SeatEntity, ApplicationDbContext>, ISea
 
     public async Task<SeatEntity?> GetSeatEntityByIdAsync(long id, CancellationToken cancellationToken)
     {
-        return await _seatEntities.AsNoTracking().Where(x => x.Id == id && x.Status != EntityStatus.Deleted).FirstOrDefaultAsync(cancellationToken);
+        return await _seatEntities.AsNoTracking()
+            .Where(x => x.Id == id && x.Status != EntityStatus.Deleted)
+            .Include(x => x.RoomSeat)
+            .Include(x => x.Ticket)
+            .Include(x => x.Scheduler)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }

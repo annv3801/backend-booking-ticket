@@ -61,7 +61,6 @@ public class AccountProfile : Profile
             .ForMember(d => d.SecurityStamp, opt => opt.MapFrom(src => Guid.NewGuid().ToString().ToUpper().Replace("-", "")))
             .ForMember(d => d.AvatarPhoto, opt => opt.MapFrom(src => src.AvatarPhoto))
             .ForMember(d => d.Gender, opt => opt.MapFrom(src => src.Gender))
-            // .ForAllOtherMembers(s => s.Ignore())
             ;
 
         CreateMap<UpdateAccountRequest, UpdateAccountCommand>();

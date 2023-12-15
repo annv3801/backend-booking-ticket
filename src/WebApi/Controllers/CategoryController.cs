@@ -121,9 +121,9 @@ public class CategoryController : ControllerBase
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpPost]
     [Route("View-List-Categories")]
-    public async Task<RequestResult<OffsetPaginationResponse<CategoryResponse>>> ViewListCategoriesAsync([FromQuery] OffsetPaginationRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<CategoryResponse>>> ViewListCategoriesAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
     {
         try
         {

@@ -18,9 +18,5 @@ public class UpdateAccountRequestValidator: AbstractValidator<UpdateAccountReque
             .WithMessage(LocalizationString.Common.MinLengthField)
             .MaximumLength(Constants.FieldLength.TextMaxLength)
             .WithMessage(LocalizationString.Common.MaxLengthField);
-        RuleFor(x => x.AvatarPhoto)
-            .Cascade(CascadeMode.Stop)
-            .MaximumLength(Constants.FieldLength.UrlMaxLength).WithMessage(LocalizationString.Common.MaxLengthField)
-            .When(x => !string.IsNullOrEmpty(x.AvatarPhoto));
     }
 }

@@ -18,3 +18,9 @@ public class BookingEntity : Entity<long>
     public long AccountId { get; set; }
     public Account Account { get; set; }
 }
+
+public class FoodRequest
+{
+    public long FoodId { get; set; }
+    public long Quantity { get; set; }
+}

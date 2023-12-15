@@ -121,9 +121,9 @@ public class SchedulerController : ControllerBase
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpPost]
     [Route("View-List-Schedulers")]
-    public async Task<RequestResult<OffsetPaginationResponse<SchedulerResponse>>> ViewListSchedulersAsync([FromQuery] OffsetPaginationRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<SchedulerResponse>>> ViewListSchedulersAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
     {
         try
         {

@@ -121,9 +121,9 @@ public class TicketController : ControllerBase
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpPost]
     [Route("View-List-Tickets")]
-    public async Task<RequestResult<OffsetPaginationResponse<TicketResponse>>> ViewListTicketsAsync([FromQuery] OffsetPaginationRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<TicketResponse>>> ViewListTicketsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
     {
         try
         {

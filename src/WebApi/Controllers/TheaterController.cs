@@ -121,9 +121,9 @@ public class TheaterController : ControllerBase
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpPost]
     [Route("View-List-Theaters")]
-    public async Task<RequestResult<OffsetPaginationResponse<TheaterResponse>>> ViewListTheatersAsync([FromQuery] OffsetPaginationRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<TheaterResponse>>> ViewListTheatersAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
     {
         try
         {

@@ -20,7 +20,6 @@ public class SeatProfile : Profile
         CreateMap<UpdateSeatRequest, UpdateSeatCommand>().ReverseMap();
 
 
-        CreateMap<SeatEntity, SeatResponse>()
-            ;
+        CreateMap<SeatEntity, SeatResponse>();
     }
 }

@@ -27,7 +27,9 @@ public class SignInWithPhoneNumberHandler : ISignInWithPhoneNumberHandler
             var request = _mapper.Map<SignInWithPhoneNumberRequest>(signInWithUserNameCommand);
 
             var result = await _accountManagementService.SignInWithPhoneNumberAsync(request, cancellationToken);
-            return result != null ? RequestResult<SignInWithPhoneNumberResponse>.Succeed("Success", result.Data) : RequestResult<SignInWithPhoneNumberResponse>.Fail("Fail", result.Errors);
+            if (result.Success)
+                return RequestResult<SignInWithPhoneNumberResponse>.Succeed("Success", result.Data);
+            return RequestResult<SignInWithPhoneNumberResponse>.Fail(result.Message);
         }
         catch (Exception e)
         {

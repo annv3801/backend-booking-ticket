@@ -1,4 +1,6 @@
-﻿namespace Application.DataTransferObjects.Booking.Requests;
+﻿using Domain.Entities;
+
+namespace Application.DataTransferObjects.Booking.Requests;
 
 public class CreateBookingRequest
 {
@@ -8,4 +10,5 @@ public class CreateBookingRequest
     public double TotalBeforeDiscont { get; set; }
     public double Discount { get; set; }
     public int PaymentMethod { get; set; }
+    public List<FoodRequest> Foods { get; set; }
 }

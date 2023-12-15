@@ -12,18 +12,12 @@ namespace Infrastructure.Handlers.Commands.Booking;
 public class BookingCommandHandler : ICreateBookingCommandHandler
 {
     private readonly IBookingRepository _bookingRepository;
-    private readonly IBookingDetailRepository _bookingDetailRepository;
-    private readonly IDateTimeService _dateTimeService;
     private readonly ILoggerService _loggerService;
-    private readonly ICurrentAccountService _currentAccountService;
 
-    public BookingCommandHandler(IBookingRepository bookingRepository, IDateTimeService dateTimeService, ILoggerService loggerService, ICurrentAccountService currentAccountService, IBookingDetailRepository bookingDetailRepository)
+    public BookingCommandHandler(IBookingRepository bookingRepository, ILoggerService loggerService)
     {
         _bookingRepository = bookingRepository;
-        _dateTimeService = dateTimeService;
         _loggerService = loggerService;
-        _currentAccountService = currentAccountService;
-        _bookingDetailRepository = bookingDetailRepository;
     }
 
     public async Task<int> Handle(CreateBookingCommand command, CancellationToken cancellationToken)

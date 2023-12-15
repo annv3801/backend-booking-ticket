@@ -27,7 +27,7 @@ public class FilmRepository : Repository<FilmEntity, ApplicationDbContext>, IFil
 
     public async Task<OffsetPaginationResponse<FilmResponse>> GetListFilmsByGroupsAsync(ViewListFilmsByGroupRequest request, CancellationToken cancellationToken)
     {
-        var query = _filmEntities.Where(x => !x.Deleted && x.GroupEntityId == request.GroupId && x.GroupEntity.Type == EntityGroup.Film).OrderBy(x => x.Name.ToLower()).Select(x => new FilmResponse()
+        var query = _filmEntities.Where(x => !x.Deleted && x.GroupEntityId == request.GroupId).OrderBy(x => x.Name.ToLower()).Select(x => new FilmResponse()
             {
                 Id = x.Id,
                 Name = x.Name,

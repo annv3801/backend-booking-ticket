@@ -12,4 +12,5 @@ public class BookingDetailEntity : Entity<long>
     public BookingEntity Booking { get; set; }
     public long SeatId { get; set; }
     public SeatEntity Seat { get; set; }
+    public List<FoodRequest> Foods { get; set; }
 }

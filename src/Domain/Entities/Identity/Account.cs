@@ -1,7 +1,9 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using Domain.Common.Attributes;
 using Domain.Common.Entities;
 using Domain.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace Domain.Entities.Identity;
 [ExcludeFromCodeCoverage]
@@ -12,6 +14,8 @@ public class Account : Entity<long>
     public string NormalizedEmail { get; set; }
     public bool EmailConfirmed { get; set; }
     public string? AvatarPhoto { get; set; }
+    [NotMapped]
+    public IFormFile? AvatarPhotoFile { get; set; }
     public string? FullName { get; set; }
     public bool PasswordChangeRequired { get; set; } = false;
     public DateTime? PasswordValidUntilDate { get; set; }

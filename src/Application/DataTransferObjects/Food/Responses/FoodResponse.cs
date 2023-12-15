@@ -12,4 +12,5 @@ public class FoodResponse
     public string Status { get; set; }
     public long GroupEntityId { get; set; }
     public GroupEntity GroupEntity { get; set; }
+    public string Image { get; set; }
 }

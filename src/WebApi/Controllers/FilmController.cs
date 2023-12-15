@@ -122,9 +122,9 @@ public class FilmController : ControllerBase
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpPost]
     [Route("View-List-Films-By-Group")]
-    public async Task<RequestResult<OffsetPaginationResponse<FilmResponse>>> ViewListFilmsByGroupAsync([FromQuery] ViewListFilmsByGroupRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<FilmResponse>>> ViewListFilmsByGroupAsync(ViewListFilmsByGroupRequest request, CancellationToken cancellationToken)
     {
         try
         {

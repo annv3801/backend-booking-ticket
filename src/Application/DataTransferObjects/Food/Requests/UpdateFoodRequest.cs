@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Domain.Constants;
+using Microsoft.AspNetCore.Http;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -13,4 +14,5 @@ public class UpdateFoodRequest
     public string Description { get; set; }
     public double Price { get; set; }
     public long GroupEntityId { get; set; }
+    public IFormFile? Image { get; set; }
 }

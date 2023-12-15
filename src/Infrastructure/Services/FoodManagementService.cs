@@ -26,9 +26,9 @@ public class FoodManagementService : IFoodManagementService
     private readonly IFoodRepository _foodRepository;
     private readonly IDateTimeService _dateTimeService;
     private readonly ICurrentAccountService _currentAccountService;
-
+    private readonly IFileService _fileService;
     public FoodManagementService(IMapper mapper, IMediator mediator, ILoggerService loggerService, IFoodRepository foodRepository,
-        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService)
+        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService, IFileService fileService)
     {
         _mapper = mapper;
         _mediator = mediator;
@@ -36,6 +36,7 @@ public class FoodManagementService : IFoodManagementService
         _foodRepository = foodRepository;
         _dateTimeService = dateTimeService;
         _currentAccountService = currentAccountService;
+        _fileService = fileService;
     }
 
     public async Task<RequestResult<bool>> CreateFoodAsync(CreateFoodRequest request, CancellationToken cancellationToken)
@@ -49,11 +50,22 @@ public class FoodManagementService : IFoodManagementService
                 }, cancellationToken))
                 return RequestResult<bool>.Fail("Item is duplicated");
 
+            var image = "";
+            if (request.Image != null)
+            {
+                var fileResult = _fileService.SaveImage(request.Image);
+                if (fileResult.Item1 == 1)
+                {
+                    image = fileResult.Item2; // getting name of image
+                }
+            }
+            
             // Create Food 
             var foodEntity = _mapper.Map<FoodEntity>(request);
 
             foodEntity.CreatedBy = _currentAccountService.Id;
             foodEntity.CreatedTime = _dateTimeService.NowUtc;
+            foodEntity.Image = image;
 
             var resultCreateFood = await _mediator.Send(new CreateFoodCommand {Entity = foodEntity}, cancellationToken);
             if (resultCreateFood <= 0)
@@ -78,15 +90,35 @@ public class FoodManagementService : IFoodManagementService
                     Id = request.Id,
                 }, cancellationToken))
                 return RequestResult<bool>.Fail("Item is duplicated");
-
-
+            
             var existedFood = await _foodRepository.GetFoodEntityByIdAsync(request.Id, cancellationToken);
             if (existedFood == null)
                 return RequestResult<bool>.Fail("Food is not found");
+            
+            var currentImage = existedFood.Image; // Load current image name/path from the database or wherever you store it
+            var image = "";
 
+            if (request.Image != null)
+            {
+                // Delete the current image if it exists
+                if (!string.IsNullOrEmpty(currentImage))
+                {
+                    _fileService.DeleteImage(currentImage);
+                }
+
+                // Save the new image
+                var fileResult = _fileService.SaveImage(request.Image);
+                if (fileResult.Item1 == 1)
+                {
+                    image = fileResult.Item2; // getting name of new image
+
+                    // Save this new image name/path to the database or wherever you store it
+                }
+            }
             
             // Update value to existed Food
             existedFood.Title = request.Title;
+            existedFood.Image = image;
 
             var resultUpdateFood = await _mediator.Send(new UpdateFoodCommand
             {

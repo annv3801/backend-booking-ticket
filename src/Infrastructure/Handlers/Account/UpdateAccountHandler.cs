@@ -26,13 +26,12 @@ public class UpdateAccountHandler: IUpdateAccountHandler
         try
         {
             var account = _mapper.Map<Domain.Entities.Identity.Account>(command);
-            return await _accountManagementService.UpdateAccountAsync(account, cancellationToken);
+            return await _accountManagementService.UpdateMyAccountAsync(account, cancellationToken);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            var errorItem = new ErrorItem { Error = e.Message };
-            return RequestResult<AccountResult>.Fail("Fail", new List<ErrorItem> { errorItem });
+            return RequestResult<AccountResult>.Fail(e.Message);
         }
     }
 }

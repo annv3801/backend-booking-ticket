@@ -121,9 +121,9 @@ public class SeatController : ControllerBase
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpPost]
     [Route("View-List-Seats")]
-    public async Task<RequestResult<OffsetPaginationResponse<SeatResponse>>> ViewListSeatsAsync([FromQuery] OffsetPaginationRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<SeatResponse>>> ViewListSeatsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
     {
         try
         {

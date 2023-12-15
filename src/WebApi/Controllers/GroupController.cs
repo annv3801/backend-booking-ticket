@@ -121,9 +121,9 @@ public class GroupController : ControllerBase
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpPost]
     [Route("View-List-Groups")]
-    public async Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> ViewListGroupsAsync([FromQuery] OffsetPaginationRequest request, string type, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> ViewListGroupsAsync(OffsetPaginationRequest request, string type, CancellationToken cancellationToken)
     {
         try
         {

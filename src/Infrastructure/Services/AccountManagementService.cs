@@ -238,9 +238,13 @@ public class AccountManagementService : IAccountManagementService
             if (phoneCheck)
                 return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.DuplicatedPhoneNumber].Value);
 
-            //Using automapper
-            _mapper.Map(account, existedAccount);
-
+            existedAccount.Email = account.Email;
+            existedAccount.NormalizedEmail = account.Email.ToUpper();
+            existedAccount.PhoneNumber = account.PhoneNumber;
+            existedAccount.FullName = account.FullName;
+            existedAccount.Gender = account.Gender;
+            existedAccount.AvatarPhoto = account.AvatarPhoto;
+            
             await _accountRepository.UpdateAsync(existedAccount, cancellationToken);
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)

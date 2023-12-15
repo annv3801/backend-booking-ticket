@@ -92,7 +92,7 @@ public class SeatManagementService : ISeatManagementService
         try
         {
             // Check for existence
-            var seatToDelete = await _seatRepository.GetSeatByIdAsync(id, cancellationToken);
+            var seatToDelete = await _seatRepository.GetSeatEntityByIdAsync(id, cancellationToken);
             if (seatToDelete == null)
                 return RequestResult<bool>.Fail("Seat is not found");
 

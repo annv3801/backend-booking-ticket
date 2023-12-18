@@ -152,4 +152,22 @@ public class SeatManagementService : ISeatManagementService
         }
     }
 
+    public async Task<RequestResult<ICollection<SeatResponse>>> GetListSeatsBySchedulerAsync(long schedulerId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            // check tenant valid
+            var seat = await _mediator.Send(new GetListSeatsBySchedulerQuery
+            {
+                SchedulerId = schedulerId,
+            }, cancellationToken);
+
+            return RequestResult<ICollection<SeatResponse>>.Succeed(null, seat);
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(GetListSeatsBySchedulerAsync));
+            throw;
+        }
+    }
 }

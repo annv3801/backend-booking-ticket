@@ -10,6 +10,6 @@ public interface ISchedulerRepository : IRepository<SchedulerEntity>
     Task<SchedulerResponse?> GetSchedulerByIdAsync(long id, CancellationToken cancellationToken);
     Task<SchedulerEntity?> GetSchedulerEntityByIdAsync(long id, CancellationToken cancellationToken);
     Task<SchedulerResponse?> GetSchedulerByTime(long roomId, DateTimeOffset startTime, CancellationToken cancellationToken);
-    Task<ICollection<SchedulerResponse>> GetSchedulerByDateAndTheaterIdAsync(long theaterId, string date, CancellationToken cancellationToken);
-    Task<ICollection<SchedulerResponse>> GetSchedulerByDateAndTheaterIdAndFilmIdAsync(long theaterId, string date, long filmId, CancellationToken cancellationToken);
+    Task<ICollection<SchedulerGroupResponse>> GetSchedulerByDateAndTheaterIdAsync(long theaterId, string date, CancellationToken cancellationToken);
+    Task<ICollection<SchedulerGroupResponse>> GetSchedulerByDateAndTheaterIdAndFilmIdAsync(long theaterId, string date, long filmId, CancellationToken cancellationToken);
 }

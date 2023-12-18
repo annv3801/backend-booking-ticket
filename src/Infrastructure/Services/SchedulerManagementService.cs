@@ -177,12 +177,12 @@ public class SchedulerManagementService : ISchedulerManagementService
         }
     }
 
-    public async Task<RequestResult<ICollection<SchedulerResponse>>> GetSchedulerByTheaterIdAndDateAsync(long theaterId, string date, CancellationToken cancellationToken)
+    public async Task<RequestResult<ICollection<SchedulerGroupResponse>>> GetSchedulerByTheaterIdAndDateAsync(long theaterId, string date, CancellationToken cancellationToken)
     {
         try
         {
             var schedulerTheater = await _schedulerRepository.GetSchedulerByDateAndTheaterIdAsync(theaterId, date, cancellationToken);
-            return RequestResult<ICollection<SchedulerResponse>>.Succeed(null, schedulerTheater);
+            return RequestResult<ICollection<SchedulerGroupResponse>>.Succeed(null, schedulerTheater);
         }
         catch (Exception e)
         {
@@ -191,12 +191,12 @@ public class SchedulerManagementService : ISchedulerManagementService
         }
     }
     
-    public async Task<RequestResult<ICollection<SchedulerResponse>>> GetSchedulerByTheaterIdAndDateAndFilmIdAsync(long theaterId, string date, long filmId, CancellationToken cancellationToken)
+    public async Task<RequestResult<ICollection<SchedulerGroupResponse>>> GetSchedulerByTheaterIdAndDateAndFilmIdAsync(long theaterId, string date, long filmId, CancellationToken cancellationToken)
     {
         try
         {
             var schedulerTheater = await _schedulerRepository.GetSchedulerByDateAndTheaterIdAndFilmIdAsync(theaterId, date, filmId, cancellationToken);
-            return RequestResult<ICollection<SchedulerResponse>>.Succeed(null, schedulerTheater);
+            return RequestResult<ICollection<SchedulerGroupResponse>>.Succeed(null, schedulerTheater);
         }
         catch (Exception e)
         {

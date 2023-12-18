@@ -8,7 +8,8 @@ namespace Infrastructure.Handlers.Queries.Seat;
 
 public class SeatQueryHandler :
     IRequestHandler<GetSeatByIdQuery, SeatResponse?>, 
-    IRequestHandler<GetListSeatsQuery, OffsetPaginationResponse<SeatResponse>>
+    IRequestHandler<GetListSeatsQuery, OffsetPaginationResponse<SeatResponse>>,
+    IRequestHandler<GetListSeatsBySchedulerQuery, ICollection<SeatResponse>>
 {
     private readonly ISeatRepository _seatRepository;
 
@@ -25,5 +26,10 @@ public class SeatQueryHandler :
     public async Task<OffsetPaginationResponse<SeatResponse>> Handle(GetListSeatsQuery request, CancellationToken cancellationToken)
     {
         return await _seatRepository.GetListSeatsAsync(request.OffsetPaginationRequest, cancellationToken);
+    }
+    
+    public async Task<ICollection<SeatResponse>> Handle(GetListSeatsBySchedulerQuery request, CancellationToken cancellationToken)
+    {
+        return await _seatRepository.GetListSeatsBySchedulerAsync(request.SchedulerId, cancellationToken);
     }
 }

@@ -12,4 +12,5 @@ public interface ISeatManagementService
     Task<RequestResult<bool>> DeleteSeatAsync(long id, CancellationToken cancellationToken);
     Task<RequestResult<SeatResponse>> GetSeatAsync(long id, CancellationToken cancellationToken);
     Task<RequestResult<OffsetPaginationResponse<SeatResponse>>> GetListSeatsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken);
+    Task<RequestResult<ICollection<SeatResponse>>> GetListSeatsBySchedulerAsync(long schedulerId, CancellationToken cancellationToken);
 }

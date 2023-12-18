@@ -136,4 +136,26 @@ public class SeatController : ControllerBase
             throw;
         }
     }
+
+    /// <summary>
+    /// Get list Seat with pagination
+    /// </summary>
+    /// <param name="schedulerId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("View-List-Seats-By-Scheduler/{schedulerId:long}")]
+    public async Task<RequestResult<ICollection<SeatResponse>>> ViewListSeatsBySchedulerAsync(long schedulerId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _seatManagementService.GetListSeatsBySchedulerAsync(schedulerId, cancellationToken);
+            return result;
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(ViewListSeatsAsync));
+            throw;
+        }
+    }
 }

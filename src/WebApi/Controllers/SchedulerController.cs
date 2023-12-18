@@ -146,7 +146,7 @@ public class SchedulerController : ControllerBase
     /// <returns></returns>
     [HttpGet]
     [Route("View-List-Schedulers/{theaterId:long}")]
-    public async Task<RequestResult<ICollection<SchedulerResponse>>> ViewListSchedulersByTheaterAsync(long theaterId,[FromQuery] string date, CancellationToken cancellationToken)
+    public async Task<RequestResult<ICollection<SchedulerGroupResponse>>> ViewListSchedulersByTheaterAsync(long theaterId,[FromQuery] string date, CancellationToken cancellationToken)
     {
         try
         {
@@ -170,7 +170,7 @@ public class SchedulerController : ControllerBase
     /// <returns></returns>
     [HttpGet]
     [Route("View-List-Schedulers/{theaterId:long}/{filmId:long}")]
-    public async Task<RequestResult<ICollection<SchedulerResponse>>> ViewListSchedulersByFilmAsync(long filmId, long theaterId, [FromQuery] string date, CancellationToken cancellationToken)
+    public async Task<RequestResult<ICollection<SchedulerGroupResponse>>> ViewListSchedulersByFilmAsync(long filmId, long theaterId, [FromQuery] string date, CancellationToken cancellationToken)
     {
         try
         {

@@ -1,3 +1,4 @@
+using Application.DataTransferObjects.Scheduler.Responses;
 using Application.DataTransferObjects.Seat.Responses;
 using Application.Interface;
 using Application.Repositories.Seat;
@@ -46,9 +47,24 @@ public class SeatRepository : Repository<SeatEntity, ApplicationDbContext>, ISea
         };
     }
 
+    public async Task<ICollection<SeatResponse>> GetListSeatsBySchedulerAsync(long schedulerId, CancellationToken cancellationToken)
+    {
+        return await _seatEntities.Where(x => x.SchedulerId == schedulerId).ProjectTo<SeatResponse>(_mapper.ConfigurationProvider).Select(x => new SeatResponse()
+        {
+            Status = x.Status,
+            Id = x.Id,
+            SchedulerId = x.SchedulerId,
+            Ticket = x.Ticket,
+            TicketId = x.TicketId,
+        }).ToListAsync(cancellationToken);
+    }
+
     public async Task<SeatResponse?> GetSeatByIdAsync(long id, CancellationToken cancellationToken)
     {
-        return await _seatEntities.AsNoTracking().ProjectTo<SeatResponse>(_mapper.ConfigurationProvider).Where(x => x.Id == id && x.Status != EntityStatus.Deleted).FirstOrDefaultAsync(cancellationToken);
+        return await _seatEntities.AsNoTracking()
+            .ProjectTo<SeatResponse>(_mapper.ConfigurationProvider)
+            .Where(x => x.Id == id && x.Status != EntityStatus.Deleted)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<SeatEntity?> GetSeatEntityByIdAsync(long id, CancellationToken cancellationToken)

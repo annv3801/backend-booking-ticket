@@ -9,7 +9,7 @@ namespace Infrastructure.Handlers.Queries.Scheduler;
 public class SchedulerQueryHandler :
     IRequestHandler<GetSchedulerByIdQuery, SchedulerResponse?>, 
     IRequestHandler<GetListSchedulersQuery, OffsetPaginationResponse<SchedulerResponse>>,
-    IRequestHandler<GetSchedulerByDateAndTheaterIdQuery, ICollection<SchedulerResponse>>
+    IRequestHandler<GetSchedulerByDateAndTheaterIdQuery, ICollection<SchedulerGroupResponse>>
 {
     private readonly ISchedulerRepository _schedulerRepository;
 
@@ -28,7 +28,7 @@ public class SchedulerQueryHandler :
         return await _schedulerRepository.GetListSchedulersAsync(request.OffsetPaginationRequest, cancellationToken);
     }
     
-    public async Task<ICollection<SchedulerResponse>> Handle(GetSchedulerByDateAndTheaterIdQuery request, CancellationToken cancellationToken)
+    public async Task<ICollection<SchedulerGroupResponse>> Handle(GetSchedulerByDateAndTheaterIdQuery request, CancellationToken cancellationToken)
     {
         return await _schedulerRepository.GetSchedulerByDateAndTheaterIdAsync(request.TheaterId, request.Date, cancellationToken);
     }

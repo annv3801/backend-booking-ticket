@@ -55,14 +55,14 @@ public class RoomSeatRepository : Repository<RoomSeatEntity, ApplicationDbContex
         return await _roomSeatEntities.AsNoTracking().Where(x => x.Id == id && x.Status != EntityStatus.Deleted).FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<bool> IsDuplicatedRoomSeatByNameAndIdAsync(string name, long id, CancellationToken cancellationToken)
+    public async Task<bool> IsDuplicatedRoomSeatByNameAndIdAsync(string name, long id, long roomId, CancellationToken cancellationToken)
     {
-        return await _roomSeatEntities.AsNoTracking().AnyAsync(x => x.Name == name && x.Id != id && !x.Deleted, cancellationToken);
+        return await _roomSeatEntities.AsNoTracking().AnyAsync(x => x.Name == name && x.Id != id && x.RoomId == roomId && !x.Deleted, cancellationToken);
     }
 
-    public async Task<bool> IsDuplicatedRoomSeatByNameAsync(string name, CancellationToken cancellationToken)
+    public async Task<bool> IsDuplicatedRoomSeatByNameAsync(string name, long roomId, CancellationToken cancellationToken)
     {
-        return await _roomSeatEntities.AsNoTracking().AnyAsync(x => x.Name == name && !x.Deleted, cancellationToken);
+        return await _roomSeatEntities.AsNoTracking().AnyAsync(x => x.Name == name && x.RoomId == roomId && !x.Deleted, cancellationToken);
     }
     
 }

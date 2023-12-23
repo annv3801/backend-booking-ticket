@@ -71,7 +71,7 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
     {
         var schedules = await _schedulerEntities.AsNoTracking().Include(x => x.Film)
             .Include(x => x.Room)
-            .Where(x => x.TheaterId == theaterId && x.StartTime.Day == DateTimeOffset.Parse(date).Day && x.StartTime.Month == DateTimeOffset.Parse(date).Month && x.StartTime.Year == DateTimeOffset.Parse(date).Year && DateTimeOffset.UtcNow.AddHours(7) <= x.StartTime.AddMinutes(10) && x.Status != EntityStatus.Deleted)
+            .Where(x => x.TheaterId == theaterId && x.StartTime.Day == DateTimeOffset.Parse(date).Day && x.StartTime.Month == DateTimeOffset.Parse(date).Month && x.StartTime.Year == DateTimeOffset.Parse(date).Year && DateTimeOffset.UtcNow <= x.StartTime.AddMinutes(10) && x.Status != EntityStatus.Deleted)
             .ToListAsync(cancellationToken);
 
         var groupedSchedules = schedules.GroupBy(x => x.FilmId);
@@ -91,6 +91,7 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
                             Room = roomGroup.First().Room, // Assuming Room is a navigation property on the Schedule entity
                             SchedulerTimeResponses = roomGroup.Select(schedule => new SchedulerTimeResponse
                             {
+                                SchedulerId = schedule.Id,
                                 StartTime = schedule.StartTime,
                                 EndTime = schedule.EndTime
                             }).ToList()
@@ -108,7 +109,7 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
     {
         var schedules = await _schedulerEntities.AsNoTracking().Include(x => x.Film)
             .Include(x => x.Room)
-            .Where(x => x.FilmId == filmId &&  x.TheaterId == theaterId && x.StartTime.Day == DateTimeOffset.Parse(date).Day && x.StartTime.Month == DateTimeOffset.Parse(date).Month && x.StartTime.Year == DateTimeOffset.Parse(date).Year && DateTimeOffset.UtcNow.AddHours(7) <= x.StartTime.AddMinutes(10) && x.Status != EntityStatus.Deleted)
+            .Where(x => x.FilmId == filmId &&  x.TheaterId == theaterId && x.StartTime.Day == DateTimeOffset.Parse(date).Day && x.StartTime.Month == DateTimeOffset.Parse(date).Month && x.StartTime.Year == DateTimeOffset.Parse(date).Year && DateTimeOffset.UtcNow <= x.StartTime.AddMinutes(10) && x.Status != EntityStatus.Deleted)
             .ToListAsync(cancellationToken);
 
         var groupedSchedules = schedules.GroupBy(x => x.FilmId);
@@ -128,6 +129,44 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
                             Room = roomGroup.First().Room, // Assuming Room is a navigation property on the Schedule entity
                             SchedulerTimeResponses = roomGroup.Select(schedule => new SchedulerTimeResponse
                             {
+                                SchedulerId = schedule.Id,
+                                StartTime = schedule.StartTime,
+                                EndTime = schedule.EndTime
+                            }).ToList()
+                        }).ToList()
+                }
+            }
+        }).ToList();
+
+        return result;
+    }
+
+    public async Task<ICollection<SchedulerGroupResponse>> GetSchedulerByDateAndFilmIdAsync(string date, long filmId, CancellationToken cancellationToken)
+    {
+        var schedules = await _schedulerEntities.AsNoTracking().Include(x => x.Film)
+            .Include(x => x.Room)
+            .Include(x => x.Room.Theater)
+            .Where(x => x.FilmId == filmId && x.StartTime.Day == DateTimeOffset.Parse(date).Day && x.StartTime.Month == DateTimeOffset.Parse(date).Month && x.StartTime.Year == DateTimeOffset.Parse(date).Year && DateTimeOffset.UtcNow <= x.StartTime.AddMinutes(10) && x.Status != EntityStatus.Deleted)
+            .ToListAsync(cancellationToken);
+
+        var groupedSchedules = schedules.GroupBy(x => x.FilmId);
+
+        var result = groupedSchedules.Select(x => new SchedulerGroupResponse
+        {
+            SchedulerFilmResponses = new List<SchedulerFilmResponse>
+            {
+                new SchedulerFilmResponse
+                {
+                    FilmId = x.Key,
+                    Film = x.First().Film, // Assuming Film is a navigation property on the Schedule entity
+                    SchedulerRoomResponse = x.GroupBy(s => s.RoomId)
+                        .Select(roomGroup => new SchedulerRoomResponse
+                        {
+                            RoomId = roomGroup.Key,
+                            Room = roomGroup.First().Room, // Assuming Room is a navigation property on the Schedule entity
+                            SchedulerTimeResponses = roomGroup.Select(schedule => new SchedulerTimeResponse
+                            {
+                                SchedulerId = schedule.Id,
                                 StartTime = schedule.StartTime,
                                 EndTime = schedule.EndTime
                             }).ToList()

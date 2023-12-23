@@ -9,6 +9,7 @@ namespace Infrastructure.Handlers.Queries.Group;
 public class GroupQueryHandler :
     IRequestHandler<GetGroupByIdQuery, GroupResponse?>, 
     IRequestHandler<GetListCategoriesQuery, OffsetPaginationResponse<GroupResponse>>,
+    IRequestHandler<GetListGroupsQuery, OffsetPaginationResponse<GroupResponse>>,
     IRequestHandler<CheckDuplicatedGroupByNameAndIdQuery, bool>,
     IRequestHandler<CheckDuplicatedGroupByNameQuery, bool>
 {
@@ -26,7 +27,12 @@ public class GroupQueryHandler :
     
     public async Task<OffsetPaginationResponse<GroupResponse>> Handle(GetListCategoriesQuery request, CancellationToken cancellationToken)
     {
-        return await _groupRepository.GetListGroupsAsync(request.OffsetPaginationRequest, request.Type, cancellationToken);
+        return await _groupRepository.GetListGroupsByTypeAsync(request.OffsetPaginationRequest, request.Type, cancellationToken);
+    }
+    
+    public async Task<OffsetPaginationResponse<GroupResponse>> Handle(GetListGroupsQuery request, CancellationToken cancellationToken)
+    {
+        return await _groupRepository.GetListGroupsAsync(request.OffsetPaginationRequest, cancellationToken);
     }
     
     public async Task<bool> Handle(CheckDuplicatedGroupByNameAndIdQuery request, CancellationToken cancellationToken)

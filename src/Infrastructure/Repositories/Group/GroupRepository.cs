@@ -24,7 +24,7 @@ public class GroupRepository : Repository<GroupEntity, ApplicationDbContext>, IG
         _groupEntities = applicationDbContext.Set<GroupEntity>();
     }
 
-    public async Task<OffsetPaginationResponse<GroupResponse>> GetListGroupsAsync(OffsetPaginationRequest request, string type, CancellationToken cancellationToken)
+    public async Task<OffsetPaginationResponse<GroupResponse>> GetListGroupsByTypeAsync(OffsetPaginationRequest request, string type, CancellationToken cancellationToken)
     {
         var query = _groupEntities.Where(x => !x.Deleted && x.Type.ToLower() == type.ToLower()).OrderBy(x => x.Title.ToLower()).Select(x => new GroupResponse()
             {
@@ -33,6 +33,27 @@ public class GroupRepository : Repository<GroupEntity, ApplicationDbContext>, IG
                 Id = x.Id,
                 Type = x.Type
             });
+        
+        var response = await query.PaginateAsync<GroupEntity,GroupResponse>(request, cancellationToken);
+        return new OffsetPaginationResponse<GroupResponse>()
+        {
+            Data = response.Data,
+            PageSize = response.PageSize,
+            Total = response.Total,
+            CurrentPage = response.CurrentPage
+        };
+    }
+    
+    public async Task<OffsetPaginationResponse<GroupResponse>> GetListGroupsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
+    {
+        var query = _groupEntities.Where(x => !x.Deleted).OrderBy(x => x.Title.ToLower()).Select(x => new GroupResponse()
+        {
+            Title = x.Title,
+            Status = x.Status,
+            Index = x.Index,
+            Id = x.Id,
+            Type = x.Type
+        });
         
         var response = await query.PaginateAsync<GroupEntity,GroupResponse>(request, cancellationToken);
         return new OffsetPaginationResponse<GroupResponse>()

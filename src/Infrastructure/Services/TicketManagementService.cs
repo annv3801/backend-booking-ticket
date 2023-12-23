@@ -79,14 +79,15 @@ public class TicketManagementService : ITicketManagementService
                 }, cancellationToken))
                 return RequestResult<bool>.Fail("Item is duplicated");
 
-
             var existedTicket = await _ticketRepository.GetTicketEntityByIdAsync(request.Id, cancellationToken);
             if (existedTicket == null)
                 return RequestResult<bool>.Fail("Ticket is not found");
 
-            
             // Update value to existed Ticket
             existedTicket.Title = request.Title;
+            existedTicket.Color = request.Color;
+            existedTicket.Price = request.Price;
+            existedTicket.Type = request.Type;
 
             var resultUpdateTicket = await _mediator.Send(new UpdateTicketCommand
             {

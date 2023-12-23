@@ -46,6 +46,7 @@ public class RoomSeatManagementService : IRoomSeatManagementService
             if (await _mediator.Send(new CheckDuplicatedRoomSeatByNameQuery
                 {
                     Name = request.Name,
+                    RoomId = request.RoomId
                 }, cancellationToken))
                 return RequestResult<bool>.Fail("Item is duplicated");
 
@@ -76,6 +77,7 @@ public class RoomSeatManagementService : IRoomSeatManagementService
                 {
                     Name = request.Name,
                     Id = request.Id,
+                    RoomId = request.RoomId
                 }, cancellationToken))
                 return RequestResult<bool>.Fail("Item is duplicated");
 

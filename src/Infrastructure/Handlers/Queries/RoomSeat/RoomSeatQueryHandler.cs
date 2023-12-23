@@ -31,11 +31,11 @@ public class RoomSeatQueryHandler :
     
     public async Task<bool> Handle(CheckDuplicatedRoomSeatByNameAndIdQuery request, CancellationToken cancellationToken)
     {
-        return await _roomSeatRepository.IsDuplicatedRoomSeatByNameAndIdAsync(request.Name, request.Id, cancellationToken);
+        return await _roomSeatRepository.IsDuplicatedRoomSeatByNameAndIdAsync(request.Name, request.Id, request.RoomId, cancellationToken);
     }
     
     public async Task<bool> Handle(CheckDuplicatedRoomSeatByNameQuery request, CancellationToken cancellationToken)
     {
-        return await _roomSeatRepository.IsDuplicatedRoomSeatByNameAsync(request.Name, cancellationToken);
+        return await _roomSeatRepository.IsDuplicatedRoomSeatByNameAsync(request.Name, request.RoomId, cancellationToken);
     }
 }

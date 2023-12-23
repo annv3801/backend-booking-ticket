@@ -123,11 +123,32 @@ public class GroupController : ControllerBase
     /// <returns></returns>
     [HttpPost]
     [Route("View-List-Groups")]
-    public async Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> ViewListGroupsAsync(OffsetPaginationRequest request, string type, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> ViewListGroupsByTypeAsync(OffsetPaginationRequest request, string type, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _groupManagementService.GetListGroupsAsync(request, type, cancellationToken);
+            var result = await _groupManagementService.GetListGroupsByTypeAsync(request, type, cancellationToken);
+            return result;
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(ViewListGroupsByTypeAsync));
+            throw;
+        }
+    }
+    /// <summary>
+    /// Get list Group with pagination
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("View-List-Groups-Not-Have-Type")]
+    public async Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> ViewListGroupsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _groupManagementService.GetListGroupsAsync(request, cancellationToken);
             return result;
         }
         catch (Exception e)

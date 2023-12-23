@@ -34,7 +34,8 @@ public class SeatRepository : Repository<SeatEntity, ApplicationDbContext>, ISea
                 SchedulerId = x.SchedulerId,
                 Scheduler = x.Scheduler,
                 RoomsSeatId = x.RoomSeatId,
-                RoomSeat = x.RoomSeat
+                RoomSeat = x.RoomSeat,
+                Type = x.Type
             });
         
         var response = await query.PaginateAsync<SeatEntity,SeatResponse>(request, cancellationToken);
@@ -53,9 +54,16 @@ public class SeatRepository : Repository<SeatEntity, ApplicationDbContext>, ISea
         {
             Status = x.Status,
             Id = x.Id,
+            Scheduler = x.Scheduler,
             SchedulerId = x.SchedulerId,
+            RoomsSeatId = x.RoomsSeatId,
+            RoomSeat = x.RoomSeat,
             Ticket = x.Ticket,
             TicketId = x.TicketId,
+            FilmName = x.Scheduler.Film.Name,
+            RoomName = x.RoomSeat.Room.Name,
+            TheaterName = x.Scheduler.Theater.Name,
+            Type = x.Type
         }).ToListAsync(cancellationToken);
     }
 

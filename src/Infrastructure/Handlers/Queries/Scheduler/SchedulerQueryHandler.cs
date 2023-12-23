@@ -32,4 +32,9 @@ public class SchedulerQueryHandler :
     {
         return await _schedulerRepository.GetSchedulerByDateAndTheaterIdAsync(request.TheaterId, request.Date, cancellationToken);
     }
+    
+    public async Task<ICollection<SchedulerGroupResponse>> Handle(GetSchedulerByDateAndFilmIdQuery request, CancellationToken cancellationToken)
+    {
+        return await _schedulerRepository.GetSchedulerByDateAndTheaterIdAsync(request.FilmId, request.Date, cancellationToken);
+    }
 }

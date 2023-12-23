@@ -46,6 +46,7 @@ public class SeatCommandHandler : ICreateSeatCommandHandler, IUpdateSeatCommandH
                 .ExecuteUpdateAsync(u => u
                     .SetProperty(l => l.SchedulerId, command.Request.SchedulerId)
                     .SetProperty(l => l.RoomSeatId, command.Request.RoomSeatId)
+                    .SetProperty(l => l.Type, command.Request.Type)
                     .SetProperty(l => l.ModifiedBy, _currentAccountService.Id)
                     .SetProperty(l => l.ModifiedTime, _dateTimeService.NowUtc), cancellationToken);
         }

@@ -27,6 +27,5 @@ public class FilmEntity : Entity<long>
     [NotMapped]
     public IFormFile? ImageFile { get; set; }
     public decimal TotalRating { get; set; }
-
     public string Status { get; set; } = EntityStatus.Active;
 }

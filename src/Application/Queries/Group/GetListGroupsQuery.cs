@@ -4,8 +4,7 @@ using MediatR;
 
 namespace Application.Queries.Group;
 
-public class GetListCategoriesQuery : IRequest<OffsetPaginationResponse<GroupResponse>>
+public class GetListGroupsQuery : IRequest<OffsetPaginationResponse<GroupResponse>>
 {
-    public string Type { get; set; }
     public required OffsetPaginationRequest OffsetPaginationRequest { get; set; }
 }

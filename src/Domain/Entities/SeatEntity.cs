@@ -13,4 +13,5 @@ public class SeatEntity : Entity<long>
     public long TicketId { get; set; }
     public TicketEntity Ticket { get; set; }
     public string Status { get; set; } = EntityStatus.Active;
+    public int Type { get; set; }
 }

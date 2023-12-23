@@ -183,4 +183,26 @@ public class SchedulerController : ControllerBase
             throw;
         }
     }
+    /// <summary>
+    /// Get list Scheduler with pagination
+    /// </summary>
+    /// <param name="date"></param>
+    /// <param name="cancellationToken"></param>
+    /// <param name="filmId"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("View-List-Schedulers-By-Film/{filmId:long}")]
+    public async Task<RequestResult<ICollection<SchedulerGroupResponse>>> ViewListSchedulersByFilmAsync(long filmId, [FromQuery] string date, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _schedulerManagementService.GetSchedulerByDateAndFilmIdAsync(date, filmId, cancellationToken);
+            return result;
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(ViewListSchedulersAsync));
+            throw;
+        }
+    }
 }

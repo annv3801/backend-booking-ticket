@@ -205,6 +205,20 @@ public class SchedulerManagementService : ISchedulerManagementService
         }
     }
 
+    public async Task<RequestResult<ICollection<SchedulerGroupResponse>>> GetSchedulerByDateAndFilmIdAsync(string date, long filmId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var schedulerTheater = await _schedulerRepository.GetSchedulerByDateAndFilmIdAsync(date, filmId, cancellationToken);
+            return RequestResult<ICollection<SchedulerGroupResponse>>.Succeed(null, schedulerTheater);
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(GetSchedulerByDateAndFilmIdAsync));
+            throw;
+        }
+    }
+
     public async Task<RequestResult<OffsetPaginationResponse<SchedulerResponse>>> GetListSchedulersAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
     {
         try

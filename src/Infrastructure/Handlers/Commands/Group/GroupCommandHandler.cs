@@ -45,6 +45,8 @@ public class GroupCommandHandler : ICreateGroupCommandHandler, IUpdateGroupComma
             return await _groupRepository.Entity.Where(x => x.Id == command.Request.Id && x.Status != EntityStatus.Deleted)
                 .ExecuteUpdateAsync(u => u
                     .SetProperty(l => l.Title, command.Request.Title)
+                    .SetProperty(l => l.Type, command.Request.Type)
+                    .SetProperty(l => l.Index, command.Request.Index)
                     .SetProperty(l => l.ModifiedBy, _currentAccountService.Id)
                     .SetProperty(l => l.ModifiedTime, _dateTimeService.NowUtc), cancellationToken);
         }

@@ -53,6 +53,8 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                 x.PaymentMethod,
                 x.Status,
                 IsReceived = x.IsReceived,
+                x.CreatedBy,
+                x.CreatedTime,
                 Seat = new SeatResponse()
                 {
                     Id = y.Seat.Id,
@@ -64,6 +66,7 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                     FilmName = y.Seat.Scheduler.Film.Name,
                     RoomName = y.Seat.Scheduler.Room.Name,
                     TheaterName = y.Seat.Scheduler.Theater.Name,
+                    FilmImage = y.Seat.Scheduler.Film.Image
                 },
                 Foods = y.Foods
             })
@@ -79,6 +82,8 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                 PaymentMethod = group.First().PaymentMethod,
                 Status = group.First().Status,
                 IsReceived = group.First().IsReceived,
+                CreatedBy = group.First().CreatedBy,
+                CreatedTime = group.First().CreatedTime,
                 Seats = group.Select(x => x.Seat).ToList(),
                 Foods = group.Select(x => x.Foods).First()
             });
@@ -97,6 +102,8 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                 x.PaymentMethod,
                 x.Status,
                 IsReceived = x.IsReceived,
+                x.CreatedBy,
+                x.CreatedTime,
                 Seat = new SeatResponse()
                 {
                     Id = y.Seat.Id,
@@ -108,6 +115,7 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                     FilmName = y.Seat.Scheduler.Film.Name,
                     RoomName = y.Seat.Scheduler.Room.Name,
                     TheaterName = y.Seat.Scheduler.Theater.Name,
+                    FilmImage = y.Seat.Scheduler.Film.Image
                 },
                 Foods = y.Foods
             })
@@ -123,13 +131,15 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                 PaymentMethod = group.First().PaymentMethod,
                 Status = group.First().Status,
                 IsReceived = group.First().IsReceived,
+                CreatedBy = group.First().CreatedBy,
+                CreatedTime = group.First().CreatedTime,
                 Seats = group.Select(x => x.Seat).ToList(),
                 Foods = group.Select(x => x.Foods).First()
 
             });
         }
         
-        var response = await query.PaginateAsync<BookingEntity,BookingResponse>(request, cancellationToken);
+        var response = await query.PaginateAsync<BookingEntity, BookingResponse>(request, cancellationToken);
         return new OffsetPaginationResponse<BookingResponse>()
         {
             Data = response.Data,

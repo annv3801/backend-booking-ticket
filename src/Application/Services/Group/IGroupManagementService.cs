@@ -11,5 +11,6 @@ public interface IGroupManagementService
     Task<RequestResult<bool>> UpdateGroupAsync(UpdateGroupRequest request, CancellationToken cancellationToken);
     Task<RequestResult<bool>> DeleteGroupAsync(long id, CancellationToken cancellationToken);
     Task<RequestResult<GroupResponse>> GetGroupAsync(long id, CancellationToken cancellationToken);
-    Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> GetListGroupsAsync(OffsetPaginationRequest request, string type, CancellationToken cancellationToken);
+    Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> GetListGroupsByTypeAsync(OffsetPaginationRequest request, string type, CancellationToken cancellationToken);
+    Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> GetListGroupsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken);
 }

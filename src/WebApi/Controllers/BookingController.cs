@@ -1,5 +1,7 @@
+using Application.Common.Interfaces;
 using Application.DataTransferObjects.Booking.Requests;
 using Application.DataTransferObjects.Booking.Responses;
+using Application.DataTransferObjects.VnPay;
 using Application.Services.Booking;
 using Domain.Common.Interface;
 using Domain.Common.Pagination.OffsetBased;
@@ -19,11 +21,12 @@ public class BookingController : ControllerBase
 {
     private readonly IBookingManagementService _bookingManagementService;
     private readonly ILoggerService _loggerService;
-
-    public BookingController(IBookingManagementService bookingManagementService, ILoggerService loggerService)
+    private readonly IVnPayService _vnPayService;
+    public BookingController(IBookingManagementService bookingManagementService, ILoggerService loggerService, IVnPayService vnPayService)
     {
         _bookingManagementService = bookingManagementService;
         _loggerService = loggerService;
+        _vnPayService = vnPayService;
     }
 
     /// <summary>
@@ -76,9 +79,9 @@ public class BookingController : ControllerBase
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpPost]
     [Route("View-List-Bookings")]
-    public async Task<RequestResult<OffsetPaginationResponse<BookingResponse>>> ViewListBookingsAsync([FromQuery] ViewListBookingsRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<BookingResponse>>> ViewListBookingsAsync(ViewListBookingsRequest request, CancellationToken cancellationToken)
     {
         try
         {
@@ -90,5 +93,31 @@ public class BookingController : ControllerBase
             _loggerService.LogError(e, nameof(ViewListBookingsAsync));
             throw;
         }
+    }
+    
+    [HttpPost]
+    [Route("payment-vnpay")]
+    public async Task<IActionResult> CreatePaymentUrl(PaymentInformationModel model)
+    {
+        var url = _vnPayService.CreatePaymentUrl(model);
+        return Ok(url);
+    }
+    
+    [HttpGet]
+    [Route("PaymentVnPay/Callback")]
+    public async Task<IActionResult> PaymentCallback(CancellationToken cancellationToken = default)
+    {
+        var response = _vnPayService.PaymentExecute(Request.Query);
+        var result = "";
+        if (response.VnPayResponseCode == "00")
+        {
+            await CreateBookingAsync(new CreateBookingRequest(), cancellationToken);
+            result = "http://localhost:3000/payment-success";
+        }
+        if (response.VnPayResponseCode != "00")
+        {
+            result = "http://localhost:3000/payment-fail";
+        }
+        return Redirect(result);
     }
 }

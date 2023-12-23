@@ -34,9 +34,10 @@ public class BookingManagementService : IBookingManagementService
     private readonly IBookingDetailRepository _bookingDetailRepository;
     private readonly ISeatRepository _seatRepository;
     private readonly IFoodRepository _foodRepository;
+    private readonly IVnPayService _vnPayService;
 
     public BookingManagementService(IMapper mapper, IMediator mediator, ILoggerService loggerService, IBookingRepository bookingRepository,
-        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService, ISnowflakeIdService snowflakeIdService, IBookingDetailRepository bookingDetailRepository, ISeatRepository seatRepository, IFoodRepository foodRepository)
+        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService, ISnowflakeIdService snowflakeIdService, IBookingDetailRepository bookingDetailRepository, ISeatRepository seatRepository, IFoodRepository foodRepository, IVnPayService vnPayService)
     {
         _mapper = mapper;
         _mediator = mediator;
@@ -48,6 +49,7 @@ public class BookingManagementService : IBookingManagementService
         _bookingDetailRepository = bookingDetailRepository;
         _seatRepository = seatRepository;
         _foodRepository = foodRepository;
+        _vnPayService = vnPayService;
     }
 
     public async Task<RequestResult<bool>> CreateBookingAsync(CreateBookingRequest request, CancellationToken cancellationToken)
@@ -83,7 +85,8 @@ public class BookingManagementService : IBookingManagementService
                     foreach (var item in request.Foods)
                     {
                         var foodResponse = await _foodRepository.GetFoodByIdAsync(item.FoodId, cancellationToken);
-                        totalFood += foodResponse.Price * item.Quantity;
+                        if (foodResponse != null)
+                            totalFood += foodResponse.Price * item.Quantity;
                     }
                 }
                 
@@ -110,9 +113,10 @@ public class BookingManagementService : IBookingManagementService
                         ModifiedBy = _currentAccountService.Id,
                         ModifiedTime = _dateTimeService.NowUtc
                     }, cancellationToken);
-                    var seat = await _seatRepository.Entity.Where(x => x.Id == item && x.Status != "BOOKED" || x.Status != "DELETED").FirstOrDefaultAsync(cancellationToken);
+                    var seat = await _seatRepository.Entity.Where(x => x.Id == item && ( x.Status != "BOOKED" || x.Status != "DELETED")).FirstOrDefaultAsync(cancellationToken);
                     seat.Status = "BOOKED";
                     await _seatRepository.UpdateAsync(seat, cancellationToken);
+                    await _seatRepository.SaveChangesAsync(cancellationToken);
                 }
                 await _bookingRepository.UpdateAsync(getBooking, cancellationToken);
                 await _bookingDetailRepository.SaveChangesAsync(cancellationToken);

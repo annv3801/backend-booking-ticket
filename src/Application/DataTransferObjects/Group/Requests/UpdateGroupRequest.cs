@@ -9,7 +9,7 @@ namespace Application.DataTransferObjects.Group.Requests;
 public class UpdateGroupRequest
 {
     public long Id { get; set; }
-    public string Title { get; set; } = string.Empty;
-    public string Type { get; set; } = EntityGroup.Film;
+    public string Title { get; set; }
+    public string Type { get; set; }
     public int Index { get; set; }
 }

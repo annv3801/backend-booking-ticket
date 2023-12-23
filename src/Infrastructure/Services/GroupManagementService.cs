@@ -87,6 +87,8 @@ public class GroupManagementService : IGroupManagementService
             
             // Update value to existed Group
             existedGroup.Title = request.Title;
+            existedGroup.Type = request.Type;
+            existedGroup.Index = request.Index;
 
             var resultUpdateGroup = await _mediator.Send(new UpdateGroupCommand
             {
@@ -150,7 +152,7 @@ public class GroupManagementService : IGroupManagementService
         }
     }
 
-    public async Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> GetListGroupsAsync(OffsetPaginationRequest request, string type, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> GetListGroupsByTypeAsync(OffsetPaginationRequest request, string type, CancellationToken cancellationToken)
     {
         try
         {
@@ -169,5 +171,22 @@ public class GroupManagementService : IGroupManagementService
             throw;
         }
     }
+    public async Task<RequestResult<OffsetPaginationResponse<GroupResponse>>> GetListGroupsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            // check tenant valid
+            var group = await _mediator.Send(new GetListGroupsQuery
+            {
+                OffsetPaginationRequest = request
+            }, cancellationToken);
 
+            return RequestResult<OffsetPaginationResponse<GroupResponse>>.Succeed(null, group);
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(GetListGroupsAsync));
+            throw;
+        }
+    }
 }

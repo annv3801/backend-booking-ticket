@@ -17,6 +17,8 @@ public class BookingResponse
     public Domain.Entities.Identity.Account Account { get; set; }
     public List<SeatResponse> Seats { get; set; }
     public List<FoodRequest> Foods { get; set; }
+    public DateTimeOffset? CreatedTime { get; set; }
+    public long? CreatedBy { get; set; }
 }
 
 public class FoodBooking

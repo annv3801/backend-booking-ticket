@@ -17,6 +17,7 @@ using Application.Repositories.Room;
 using Application.Repositories.RoomSeat;
 using Application.Repositories.Scheduler;
 using Application.Repositories.Seat;
+using Application.Repositories.Slide;
 using Application.Repositories.Theater;
 using Application.Repositories.Ticket;
 using Application.Services.Account;
@@ -29,6 +30,7 @@ using Application.Services.Room;
 using Application.Services.RoomSeat;
 using Application.Services.Scheduler;
 using Application.Services.Seat;
+using Application.Services.Slide;
 using Application.Services.Theater;
 using Application.Services.Ticket;
 using Domain.Common.Implementations;
@@ -46,6 +48,7 @@ using Infrastructure.Repositories.Room;
 using Infrastructure.Repositories.RoomSeat;
 using Infrastructure.Repositories.Scheduler;
 using Infrastructure.Repositories.Seat;
+using Infrastructure.Repositories.Slide;
 using Infrastructure.Repositories.Theater;
 using Infrastructure.Repositories.Ticket;
 using Infrastructure.Services;
@@ -160,7 +163,12 @@ builder.Services.AddScoped<IBookingDetailRepository, BookingDetailRepository>();
 // Film feedback
 builder.Services.AddScoped<IFeedbackFilmRepository, FeedbackFilmRepository>();    
 
+// Booking
+builder.Services.AddScoped<ISlideRepository, SlideRepository>();    
+builder.Services.AddScoped<ISlideManagementService, SlideManagementService>();
+
 builder.Services.AddSingleton<IFileService>(sp => new FileService(environment));
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 #endregion
 
 #region JWT

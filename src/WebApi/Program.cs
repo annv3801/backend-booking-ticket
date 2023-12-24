@@ -292,7 +292,7 @@ builder.Services.AddAuthentication(config =>
 builder.Services.AddCors(options =>
     options.AddPolicy(
         "AllowInternal",
-        policy => policy.WithOrigins("*")
+        policy => policy.WithOrigins("http://localhost:3000")
             .WithMethods("POST", "GET", "OPTIONS", "PUT", "DELETE")
             .AllowAnyHeader()
             .AllowAnyOrigin()

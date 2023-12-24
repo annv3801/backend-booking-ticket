@@ -159,4 +159,26 @@ public class FilmController : ControllerBase
             throw;
         }
     }
+    
+    /// <summary>
+    /// Get list Film with pagination
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("View-List-Films")]
+    public async Task<RequestResult<OffsetPaginationResponse<FilmResponse>>> ViewListFilmsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _filmManagementService.GetListFilmsAsync(request, cancellationToken);
+            return result;
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(ViewListFilmsAsync));
+            throw;
+        }
+    }
 }

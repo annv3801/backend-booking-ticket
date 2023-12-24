@@ -12,5 +12,6 @@ public interface IFilmManagementService
     Task<RequestResult<bool>> DeleteFilmAsync(long id, CancellationToken cancellationToken);
     Task<RequestResult<FilmResponse>> GetFilmAsync(long id, CancellationToken cancellationToken);   
     Task<RequestResult<OffsetPaginationResponse<FilmResponse>>> GetListFilmsByGroupAsync(ViewListFilmsByGroupRequest request, CancellationToken cancellationToken);
+    Task<RequestResult<OffsetPaginationResponse<FilmResponse>>> GetListFilmsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken);
     Task<RequestResult<bool>> CreateFeedbackFilmAsync(CreateFeedbackFilmRequest request, CancellationToken cancellationToken);
 }

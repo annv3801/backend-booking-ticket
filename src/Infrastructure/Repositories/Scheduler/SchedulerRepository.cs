@@ -1,5 +1,6 @@
 using System.Reflection.PortableExecutable;
 using Application.DataTransferObjects.Scheduler.Responses;
+using Application.DataTransferObjects.Theater.Responses;
 using Application.Interface;
 using Application.Repositories.Scheduler;
 using AutoMapper;
@@ -41,6 +42,42 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
 
         var response = await query.PaginateAsync<SchedulerEntity, SchedulerResponse>(request, cancellationToken);
         return new OffsetPaginationResponse<SchedulerResponse>()
+        {
+            Data = response.Data,
+            PageSize = response.PageSize,
+            Total = response.Total,
+            CurrentPage = response.CurrentPage
+        };
+    }
+
+    public async Task<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>> GetListTheaterByFilmAsync(OffsetPaginationRequest request, long filmId, CancellationToken cancellationToken)
+    {
+        var query = _schedulerEntities
+            .Where(x => !x.Deleted && x.FilmId == filmId)
+            .GroupBy(x => x.FilmId)
+            .Select(group => new SchedulerFilmAndTheaterResponse()
+            {
+                FilmId = group.Key,
+                Film = group.First().Film, // Assuming Film is the same for all items in the group
+                ListTheaters = group
+                    .GroupBy(x => x.Theater.Id)
+                    .Select(theaterGroup => new TheaterResponse()
+                    {
+                        Id = theaterGroup.Key,
+                        // Assuming other properties are the same for all items in the inner group
+                        Name = theaterGroup.First().Theater.Name,
+                        Location = theaterGroup.First().Theater.Location,
+                        PhoneNumber = theaterGroup.First().Theater.PhoneNumber,
+                        Status = theaterGroup.First().Theater.Status,
+                        Latitude = theaterGroup.First().Theater.Latitude,
+                        Longitude = theaterGroup.First().Theater.Longitude,
+                        TotalRating = theaterGroup.First().Theater.TotalRating
+                    })
+                    .ToList()
+            });
+
+        var response = await query.PaginateAsync<SchedulerEntity, SchedulerFilmAndTheaterResponse>(request, cancellationToken);
+        return new OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>()
         {
             Data = response.Data,
             PageSize = response.PageSize,

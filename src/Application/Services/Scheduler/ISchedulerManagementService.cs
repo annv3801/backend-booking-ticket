@@ -1,5 +1,6 @@
 using Application.DataTransferObjects.Scheduler.Requests;
 using Application.DataTransferObjects.Scheduler.Responses;
+using Application.DataTransferObjects.Theater.Responses;
 using Domain.Common.Pagination.OffsetBased;
 using Nobi.Core.Responses;
 
@@ -15,4 +16,5 @@ public interface ISchedulerManagementService
     Task<RequestResult<ICollection<SchedulerGroupResponse>>> GetSchedulerByTheaterIdAndDateAndFilmIdAsync(long theaterId, string date, long filmId, CancellationToken cancellationToken);
     Task<RequestResult<ICollection<SchedulerGroupResponse>>> GetSchedulerByDateAndFilmIdAsync(string date, long filmId, CancellationToken cancellationToken);
     Task<RequestResult<OffsetPaginationResponse<SchedulerResponse>>> GetListSchedulersAsync(OffsetPaginationRequest request, CancellationToken cancellationToken);
+    Task<RequestResult<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>>> GetListTheaterByFilmAsync(OffsetPaginationRequest request, long filmId, CancellationToken cancellationToken);
 }

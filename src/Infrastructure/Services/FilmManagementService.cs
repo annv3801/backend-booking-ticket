@@ -244,7 +244,7 @@ public class FilmManagementService : IFilmManagementService
         try
         {
             // check tenant valid
-            var film = await _mediator.Send(new GetListFilmsQuery
+            var film = await _mediator.Send(new GetListFilmsByGroupQuery
             {
                 Request = request,
             }, cancellationToken);
@@ -254,6 +254,25 @@ public class FilmManagementService : IFilmManagementService
         catch (Exception e)
         {
             _loggerService.LogError(e, nameof(GetListFilmsByGroupAsync));
+            throw;
+        }
+    }
+
+    public async Task<RequestResult<OffsetPaginationResponse<FilmResponse>>> GetListFilmsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            // check tenant valid
+            var film = await _mediator.Send(new GetListFilmsQuery()
+            {
+                Request = request,
+            }, cancellationToken);
+    
+            return RequestResult<OffsetPaginationResponse<FilmResponse>>.Succeed(null, film);
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(GetListFilmsAsync));
             throw;
         }
     }

@@ -8,6 +8,7 @@ namespace Infrastructure.Handlers.Queries.Film;
 
 public class FilmQueryHandler :
     IRequestHandler<GetFilmByIdQuery, FilmResponse?>, 
+    IRequestHandler<GetListFilmsByGroupQuery, OffsetPaginationResponse<FilmResponse>>,
     IRequestHandler<GetListFilmsQuery, OffsetPaginationResponse<FilmResponse>>
 {    
 
@@ -25,8 +26,13 @@ public class FilmQueryHandler :
         return await _filmRepository.GetFilmByIdAsync(request.Id, cancellationToken);
     }
     
-    public async Task<OffsetPaginationResponse<FilmResponse>> Handle(GetListFilmsQuery request, CancellationToken cancellationToken)
+    public async Task<OffsetPaginationResponse<FilmResponse>> Handle(GetListFilmsByGroupQuery request, CancellationToken cancellationToken)
     {
         return await _filmRepository.GetListFilmsByGroupsAsync(request.Request, cancellationToken);
+    }
+    
+    public async Task<OffsetPaginationResponse<FilmResponse>> Handle(GetListFilmsQuery request, CancellationToken cancellationToken)
+    {
+        return await _filmRepository.GetListFilmsAsync(request.Request, cancellationToken);
     }
 }

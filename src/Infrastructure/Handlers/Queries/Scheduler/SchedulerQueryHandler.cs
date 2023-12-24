@@ -1,4 +1,5 @@
 using Application.DataTransferObjects.Scheduler.Responses;
+using Application.DataTransferObjects.Theater.Responses;
 using Application.Queries.Scheduler;
 using Application.Repositories.Scheduler;
 using Domain.Common.Pagination.OffsetBased;
@@ -9,6 +10,7 @@ namespace Infrastructure.Handlers.Queries.Scheduler;
 public class SchedulerQueryHandler :
     IRequestHandler<GetSchedulerByIdQuery, SchedulerResponse?>, 
     IRequestHandler<GetListSchedulersQuery, OffsetPaginationResponse<SchedulerResponse>>,
+    IRequestHandler<GetTheatersByFilmQuery, OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>>,
     IRequestHandler<GetSchedulerByDateAndTheaterIdQuery, ICollection<SchedulerGroupResponse>>
 {
     private readonly ISchedulerRepository _schedulerRepository;
@@ -26,6 +28,11 @@ public class SchedulerQueryHandler :
     public async Task<OffsetPaginationResponse<SchedulerResponse>> Handle(GetListSchedulersQuery request, CancellationToken cancellationToken)
     {
         return await _schedulerRepository.GetListSchedulersAsync(request.OffsetPaginationRequest, cancellationToken);
+    }
+    
+    public async Task<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>> Handle(GetTheatersByFilmQuery request, CancellationToken cancellationToken)
+    {
+        return await _schedulerRepository.GetListTheaterByFilmAsync(request.OffsetPaginationRequest, request.FilmId, cancellationToken);
     }
     
     public async Task<ICollection<SchedulerGroupResponse>> Handle(GetSchedulerByDateAndTheaterIdQuery request, CancellationToken cancellationToken)

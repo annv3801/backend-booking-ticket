@@ -238,4 +238,23 @@ public class SchedulerManagementService : ISchedulerManagementService
         }
     }
 
+    public async Task<RequestResult<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>>> GetListTheaterByFilmAsync(OffsetPaginationRequest request, long filmId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            // check tenant valid
+            var scheduler = await _mediator.Send(new GetTheatersByFilmQuery()
+            {
+                OffsetPaginationRequest = request,
+                FilmId = filmId
+            }, cancellationToken);
+
+            return RequestResult<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>>.Succeed(null, scheduler);
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(GetListTheaterByFilmAsync));
+            throw;
+        }
+    }
 }

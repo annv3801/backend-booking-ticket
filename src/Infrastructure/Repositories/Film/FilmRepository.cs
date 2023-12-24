@@ -57,6 +57,39 @@ public class FilmRepository : Repository<FilmEntity, ApplicationDbContext>, IFil
             CurrentPage = response.CurrentPage
         };
     }
+    
+    public async Task<OffsetPaginationResponse<FilmResponse>> GetListFilmsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
+    {
+        var query = _filmEntities.Where(x => !x.Deleted).OrderBy(x => x.Name.ToLower()).Select(x => new FilmResponse()
+        {
+            Id = x.Id,
+            Name = x.Name,
+            TotalRating = x.TotalRating,
+            Slug = x.Slug,
+            Actor = x.Actor,
+            Description = x.Description,
+            Director = x.Director,
+            Duration = x.Duration,
+            Genre = x.Genre,
+            Image = x.Image,
+            Language = x.Language,
+            Premiere = x.Premiere,
+            Rated = x.Rated,
+            Trailer = x.Trailer,
+            Group = x.GroupEntityId,
+            CategoryIds = x.CategoryIds,
+            Status = x.Status,
+        });
+        
+        var response = await query.PaginateAsync<FilmEntity,FilmResponse>(request, cancellationToken);
+        return new OffsetPaginationResponse<FilmResponse>()
+        {
+            Data = response.Data,
+            PageSize = response.PageSize,
+            Total = response.Total,
+            CurrentPage = response.CurrentPage
+        };
+    }
 
     public async Task<FilmResponse?> GetFilmByIdAsync(long id, CancellationToken cancellationToken)
     {

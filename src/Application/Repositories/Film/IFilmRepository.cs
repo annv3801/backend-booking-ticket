@@ -8,6 +8,7 @@ namespace Application.Repositories.Film;
 public interface IFilmRepository : IRepository<FilmEntity>
 {
     Task<OffsetPaginationResponse<FilmResponse>> GetListFilmsByGroupsAsync(ViewListFilmsByGroupRequest request, CancellationToken cancellationToken);
+    Task<OffsetPaginationResponse<FilmResponse>> GetListFilmsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken);
     Task<FilmResponse?> GetFilmByIdAsync(long id, CancellationToken cancellationToken);
     Task<FilmEntity?> GetFilmEntityByIdAsync(long id, CancellationToken cancellationToken);
     // Task<bool> IsDuplicatedFilmByNameAndIdAsync(string name, long id, CancellationToken cancellationToken);

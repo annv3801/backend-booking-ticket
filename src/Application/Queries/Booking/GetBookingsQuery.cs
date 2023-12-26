@@ -7,6 +7,6 @@ namespace Application.Queries.Booking;
 
 public class GetListBookingsQuery : IRequest<OffsetPaginationResponse<BookingResponse>>
 {
-    public required ViewListBookingsRequest Request { get; set; }
+    public ViewListBookingsRequest Request { get; set; }
     public long? AccountId { get; set; }
 }

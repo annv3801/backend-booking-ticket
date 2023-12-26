@@ -4,5 +4,5 @@ namespace Application.Commands.Ticket;
 
 public class DeleteTicketCommand : IRequest<int>
 {
-    public required long Id { get; set; }
+    public long Id { get; set; }
 }

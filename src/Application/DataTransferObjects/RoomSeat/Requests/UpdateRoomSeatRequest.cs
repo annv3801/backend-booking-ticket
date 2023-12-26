@@ -9,6 +9,6 @@ namespace Application.DataTransferObjects.RoomSeat.Requests;
 public class UpdateRoomSeatRequest
 {
     public long Id { get; set; }
-    public required string Name { get; set; }
+    public string Name { get; set; }
     public long RoomId { get; set; }
 }

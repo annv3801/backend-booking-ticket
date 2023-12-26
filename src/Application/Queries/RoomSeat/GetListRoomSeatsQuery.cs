@@ -6,5 +6,5 @@ namespace Application.Queries.RoomSeat;
 
 public class GetListRoomSeatsQuery : IRequest<OffsetPaginationResponse<RoomSeatResponse>>
 {
-    public required OffsetPaginationRequest OffsetPaginationRequest { get; set; }
+    public OffsetPaginationRequest OffsetPaginationRequest { get; set; }
 }

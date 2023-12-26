@@ -7,5 +7,5 @@ namespace Application.Queries.Film;
 
 public class GetListFilmsQuery : IRequest<OffsetPaginationResponse<FilmResponse>>
 {
-    public required OffsetPaginationRequest Request { get; set; }
+    public OffsetPaginationRequest Request { get; set; }
 }

@@ -170,4 +170,22 @@ public class RoomSeatManagementService : IRoomSeatManagementService
         }
     }
 
+    public async Task<RequestResult<ICollection<RoomSeatResponse>>> GetListRoomSeatsByRoomAsync(long roomId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            // check tenant valid
+            var roomSeat = await _mediator.Send(new GetListRoomSeatsByRoomQuery()
+            {
+                RoomId = roomId,
+            }, cancellationToken);
+
+            return RequestResult<ICollection<RoomSeatResponse>>.Succeed(null, roomSeat);
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(GetListRoomSeatsAsync));
+            throw;
+        }
+    }
 }

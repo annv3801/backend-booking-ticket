@@ -8,5 +8,5 @@ namespace Application.Queries.Food;
 
 public class GetListFoodsQuery : IRequest<OffsetPaginationResponse<FoodResponse>>
 {
-    public required ViewFoodRequest Request { get; set; }
+    public ViewFoodRequest Request { get; set; }
 }

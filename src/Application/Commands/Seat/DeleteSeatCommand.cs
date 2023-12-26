@@ -4,5 +4,5 @@ namespace Application.Commands.Seat;
 
 public class DeleteSeatCommand : IRequest<int>
 {
-    public required long Id { get; set; }
+    public long Id { get; set; }
 }

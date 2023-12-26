@@ -111,7 +111,6 @@ public class BookingController : ControllerBase
         var result = "";
         if (response.VnPayResponseCode == "00")
         {
-            await CreateBookingAsync(new CreateBookingRequest(), cancellationToken);
             result = "http://localhost:3000/payment-success";
         }
         if (response.VnPayResponseCode != "00")

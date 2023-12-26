@@ -12,4 +12,5 @@ public interface IRoomSeatManagementService
     Task<RequestResult<bool>> DeleteRoomSeatAsync(long id, CancellationToken cancellationToken);
     Task<RequestResult<RoomSeatResponse>> GetRoomSeatAsync(long id, CancellationToken cancellationToken);
     Task<RequestResult<OffsetPaginationResponse<RoomSeatResponse>>> GetListRoomSeatsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken);
+    Task<RequestResult<ICollection<RoomSeatResponse>>> GetListRoomSeatsByRoomAsync(long roomId, CancellationToken cancellationToken);
 }

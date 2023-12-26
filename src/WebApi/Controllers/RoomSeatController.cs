@@ -136,4 +136,26 @@ public class RoomSeatController : ControllerBase
             throw;
         }
     }
+    
+    /// <summary>
+    /// Get RoomSeat with id
+    /// </summary>
+    /// <param name="roomId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("View-RoomSeat-By-Room/{roomId:long}")]
+    public async Task<RequestResult<ICollection<RoomSeatResponse>>> ViewRoomSeatByRoomAsync(long roomId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _roomSeatManagementService.GetListRoomSeatsByRoomAsync(roomId, cancellationToken);
+            return result;
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(ViewRoomSeatAsync));
+            throw;
+        }
+    }
 }

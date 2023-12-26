@@ -6,5 +6,5 @@ namespace Application.Queries.Ticket;
 
 public class GetListTicketsQuery : IRequest<OffsetPaginationResponse<TicketResponse>>
 {
-    public required OffsetPaginationRequest OffsetPaginationRequest { get; set; }
+    public OffsetPaginationRequest OffsetPaginationRequest { get; set; }
 }

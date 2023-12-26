@@ -188,7 +188,7 @@ public static class LocalizationString
     {
         public const string UniqueCharsField = "The number character of {PropertyName} must be at least {UniqueCharacterRequired} unique characters. You entered {TotalUniqueCharacter} unique characters";
 
-        public const string NonAlphanumericField = "The {PropertyName} required special characters. Your password do not have special characters. Please try again";
+        public const string NonAlphanumericField = "The {PropertyName} special characters. Your password do not have special characters. Please try again";
 
         public const string LowerCaseField = "The {PropertyName} must have at least one lowercase ('a'-'z'). Please try again";
         public const string UpperCaseField = "The {PropertyName} must have at least one uppercase ('A'-'Z'). Please try again";

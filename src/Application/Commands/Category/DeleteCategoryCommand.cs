@@ -4,5 +4,5 @@ namespace Application.Commands.Category;
 
 public class DeleteCategoryCommand : IRequest<int>
 {
-    public required long Id { get; set; }
+    public long Id { get; set; }
 }

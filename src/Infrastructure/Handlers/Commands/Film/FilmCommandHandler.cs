@@ -44,24 +44,8 @@ public class FilmCommandHandler : ICreateFilmCommandHandler, IUpdateFilmCommandH
     {
         try
         {
-            return await _filmRepository.Entity.Where(x => x.Id == command.Request.Id && x.Status != EntityStatus.Deleted)
-                .ExecuteUpdateAsync(u => u
-                    .SetProperty(l => l.Name, command.Request.Name)
-                    .SetProperty(l => l.Slug, command.Request.Slug)
-                    .SetProperty(l => l.GroupEntityId, command.Request.GroupEntityId)
-                    .SetProperty(l => l.CategoryIds, command.Request.CategoryIds)
-                    .SetProperty(l => l.Description, command.Request.Description)
-                    .SetProperty(l => l.Director, command.Request.Director)
-                    .SetProperty(l => l.Actor, command.Request.Actor)
-                    .SetProperty(l => l.Genre, command.Request.Genre)
-                    .SetProperty(l => l.Premiere, command.Request.Premiere)
-                    .SetProperty(l => l.Duration, command.Request.Duration)
-                    .SetProperty(l => l.Language, command.Request.Language)
-                    .SetProperty(l => l.Rated, command.Request.Rated)
-                    .SetProperty(l => l.Trailer, command.Request.Trailer)
-                    .SetProperty(l => l.Image, command.Request.Image)
-                    .SetProperty(l => l.ModifiedBy, _currentAccountService.Id)
-                    .SetProperty(l => l.ModifiedTime, _dateTimeService.NowUtc), cancellationToken);
+            await _filmRepository.UpdateAsync(command.Request, cancellationToken);
+            return await _filmRepository.SaveChangesAsync(cancellationToken);
         }
         catch (Exception e)
         {
@@ -74,12 +58,11 @@ public class FilmCommandHandler : ICreateFilmCommandHandler, IUpdateFilmCommandH
     {
         try
         {
-            return await _filmRepository.Entity.Where(x => x.Id == command.Id && x.Status != EntityStatus.Deleted)
-                .ExecuteUpdateAsync(u => u
-                    .SetProperty(l => l.DeletedTime, _dateTimeService.NowUtc)
-                    .SetProperty(l => l.DeletedBy, _currentAccountService.Id)
-                    .SetProperty(l => l.Deleted, true)
-                    .SetProperty(l => l.Status, EntityStatus.Deleted), cancellationToken);
+            var filmEntity = await _filmRepository.GetFilmEntityByIdAsync(command.Id, cancellationToken);
+            if (filmEntity is null)
+                return 0;
+            await _filmRepository.UpdateAsync(filmEntity, cancellationToken);
+            return await _filmRepository.SaveChangesAsync(cancellationToken);
         }
         catch (Exception e)
         {

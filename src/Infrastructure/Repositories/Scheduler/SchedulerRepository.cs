@@ -1,6 +1,4 @@
-using System.Reflection.PortableExecutable;
 using Application.DataTransferObjects.Scheduler.Responses;
-using Application.DataTransferObjects.Theater.Responses;
 using Application.Interface;
 using Application.Repositories.Scheduler;
 using AutoMapper;
@@ -38,6 +36,8 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
             StartTime = x.StartTime,
             EndTime = x.EndTime,
             Status = x.Status,
+            TheaterId = x.TheaterId,
+            Theater = x.Theater
         });
 
         var response = await query.PaginateAsync<SchedulerEntity, SchedulerResponse>(request, cancellationToken);
@@ -57,23 +57,14 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
             .GroupBy(x => x.FilmId)
             .Select(group => new SchedulerFilmAndTheaterResponse()
             {
-                FilmId = group.Key,
-                Film = group.First().Film, // Assuming Film is the same for all items in the group
-                ListTheaters = group
-                    .GroupBy(x => x.Theater.Id)
-                    .Select(theaterGroup => new TheaterResponse()
-                    {
-                        Id = theaterGroup.Key,
-                        // Assuming other properties are the same for all items in the inner group
-                        Name = theaterGroup.First().Theater.Name,
-                        Location = theaterGroup.First().Theater.Location,
-                        PhoneNumber = theaterGroup.First().Theater.PhoneNumber,
-                        Status = theaterGroup.First().Theater.Status,
-                        Latitude = theaterGroup.First().Theater.Latitude,
-                        Longitude = theaterGroup.First().Theater.Longitude,
-                        TotalRating = theaterGroup.First().Theater.TotalRating
-                    })
-                    .ToList()
+                Id = group.First().Theater.Id,
+                Status = group.First().Theater.Status,
+                Latitude = group.First().Theater.Latitude,
+                Longitude = group.First().Theater.Longitude,
+                Location = group.First().Theater.Location,
+                Name = group.First().Theater.Name,
+                PhoneNumber = group.First().Theater.PhoneNumber,
+                TotalRating = group.First().Theater.TotalRating,
             });
 
         var response = await query.PaginateAsync<SchedulerEntity, SchedulerFilmAndTheaterResponse>(request, cancellationToken);

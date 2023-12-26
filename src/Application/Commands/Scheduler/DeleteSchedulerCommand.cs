@@ -4,5 +4,5 @@ namespace Application.Commands.Scheduler;
 
 public class DeleteSchedulerCommand : IRequest<int>
 {
-    public required long Id { get; set; }
+    public long Id { get; set; }
 }

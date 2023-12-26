@@ -32,7 +32,8 @@ public class TicketRepository : Repository<TicketEntity, ApplicationDbContext>, 
                 Price = x.Price,
                 Status = x.Status,
                 Id = x.Id,
-                Type = x.Type
+                Type = x.Type,
+                Color = x.Color
             });
         
         var response = await query.PaginateAsync<TicketEntity,TicketResponse>(request, cancellationToken);

@@ -5,5 +5,5 @@ namespace Application.Commands.Scheduler;
 
 public class CreateSchedulerCommand : IRequest<int>
 {
-    public required SchedulerEntity Entity { get; set; }
+    public SchedulerEntity Entity { get; set; }
 }

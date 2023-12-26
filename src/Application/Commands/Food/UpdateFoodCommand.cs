@@ -5,5 +5,5 @@ namespace Application.Commands.Food;
 
 public class UpdateFoodCommand : IRequest<int>
 {
-    public required FoodEntity Request { get; set; }
+    public FoodEntity Request { get; set; }
 }

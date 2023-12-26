@@ -7,6 +7,6 @@ namespace Application.Queries.Scheduler;
 
 public class GetTheatersByFilmQuery : IRequest<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>>
 {
-    public required OffsetPaginationRequest OffsetPaginationRequest { get; set; }
+    public OffsetPaginationRequest OffsetPaginationRequest { get; set; }
     public long FilmId { get; set; }
 }

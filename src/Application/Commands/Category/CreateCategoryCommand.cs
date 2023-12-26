@@ -5,5 +5,5 @@ namespace Application.Commands.Category;
 
 public class CreateCategoryCommand : IRequest<int>
 {
-    public required CategoryEntity Entity { get; set; }
+    public CategoryEntity Entity { get; set; }
 }

@@ -6,5 +6,5 @@ namespace Application.Queries.Scheduler;
 
 public class GetListSchedulersQuery : IRequest<OffsetPaginationResponse<SchedulerResponse>>
 {
-    public required OffsetPaginationRequest OffsetPaginationRequest { get; set; }
+    public OffsetPaginationRequest OffsetPaginationRequest { get; set; }
 }

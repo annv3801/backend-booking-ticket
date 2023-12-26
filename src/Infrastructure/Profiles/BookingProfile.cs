@@ -11,5 +11,6 @@ public class BookingProfile: Profile
     {
         CreateMap<BookingEntity, BookingResponse>();
         CreateMap<CreateBookingRequest, BookingEntity>();
+        CreateMap<BookingDetailEntity, BookingResponse>();
     }
 }

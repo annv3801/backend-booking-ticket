@@ -45,6 +45,21 @@ public class RoomSeatRepository : Repository<RoomSeatEntity, ApplicationDbContex
         };
     }
 
+    public async Task<ICollection<RoomSeatResponse>> GetListRoomSeatsByRoomAsync(long roomId, CancellationToken cancellationToken)
+    {
+        return await _roomSeatEntities
+            .AsNoTracking()
+            .Where(x => x.RoomId == roomId).Include(x => x.Room).Select(x => new RoomSeatResponse()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Status = x.Status,
+                RoomId = x.RoomId,
+                Room = x.Room
+            }).ToListAsync(cancellationToken);
+
+    }
+
     public async Task<RoomSeatResponse?> GetRoomSeatByIdAsync(long id, CancellationToken cancellationToken)
     {
         return await _roomSeatEntities.AsNoTracking().ProjectTo<RoomSeatResponse>(_mapper.ConfigurationProvider).Where(x => x.Id == id && x.Status != EntityStatus.Deleted).FirstOrDefaultAsync(cancellationToken);

@@ -6,5 +6,5 @@ namespace Application.Queries.Slide;
 
 public class GetListSlidesQuery : IRequest<OffsetPaginationResponse<SlideResponse>>
 {
-    public required OffsetPaginationRequest OffsetPaginationRequest { get; set; }
+    public OffsetPaginationRequest OffsetPaginationRequest { get; set; }
 }

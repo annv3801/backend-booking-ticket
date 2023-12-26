@@ -5,5 +5,5 @@ namespace Application.Commands.Room;
 
 public class UpdateRoomCommand : IRequest<int>
 {
-    public required RoomEntity Request { get; set; }
+    public RoomEntity Request { get; set; }
 }

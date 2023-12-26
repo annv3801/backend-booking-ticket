@@ -7,6 +7,7 @@ namespace Application.Repositories.RoomSeat;
 public interface IRoomSeatRepository : IRepository<RoomSeatEntity>
 {
     Task<OffsetPaginationResponse<RoomSeatResponse>> GetListRoomSeatsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken);
+    Task<ICollection<RoomSeatResponse>> GetListRoomSeatsByRoomAsync(long roomId, CancellationToken cancellationToken);
     Task<RoomSeatResponse?> GetRoomSeatByIdAsync(long id, CancellationToken cancellationToken);
     Task<RoomSeatEntity?> GetRoomSeatEntityByIdAsync(long id, CancellationToken cancellationToken);
     Task<bool> IsDuplicatedRoomSeatByNameAndIdAsync(string name, long id, long roomId, CancellationToken cancellationToken);

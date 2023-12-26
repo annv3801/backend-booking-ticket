@@ -6,5 +6,5 @@ namespace Application.Queries.Theater;
 
 public class GetListTheatersQuery : IRequest<OffsetPaginationResponse<TheaterResponse>>
 {
-    public required OffsetPaginationRequest OffsetPaginationRequest { get; set; }
+    public OffsetPaginationRequest OffsetPaginationRequest { get; set; }
 }

@@ -5,5 +5,5 @@ namespace Application.Commands.Theater;
 
 public class UpdateTheaterCommand : IRequest<int>
 {
-    public required TheaterEntity Request { get; set; }
+    public TheaterEntity Request { get; set; }
 }

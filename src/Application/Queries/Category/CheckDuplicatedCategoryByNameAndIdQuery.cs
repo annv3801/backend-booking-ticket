@@ -4,6 +4,6 @@ namespace Application.Queries.Category;
 
 public class CheckDuplicatedCategoryByNameAndIdQuery : IRequest<bool>
 {
-    public required string Name { get; set; }
-    public required long Id { get; set; }
+    public string Name { get; set; }
+    public long Id { get; set; }
 }

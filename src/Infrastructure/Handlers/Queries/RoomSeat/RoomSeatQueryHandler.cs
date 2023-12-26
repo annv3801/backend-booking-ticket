@@ -9,6 +9,7 @@ namespace Infrastructure.Handlers.Queries.RoomSeat;
 public class RoomSeatQueryHandler :
     IRequestHandler<GetRoomSeatByIdQuery, RoomSeatResponse?>, 
     IRequestHandler<GetListRoomSeatsQuery, OffsetPaginationResponse<RoomSeatResponse>>,
+    IRequestHandler<GetListRoomSeatsByRoomQuery, ICollection<RoomSeatResponse>>,
     IRequestHandler<CheckDuplicatedRoomSeatByNameAndIdQuery, bool>,
     IRequestHandler<CheckDuplicatedRoomSeatByNameQuery, bool>
 {
@@ -19,6 +20,11 @@ public class RoomSeatQueryHandler :
         _roomSeatRepository = roomSeatRepository;
     }
 
+    public async Task<ICollection<RoomSeatResponse>> Handle(GetListRoomSeatsByRoomQuery request, CancellationToken cancellationToken)
+    {
+        return await _roomSeatRepository.GetListRoomSeatsByRoomAsync(request.RoomId, cancellationToken);
+    }
+    
     public async Task<RoomSeatResponse?> Handle(GetRoomSeatByIdQuery request, CancellationToken cancellationToken)
     {
         return await _roomSeatRepository.GetRoomSeatByIdAsync(request.Id, cancellationToken);

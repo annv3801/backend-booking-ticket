@@ -6,5 +6,5 @@ namespace Application.Queries.Category;
 
 public class GetListCategoriesQuery : IRequest<OffsetPaginationResponse<CategoryResponse>>
 {
-    public required OffsetPaginationRequest OffsetPaginationRequest { get; set; }
+    public OffsetPaginationRequest OffsetPaginationRequest { get; set; }
 }

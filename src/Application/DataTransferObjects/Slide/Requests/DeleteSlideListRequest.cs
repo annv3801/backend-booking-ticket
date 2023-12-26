@@ -7,5 +7,5 @@ namespace Application.DataTransferObjects.Slide.Requests;
 [ExcludeFromCodeCoverage]
 public class DeleteSlideListRequest
 {
-    public required ICollection<long> SlideIds { get; set; }
+    public ICollection<long> SlideIds { get; set; }
 }

@@ -7,5 +7,5 @@ namespace Application.DataTransferObjects.Category.Requests;
 [ExcludeFromCodeCoverage]
 public class DeleteCategoryListRequest
 {
-    public required ICollection<long> CategoryIds { get; set; }
+    public ICollection<long> CategoryIds { get; set; }
 }

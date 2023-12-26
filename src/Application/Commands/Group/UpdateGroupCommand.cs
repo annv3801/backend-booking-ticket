@@ -5,5 +5,5 @@ namespace Application.Commands.Group;
 
 public class UpdateGroupCommand : IRequest<int>
 {
-    public required GroupEntity Request { get; set; }
+    public GroupEntity Request { get; set; }
 }

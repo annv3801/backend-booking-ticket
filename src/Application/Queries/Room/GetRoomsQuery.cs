@@ -6,5 +6,5 @@ namespace Application.Queries.Room;
 
 public class GetListRoomsQuery : IRequest<OffsetPaginationResponse<RoomResponse>>
 {
-    public required OffsetPaginationRequest OffsetPaginationRequest { get; set; }
+    public OffsetPaginationRequest OffsetPaginationRequest { get; set; }
 }

@@ -4,5 +4,5 @@ namespace Application.Queries.Ticket;
 
 public class CheckDuplicatedTicketByNameQuery :  IRequest<bool>
 {
-    public required string Title { get; set; }
+    public string Title { get; set; }
 }

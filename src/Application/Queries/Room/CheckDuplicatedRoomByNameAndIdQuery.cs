@@ -4,6 +4,6 @@ namespace Application.Queries.Room;
 
 public class CheckDuplicatedRoomByNameAndIdQuery : IRequest<bool>
 {
-    public required long Id { get; set; }
-    public required string Name { get; set; }
+    public long Id { get; set; }
+    public string Name { get; set; }
 }

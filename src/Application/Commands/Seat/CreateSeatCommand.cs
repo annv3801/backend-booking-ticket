@@ -5,5 +5,5 @@ namespace Application.Commands.Seat;
 
 public class CreateSeatCommand : IRequest<int>
 {
-    public required SeatEntity Entity { get; set; }
+    public SeatEntity Entity { get; set; }
 }

@@ -3,6 +3,10 @@ using MediatR;
 
 namespace Application.Handlers.Seat;
 
+public interface ICreateListSeatCommandHandler : IRequestHandler<CreateListSeatCommand, int>
+{
+}
+
 public interface ICreateSeatCommandHandler : IRequestHandler<CreateSeatCommand, int>
 {
 }

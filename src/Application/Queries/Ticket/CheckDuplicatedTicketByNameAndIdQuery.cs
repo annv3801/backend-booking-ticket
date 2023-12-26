@@ -4,6 +4,6 @@ namespace Application.Queries.Ticket;
 
 public class CheckDuplicatedTicketByNameAndIdQuery : IRequest<bool>
 {
-    public required string Title { get; set; }
-    public required long Id { get; set; }
+    public string Title { get; set; }
+    public long Id { get; set; }
 }

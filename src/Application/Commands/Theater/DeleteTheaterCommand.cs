@@ -4,5 +4,5 @@ namespace Application.Commands.Theater;
 
 public class DeleteTheaterCommand : IRequest<int>
 {
-    public required long Id { get; set; }
+    public long Id { get; set; }
 }

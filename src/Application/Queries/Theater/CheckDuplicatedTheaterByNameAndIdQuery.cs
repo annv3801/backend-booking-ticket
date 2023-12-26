@@ -4,6 +4,6 @@ namespace Application.Queries.Theater;
 
 public class CheckDuplicatedTheaterByNameAndIdQuery : IRequest<bool>
 {
-    public required string Name { get; set; }
-    public required long Id { get; set; }
+    public string Name { get; set; }
+    public long Id { get; set; }
 }

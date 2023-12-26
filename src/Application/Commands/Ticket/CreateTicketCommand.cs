@@ -5,5 +5,5 @@ namespace Application.Commands.Ticket;
 
 public class CreateTicketCommand : IRequest<int>
 {
-    public required TicketEntity Entity { get; set; }
+    public TicketEntity Entity { get; set; }
 }

@@ -5,5 +5,5 @@ namespace Application.Commands.Film;
 
 public class UpdateFilmCommand : IRequest<int>
 {
-    public required FilmEntity Request { get; set; }
+    public FilmEntity Request { get; set; }
 }

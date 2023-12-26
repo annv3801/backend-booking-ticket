@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: > # Description section of AWS CloudFormation templates
+  Development environment
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  # https://github.com/aws/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  Function: # Define common settings for all lambda functions
+    Timeout: 30 # Maximum time that the function can run before it is killed in seconds. Defaults to 3.
+    MemorySize: 2048 # Size of the memory allocated per invocation of the function in MB. Defaults to 128.
+
+    Tracing: Active # String that specifies the function's X-Ray tracing mode. Accepted values are Active and PassThrough    
+Resources:
+  AppServerless:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      Description: VF Binning App Development Lambda
+      CodeUri: ./WebApi
+      Handler: WebApi
+      Runtime: dotnet6
+      Timeout: 30
+      Architectures:
+        - x86_64
+      MemorySize: 2048
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          ASPNETCORE_ENVIRONMENT: Development
+          LAMBDA_NET_SERIALIZER_DEBUG: true

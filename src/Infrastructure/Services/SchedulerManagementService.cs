@@ -59,7 +59,7 @@ public class SchedulerManagementService : ISchedulerManagementService
                 return RequestResult<bool>.Fail("Room is not found");
             
             // Check valid film
-            var filmValid = await _filmRepository.GetFilmByIdAsync(request.FilmId, cancellationToken);
+            var filmValid = await _filmRepository.GetFilmByIdAsync(request.FilmId, null, cancellationToken);
             if (filmValid == null)
                 return RequestResult<bool>.Fail("Film is not found");
 
@@ -101,7 +101,7 @@ public class SchedulerManagementService : ISchedulerManagementService
                 return RequestResult<bool>.Fail("Room is not found");
             
             // Check valid film
-            var filmValid = await _filmRepository.GetFilmByIdAsync(request.FilmId, cancellationToken);
+            var filmValid = await _filmRepository.GetFilmByIdAsync(request.FilmId, null, cancellationToken);
             if (filmValid != null)
                 return RequestResult<bool>.Fail("Film is not found");
 

@@ -8,4 +8,5 @@ namespace Application.Queries.Film;
 public class GetListFilmsByGroupQuery : IRequest<OffsetPaginationResponse<FilmResponse>>
 {
     public ViewListFilmsByGroupRequest Request { get; set; }
+    public long? AccontId { get; set; }
 }

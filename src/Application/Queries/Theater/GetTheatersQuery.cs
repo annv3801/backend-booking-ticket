@@ -7,4 +7,5 @@ namespace Application.Queries.Theater;
 public class GetListTheatersQuery : IRequest<OffsetPaginationResponse<TheaterResponse>>
 {
     public OffsetPaginationRequest OffsetPaginationRequest { get; set; }
+    public long? AccountId { get; set; }
 }

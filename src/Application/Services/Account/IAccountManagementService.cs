@@ -16,4 +16,5 @@ public interface IAccountManagementService
     Task<RequestResult<SignInWithPhoneNumberResponse>> SignInWithPhoneNumberAsync(SignInWithPhoneNumberRequest request, CancellationToken cancellationToken = default(CancellationToken));
     Task<RequestResult<AccountResult>> LogOutAsync(bool forceEndOtherSessions=false,CancellationToken cancellationToken = default(CancellationToken));
     Task<RequestResult<bool>> CreateAndUpdateAccountCategoryAsync(CreateAndUpdateAccountCategoryRequest request, CancellationToken cancellationToken);
+    Task<RequestResult<bool>> CreateAndUpdateAccountFavoriteAsync(CreateAndUpdateAccountFavoriteRequest request, CancellationToken cancellationToken);
 }

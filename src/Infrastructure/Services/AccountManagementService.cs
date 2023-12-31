@@ -409,6 +409,19 @@ public class AccountManagementService : IAccountManagementService
         return RequestResult<bool>.Succeed("Save data success");
     }
 
+    public async Task<RequestResult<bool>> CreateAndUpdateAccountFavoriteAsync(CreateAndUpdateAccountFavoriteRequest request, CancellationToken cancellationToken)
+    {
+        var resultUpdateCategory = await _mediator.Send(new CreateAndUpdateAccountFavoriteCommand()
+        {
+            AccountId = _currentAccountService.Id,
+            FilmId = request.FilmId,
+            TheaterId = request.TheaterId
+        }, cancellationToken);
+        if (resultUpdateCategory <= 0)
+            return RequestResult<bool>.Fail("Save data failed");
+        return RequestResult<bool>.Succeed("Save data success");
+    }
+
     private static ClaimsIdentity BuildClaimsIdentity(Domain.Entities.Identity.Account account)
     {
         var claims = new List<Claim>();

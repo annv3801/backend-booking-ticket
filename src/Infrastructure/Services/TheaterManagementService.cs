@@ -1,4 +1,5 @@
-﻿using Application.Commands.Theater;
+﻿using System.Security.Claims;
+using Application.Commands.Theater;
 using Application.Common.Interfaces;
 using Application.DataTransferObjects.Theater.Requests;
 using Application.DataTransferObjects.Theater.Responses;
@@ -10,8 +11,10 @@ using Application.Services.Theater;
 using AutoMapper;
 using Domain.Common.Interface;
 using Domain.Common.Pagination.OffsetBased;
+using Domain.Constants;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Nobi.Core.Responses;
 
@@ -29,9 +32,10 @@ public class TheaterManagementService : ITheaterManagementService
     private readonly IDateTimeService _dateTimeService;
     private readonly ICurrentAccountService _currentAccountService;
     private readonly ISnowflakeIdService _snowflakeIdService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public TheaterManagementService(IMapper mapper, IMediator mediator, ILoggerService loggerService, ITheaterRepository theaterRepository,
-        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService, ISnowflakeIdService snowflakeIdService)
+        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService, ISnowflakeIdService snowflakeIdService, IHttpContextAccessor httpContextAccessor)
     {
         _mapper = mapper;
         _mediator = mediator;
@@ -40,6 +44,7 @@ public class TheaterManagementService : ITheaterManagementService
         _dateTimeService = dateTimeService;
         _currentAccountService = currentAccountService;
         _snowflakeIdService = snowflakeIdService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<RequestResult<bool>> CreateTheaterAsync(CreateTheaterRequest request, CancellationToken cancellationToken)
@@ -118,7 +123,7 @@ public class TheaterManagementService : ITheaterManagementService
         try
         {
             // Check for existence
-            var theaterToDelete = await _theaterRepository.GetTheaterByIdAsync(id, cancellationToken);
+            var theaterToDelete = await _theaterRepository.GetTheaterByIdAsync(id, null, cancellationToken);
             if (theaterToDelete == null)
                 return RequestResult<bool>.Fail("Theater is not found");
 
@@ -143,9 +148,14 @@ public class TheaterManagementService : ITheaterManagementService
     {
         try
         {
+            long.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(JwtClaimTypes.UserId), out var userId);
+            var accountId = (long)0;
+            if (userId != 0) 
+                accountId = userId; 
             var theater = await _mediator.Send(new GetTheaterByIdQuery
             {
                 Id = id,
+                AccountId = accountId
             }, cancellationToken);
             if (theater == null)
                 return RequestResult<TheaterResponse>.Fail("Theater is not found");
@@ -163,10 +173,14 @@ public class TheaterManagementService : ITheaterManagementService
     {
         try
         {
-            // check tenant valid
+            long.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(JwtClaimTypes.UserId), out var userId);
+            var accountId = (long)0;
+            if (userId != 0) 
+                accountId = userId; 
             var theater = await _mediator.Send(new GetListTheatersQuery
             {
                 OffsetPaginationRequest = request,
+                AccountId = accountId
             }, cancellationToken);
 
             return RequestResult<OffsetPaginationResponse<TheaterResponse>>.Succeed(null, theater);

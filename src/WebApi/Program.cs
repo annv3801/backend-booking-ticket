@@ -8,6 +8,7 @@ using Application.Implementations;
 using Application.Interface;
 using Application.Repositories.Account;
 using Application.Repositories.AccountCategory;
+using Application.Repositories.AccountFavorite;
 using Application.Repositories.Booking;
 using Application.Repositories.Category;
 using Application.Repositories.Film;
@@ -39,6 +40,7 @@ using Domain.Extensions;
 using Infrastructure.Databases;
 using Infrastructure.Repositories.Account;
 using Infrastructure.Repositories.AccountCategory;
+using Infrastructure.Repositories.AccountFavorite;
 using Infrastructure.Repositories.Booking;
 using Infrastructure.Repositories.Category;
 using Infrastructure.Repositories.Film;
@@ -120,6 +122,9 @@ builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 
 // Account Category
 builder.Services.AddScoped<IAccountCategoryRepository, AccountCategoryRepository>();    
+
+// Account Favorite
+builder.Services.AddScoped<IAccountFavoriteRepository, AccountFavoriteRepository>();    
 
 // Group
 builder.Services.AddScoped<IFilmManagementService, FilmManagementService>();

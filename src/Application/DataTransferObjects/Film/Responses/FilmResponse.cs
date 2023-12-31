@@ -24,6 +24,7 @@ public class FilmResponse
     public decimal TotalRating { get; set; } 
     public string Status { get; set; }
     public FeedbackFilmResponse? FeedbackFilmResponse { get; set; }
+    public bool? IsFavorite { get; set; } = false;
 }
 
 

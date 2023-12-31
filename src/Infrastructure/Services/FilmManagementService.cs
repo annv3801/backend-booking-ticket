@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Claims;
+using System.Text;
 using Application.Commands.Film;
 using Application.Common.Interfaces;
 using Application.DataTransferObjects.Film.Requests;
@@ -11,8 +12,10 @@ using Application.Services.Film;
 using AutoMapper;
 using Domain.Common.Interface;
 using Domain.Common.Pagination.OffsetBased;
+using Domain.Constants;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Nobi.Core.Responses;
 
@@ -33,9 +36,10 @@ public class FilmManagementService : IFilmManagementService
     private readonly ISnowflakeIdService _snowflakeIdService;
     private readonly ICategoryRepository _categoryRepository;
     private readonly IFeedbackFilmRepository _feedbackFilmRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public FilmManagementService(IMapper mapper, IMediator mediator, ILoggerService loggerService, IFilmRepository filmRepository,
-        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService, IFileService fileService, ISnowflakeIdService snowflakeIdService, ICategoryRepository categoryRepository, IFeedbackFilmRepository feedbackFilmRepository)
+        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService, IFileService fileService, ISnowflakeIdService snowflakeIdService, ICategoryRepository categoryRepository, IFeedbackFilmRepository feedbackFilmRepository, IHttpContextAccessor httpContextAccessor)
     {
         _mapper = mapper;
         _mediator = mediator;
@@ -47,6 +51,7 @@ public class FilmManagementService : IFilmManagementService
         _snowflakeIdService = snowflakeIdService;
         _categoryRepository = categoryRepository;
         _feedbackFilmRepository = feedbackFilmRepository;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<RequestResult<bool>> CreateFilmAsync(CreateFilmRequest request, CancellationToken cancellationToken)
@@ -212,9 +217,14 @@ public class FilmManagementService : IFilmManagementService
     {
         try
         {
+            long.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(JwtClaimTypes.UserId), out var userId);
+            var accountId = (long)0;
+            if (userId != 0) 
+                accountId = userId; 
             var film = await _mediator.Send(new GetFilmByIdQuery
             {
                 Id = id,
+                AccountId = accountId
             }, cancellationToken);
             if (film == null)
                 return RequestResult<FilmResponse>.Fail("Film is not found");
@@ -243,10 +253,14 @@ public class FilmManagementService : IFilmManagementService
     {
         try
         {
-            // check tenant valid
+            long.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(JwtClaimTypes.UserId), out var userId);
+            var accountId = (long)0;
+            if (userId != 0) 
+                accountId = userId; 
             var film = await _mediator.Send(new GetListFilmsByGroupQuery
             {
                 Request = request,
+                AccontId = accountId
             }, cancellationToken);
     
             return RequestResult<OffsetPaginationResponse<FilmResponse>>.Succeed(null, film);

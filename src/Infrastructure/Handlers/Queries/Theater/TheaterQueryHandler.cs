@@ -22,12 +22,12 @@ public class TheaterQueryHandler :
 
     public async Task<TheaterResponse?> Handle(GetTheaterByIdQuery request, CancellationToken cancellationToken)
     {
-        return await _theaterRepository.GetTheaterByIdAsync(request.Id, cancellationToken);
+        return await _theaterRepository.GetTheaterByIdAsync(request.Id, request.AccountId, cancellationToken);
     }
     
     public async Task<OffsetPaginationResponse<TheaterResponse>> Handle(GetListTheatersQuery request, CancellationToken cancellationToken)
     {
-        return await _theaterRepository.GetListTheatersAsync(request.OffsetPaginationRequest, cancellationToken);
+        return await _theaterRepository.GetListTheatersAsync(request.OffsetPaginationRequest, request.AccountId, cancellationToken);
     }
     public async Task<bool> Handle(CheckDuplicatedTheaterByNameAndIdQuery request, CancellationToken cancellationToken)
     {

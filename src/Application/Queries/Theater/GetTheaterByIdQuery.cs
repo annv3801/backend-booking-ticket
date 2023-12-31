@@ -6,4 +6,5 @@ namespace Application.Queries.Theater;
 public class GetTheaterByIdQuery : IRequest<TheaterResponse?>
 {
     public long Id { get; set; }
+    public long? AccountId { get; set; }
 }

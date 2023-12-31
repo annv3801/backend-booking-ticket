@@ -6,4 +6,5 @@ namespace Application.DataTransferObjects.Film.Requests;
 public class ViewListFilmsByGroupRequest : OffsetPaginationRequest
 {
     public long GroupId { get; set; }
+    public long? AccountId { get; set; }
 }

@@ -17,15 +17,18 @@ namespace Infrastructure.Repositories.Film;
 public class FilmRepository : Repository<FilmEntity, ApplicationDbContext>, IFilmRepository
 {
     private readonly DbSet<FilmEntity> _filmEntities;
+    private readonly DbSet<AccountFavoritesEntity> _accountFavoritesEntities;
     private readonly IMapper _mapper;
+    
 
     public FilmRepository(ApplicationDbContext applicationDbContext, IMapper mapper, ISnowflakeIdService snowflakeIdService) : base(applicationDbContext, snowflakeIdService)
     {
         _mapper = mapper;
         _filmEntities = applicationDbContext.Set<FilmEntity>();
+        _accountFavoritesEntities = applicationDbContext.Set<AccountFavoritesEntity>();
     }
 
-    public async Task<OffsetPaginationResponse<FilmResponse>> GetListFilmsByGroupsAsync(ViewListFilmsByGroupRequest request, CancellationToken cancellationToken)
+    public async Task<OffsetPaginationResponse<FilmResponse>> GetListFilmsByGroupsAsync(ViewListFilmsByGroupRequest request, long? accountId, CancellationToken cancellationToken)
     {
         var query = _filmEntities.Where(x => !x.Deleted && x.GroupEntityId == request.GroupId).OrderBy(x => x.Name.ToLower()).Select(x => new FilmResponse()
             {
@@ -47,8 +50,41 @@ public class FilmRepository : Repository<FilmEntity, ApplicationDbContext>, IFil
                 CategoryIds = x.CategoryIds,
                 Status = x.Status,
             });
-        
-        var response = await query.PaginateAsync<FilmEntity,FilmResponse>(request, cancellationToken);
+        if (accountId != 0)
+        {
+            query = query
+                .GroupJoin(
+                    _accountFavoritesEntities.AsNoTracking().Where(x => x.AccountId == accountId),  // Assuming _accountFavoriteRepository.GetAccountFavorites(accountId) returns IQueryable<AccountFavorite>
+                    film => film.Id,
+                    favorite => favorite.FilmId,
+                    (film, favorites) => new { Film = film, Favorites = favorites })
+                .SelectMany(
+                    x => x.Favorites.DefaultIfEmpty(),
+                    (x, favorite) => new FilmResponse()
+                    {
+                        Id = x.Film.Id,
+                        Name = x.Film.Name,
+                        TotalRating = x.Film.TotalRating,
+                        Slug = x.Film.Slug,
+                        Actor = x.Film.Actor,
+                        Description = x.Film.Description,
+                        Director = x.Film.Director,
+                        Duration = x.Film.Duration,
+                        Genre = x.Film.Genre,
+                        Image = x.Film.Image,
+                        Language = x.Film.Language,
+                        Premiere = x.Film.Premiere,
+                        Rated = x.Film.Rated,
+                        Trailer = x.Film.Trailer,
+                        Group = x.Film.Group,
+                        CategoryIds = x.Film.CategoryIds,
+                        Status = x.Film.Status,
+                        IsFavorite = (favorite != null)
+                    });
+        }
+
+        var response = await query.PaginateAsync<FilmEntity, FilmResponse>(request, cancellationToken);
+
         return new OffsetPaginationResponse<FilmResponse>()
         {
             Data = response.Data,
@@ -91,9 +127,47 @@ public class FilmRepository : Repository<FilmEntity, ApplicationDbContext>, IFil
         };
     }
 
-    public async Task<FilmResponse?> GetFilmByIdAsync(long id, CancellationToken cancellationToken)
+    public async Task<FilmResponse?> GetFilmByIdAsync(long id, long? accountId, CancellationToken cancellationToken)
     {
-        return await _filmEntities.AsNoTracking().ProjectTo<FilmResponse>(_mapper.ConfigurationProvider).Where(x => x.Id == id && x.Status != EntityStatus.Deleted).FirstOrDefaultAsync(cancellationToken);
+        var query = _filmEntities
+            .AsNoTracking()
+            .Where(x => x.Id == id && x.Status != EntityStatus.Deleted)
+            .ProjectTo<FilmResponse>(_mapper.ConfigurationProvider);
+
+        if (accountId != 0)
+        {
+            query = query
+                .GroupJoin(
+                    _accountFavoritesEntities.AsNoTracking().Where(x => x.AccountId == accountId),
+                    film => film.Id,
+                    favorite => favorite.FilmId,
+                    (film, favorites) => new { Film = film, Favorites = favorites })
+                .SelectMany(
+                    x => x.Favorites.DefaultIfEmpty(),
+                    (x, favorite) => new FilmResponse()
+                    {
+                        Id = x.Film.Id,
+                        Name = x.Film.Name,
+                        TotalRating = x.Film.TotalRating,
+                        Slug = x.Film.Slug,
+                        Actor = x.Film.Actor,
+                        Description = x.Film.Description,
+                        Director = x.Film.Director,
+                        Duration = x.Film.Duration,
+                        Genre = x.Film.Genre,
+                        Image = x.Film.Image,
+                        Language = x.Film.Language,
+                        Premiere = x.Film.Premiere,
+                        Rated = x.Film.Rated,
+                        Trailer = x.Film.Trailer,
+                        Group = x.Film.Group,
+                        CategoryIds = x.Film.CategoryIds,
+                        Status = x.Film.Status,
+                        IsFavorite = (favorite != null)
+                    });
+        }
+
+        return await query.FirstOrDefaultAsync(cancellationToken);
     }
     public async Task<FilmResponse?> GetFilmBySlugAsync(string slug, CancellationToken cancellationToken)
     {

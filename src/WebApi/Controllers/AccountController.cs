@@ -215,4 +215,20 @@ public class AccountController : ControllerBase
             throw;
         }
     }
+    
+    [HttpPost]
+    [Route("Create-Or-Update-Account-Favorite")]
+    public async Task<RequestResult<bool>?> CreateOrUpdateAccountFavoriteAsync(CreateAndUpdateAccountFavoriteRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _accountManagementService.CreateAndUpdateAccountFavoriteAsync(request,  cancellationToken);
+            return result;
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(CreateOrUpdateAccountCategoryAsync));
+            throw;
+        }
+    }
 }

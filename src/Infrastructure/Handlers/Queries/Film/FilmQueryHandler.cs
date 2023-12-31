@@ -23,12 +23,12 @@ public class FilmQueryHandler :
 
     public async Task<FilmResponse?> Handle(GetFilmByIdQuery request, CancellationToken cancellationToken)
     {
-        return await _filmRepository.GetFilmByIdAsync(request.Id, cancellationToken);
+        return await _filmRepository.GetFilmByIdAsync(request.Id, request.AccountId, cancellationToken);
     }
     
     public async Task<OffsetPaginationResponse<FilmResponse>> Handle(GetListFilmsByGroupQuery request, CancellationToken cancellationToken)
     {
-        return await _filmRepository.GetListFilmsByGroupsAsync(request.Request, cancellationToken);
+        return await _filmRepository.GetListFilmsByGroupsAsync(request.Request, request.AccontId, cancellationToken);
     }
     
     public async Task<OffsetPaginationResponse<FilmResponse>> Handle(GetListFilmsQuery request, CancellationToken cancellationToken)

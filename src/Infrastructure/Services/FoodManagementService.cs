@@ -118,7 +118,8 @@ public class FoodManagementService : IFoodManagementService
             
             // Update value to existed Food
             existedFood.Title = request.Title;
-            existedFood.Image = image;
+            if(image != "") 
+                existedFood.Image = image;
 
             var resultUpdateFood = await _mediator.Send(new UpdateFoodCommand
             {

@@ -105,9 +105,10 @@ public class SlideManagementService : ISlideManagementService
             
             // Update value to existed Slide
             existedSlide.Name = request.Name;
-            existedSlide.Image = image;
             existedSlide.ObjectId = request.ObjectId;
-
+            if(image != "") 
+                existedSlide.Image = image;
+            
             var resultUpdateSlide = await _mediator.Send(new UpdateSlideCommand
             {
                 Request = existedSlide,

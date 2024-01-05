@@ -169,9 +169,10 @@ public class FilmManagementService : IFilmManagementService
             existedFilm.Language = request.Language;
             existedFilm.Rated = request.Rated;
             existedFilm.Trailer = request.Trailer;
-            existedFilm.Image = image;
             existedFilm.GroupEntityId = request.GroupId;
-    
+            if(image != "") 
+                existedFilm.Image = image;
+
             var resultUpdateFilm = await _mediator.Send(new UpdateFilmCommand
             {
                 Request = existedFilm,

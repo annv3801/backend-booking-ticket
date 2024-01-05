@@ -243,7 +243,8 @@ public class AccountManagementService : IAccountManagementService
             existedAccount.PhoneNumber = account.PhoneNumber;
             existedAccount.FullName = account.FullName;
             existedAccount.Gender = account.Gender;
-            existedAccount.AvatarPhoto = account.AvatarPhoto;
+            if(account.AvatarPhoto != "")
+                existedAccount.AvatarPhoto = account.AvatarPhoto;
             
             await _accountRepository.UpdateAsync(existedAccount, cancellationToken);
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);

@@ -9,7 +9,8 @@ namespace Infrastructure.Handlers.Queries.Film;
 public class FilmQueryHandler :
     IRequestHandler<GetFilmByIdQuery, FilmResponse?>, 
     IRequestHandler<GetListFilmsByGroupQuery, OffsetPaginationResponse<FilmResponse>>,
-    IRequestHandler<GetListFilmsQuery, OffsetPaginationResponse<FilmResponse>>
+    IRequestHandler<GetListFilmsQuery, OffsetPaginationResponse<FilmResponse>>,
+    IRequestHandler<GetFilmsFavoriesByAccountQuery, OffsetPaginationResponse<FilmResponse>>
 {    
 
     private readonly IFilmRepository _filmRepository;
@@ -34,5 +35,10 @@ public class FilmQueryHandler :
     public async Task<OffsetPaginationResponse<FilmResponse>> Handle(GetListFilmsQuery request, CancellationToken cancellationToken)
     {
         return await _filmRepository.GetListFilmsAsync(request.Request, cancellationToken);
+    }
+    
+    public async Task<OffsetPaginationResponse<FilmResponse>> Handle(GetFilmsFavoriesByAccountQuery request, CancellationToken cancellationToken)
+    {
+        return await _filmRepository.GetListFilmsFavoritesByAccountAsync(request.Request, request.AccontId, cancellationToken);
     }
 }

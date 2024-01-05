@@ -8,6 +8,7 @@ namespace Application.Repositories.Film;
 public interface IFilmRepository : IRepository<FilmEntity>
 {
     Task<OffsetPaginationResponse<FilmResponse>> GetListFilmsByGroupsAsync(ViewListFilmsByGroupRequest request, long? accountId, CancellationToken cancellationToken);
+    Task<OffsetPaginationResponse<FilmResponse>> GetListFilmsFavoritesByAccountAsync(ViewListFilmsFavoriteByAccountRequest request, long accountId, CancellationToken cancellationToken);
     Task<OffsetPaginationResponse<FilmResponse>> GetListFilmsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken);
     Task<FilmResponse?> GetFilmByIdAsync(long id, long? accountId, CancellationToken cancellationToken);
     Task<FilmEntity?> GetFilmEntityByIdAsync(long id, CancellationToken cancellationToken);

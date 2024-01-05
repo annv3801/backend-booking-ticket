@@ -1,3 +1,4 @@
+using Application.DataTransferObjects.Theater.Requests;
 using Application.DataTransferObjects.Theater.Responses;
 using Application.Interface;
 using Application.Repositories.Theater;
@@ -63,6 +64,38 @@ public class TheaterRepository : Repository<TheaterEntity, ApplicationDbContext>
                         IsFavorite = (favorite != null)
                     });
         }
+        
+        var response = await query.PaginateAsync<TheaterEntity,TheaterResponse>(request, cancellationToken);
+        return new OffsetPaginationResponse<TheaterResponse>()
+        {
+            Data = response.Data,
+            PageSize = response.PageSize,
+            Total = response.Total,
+            CurrentPage = response.CurrentPage
+        };
+    }
+
+    public async Task<OffsetPaginationResponse<TheaterResponse>> GetListTheatersFavoritesAsync(ViewTheaterFavoriteRequest request, long accountId, CancellationToken cancellationToken)
+    {
+        var query = _theaterEntities.Where(x => !x.Deleted)
+            .OrderBy(x => x.Name.ToLower())
+            .Join(
+                _accountFavoritesEntities.AsNoTracking().Where(x => x.AccountId == accountId),
+                theater => theater.Id,
+                favorite => favorite.TheaterId,
+                (theater, favorite) => new TheaterResponse()
+                {
+                    Id = theater.Id,
+                    Name = theater.Name,
+                    Latitude = theater.Latitude,
+                    TotalRating = theater.TotalRating,
+                    Longitude = theater.Longitude,
+                    Location = theater.Location,
+                    PhoneNumber = theater.PhoneNumber,
+                    Status = theater.Status,
+                    IsFavorite = true
+                });
+        
         
         var response = await query.PaginateAsync<TheaterEntity,TheaterResponse>(request, cancellationToken);
         return new OffsetPaginationResponse<TheaterResponse>()

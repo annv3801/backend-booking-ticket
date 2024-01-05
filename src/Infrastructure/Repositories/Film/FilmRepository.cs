@@ -93,7 +93,48 @@ public class FilmRepository : Repository<FilmEntity, ApplicationDbContext>, IFil
             CurrentPage = response.CurrentPage
         };
     }
-    
+
+    public async Task<OffsetPaginationResponse<FilmResponse>> GetListFilmsFavoritesByAccountAsync(ViewListFilmsFavoriteByAccountRequest request, long accountId, CancellationToken cancellationToken)
+    {
+        var query = _filmEntities.Where(x => !x.Deleted)
+            .OrderBy(x => x.Name.ToLower())
+            .Join(
+                _accountFavoritesEntities.AsNoTracking().Where(x => x.AccountId == accountId),
+                film => film.Id,
+                favorite => favorite.FilmId,
+                (film, favorite) => new FilmResponse()
+                {
+                    Id = film.Id,
+                    Name = film.Name,
+                    TotalRating = film.TotalRating,
+                    Slug = film.Slug,
+                    Actor = film.Actor,
+                    Description = film.Description,
+                    Director = film.Director,
+                    Duration = film.Duration,
+                    Genre = film.Genre,
+                    Image = film.Image,
+                    Language = film.Language,
+                    Premiere = film.Premiere,
+                    Rated = film.Rated,
+                    Trailer = film.Trailer,
+                    Group = film.GroupEntityId,
+                    CategoryIds = film.CategoryIds,
+                    Status = film.Status,
+                    IsFavorite = true
+                });
+        
+        var response = await query.PaginateAsync<FilmEntity, FilmResponse>(request, cancellationToken);
+
+        return new OffsetPaginationResponse<FilmResponse>()
+        {
+            Data = response.Data,
+            PageSize = response.PageSize,
+            Total = response.Total,
+            CurrentPage = response.CurrentPage
+        };
+    }
+
     public async Task<OffsetPaginationResponse<FilmResponse>> GetListFilmsAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
     {
         var query = _filmEntities.Where(x => !x.Deleted).OrderBy(x => x.Name.ToLower()).Select(x => new FilmResponse()

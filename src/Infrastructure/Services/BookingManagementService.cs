@@ -71,6 +71,7 @@ public class BookingManagementService : IBookingManagementService
             bookingEntity.CreatedTime = _dateTimeService.NowUtc;
             bookingEntity.ModifiedBy = _currentAccountService.Id;
             bookingEntity.ModifiedTime = _dateTimeService.NowUtc;
+            bookingEntity.Status = "PENDING";   
             
             var resultCreateBooking = await _mediator.Send(new CreateBookingCommand {Entity = bookingEntity}, cancellationToken);
             var getBooking = await _bookingRepository.GetBookingEntityByIdAsync(bookingEntity.Id, cancellationToken);
@@ -127,6 +128,39 @@ public class BookingManagementService : IBookingManagementService
         catch (Exception e)
         {
             _loggerService.LogError(e, nameof(CreateBookingAsync));
+            throw;
+        }
+    }
+
+    public async Task<RequestResult<bool>> CancelBookingAsync(long id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var bookingEntity = await _bookingRepository.Entity.Where(x => x.Id == id && _currentAccountService.Id == x.CreatedBy).FirstOrDefaultAsync(cancellationToken);
+            if (bookingEntity is null)
+            {
+                return RequestResult<bool>.Fail("Booking is not found");
+            }
+            if (bookingEntity.CreatedTime.HasValue && DateTimeOffset.Now.Subtract(bookingEntity.CreatedTime.Value) > TimeSpan.FromMinutes(30))
+            {
+                return RequestResult<bool>.Fail("Booking cannot be canceled as it was created more than 30 minutes ago");
+            }
+            bookingEntity.Status = "CANCELED";
+            bookingEntity.ModifiedTime = _dateTimeService.NowUtc;
+            bookingEntity.ModifiedBy = _currentAccountService.Id;
+            var booking = await _mediator.Send(new CancelBookingCommand()
+            {
+                Entity = bookingEntity
+            }, cancellationToken);
+            if (booking == null)
+                return RequestResult<bool>.Fail("Booking is not found");
+            if (bookingEntity.PaymentMethod == 1)
+                return RequestResult<bool>.Succeed("You need to go to the counter to pick up the slip to get your money back.");
+            return RequestResult<bool>.Succeed("Cancel booking success");
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(GetBookingAsync));
             throw;
         }
     }

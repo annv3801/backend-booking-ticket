@@ -1,20 +1,14 @@
-﻿using Application.Common.Interfaces;
-using Application.DataTransferObjects.Booking.Requests;
+﻿using Application.DataTransferObjects.Booking.Requests;
 using Application.DataTransferObjects.Booking.Responses;
-using Application.DataTransferObjects.Food.Responses;
 using Application.DataTransferObjects.Seat.Responses;
 using Application.Interface;
 using Application.Repositories.Booking;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Domain.Common.Pagination.OffsetBased;
 using Domain.Common.Repository;
-using Domain.Constants;
 using Domain.Entities;
 using Domain.Extensions;
 using Infrastructure.Databases;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Infrastructure.Repositories.Booking;
 
@@ -197,5 +191,11 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
     public async Task<BookingEntity?> GetBookingEntityByIdAsync(long id, CancellationToken cancellationToken)
     {
         return await _bookingEntities.Where(x => x.Id == id).FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<BookingEntity?> GetBookingEntityByToCancelAsync(long id, CancellationToken cancellationToken)
+    {
+        return await _bookingEntities.Where(x => x.Id == id).FirstOrDefaultAsync(cancellationToken);
+
     }
 }

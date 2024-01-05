@@ -119,4 +119,26 @@ public class BookingController : ControllerBase
         }
         return Redirect(result);
     }
+    
+    /// <summary>
+    /// Delete Category with id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpDelete]
+    [Route("Cancel-Booking/{id:long}")]
+    public async Task<RequestResult<bool>?> CancelCategoryAsync(long id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _bookingManagementService.CancelBookingAsync(id, cancellationToken);
+            return result;
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(CancelCategoryAsync));
+            throw;
+        }
+    }
 }

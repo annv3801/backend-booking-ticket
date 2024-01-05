@@ -191,5 +191,22 @@ public class TheaterManagementService : ITheaterManagementService
             throw;
         }
     }
+    public async Task<RequestResult<OffsetPaginationResponse<TheaterResponse>>> GetListTheatersFavoritesAsync(ViewTheaterFavoriteRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var theater = await _mediator.Send(new GetTheatersFavoritesQuery()
+            {
+                Request = request,
+                AccountId = _currentAccountService.Id
+            }, cancellationToken);
 
+            return RequestResult<OffsetPaginationResponse<TheaterResponse>>.Succeed(null, theater);
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(GetListTheatersAsync));
+            throw;
+        }
+    }
 }

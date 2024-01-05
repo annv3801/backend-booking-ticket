@@ -11,7 +11,7 @@ public class BookingResponse
     public double Discount { get; set; }
     public long CouponId { get; set; }
     public int PaymentMethod { get; set; }
-    public int Status { get; set; }
+    public string Status { get; set; }
     public int IsReceived { get; set; }
     public long AccountId { get; set; }
     public Domain.Entities.Identity.Account Account { get; set; }

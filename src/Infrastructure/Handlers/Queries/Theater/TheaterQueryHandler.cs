@@ -10,6 +10,7 @@ namespace Infrastructure.Handlers.Queries.Theater;
 public class TheaterQueryHandler :
     IRequestHandler<GetTheaterByIdQuery, TheaterResponse?>, 
     IRequestHandler<GetListTheatersQuery, OffsetPaginationResponse<TheaterResponse>>,
+    IRequestHandler<GetTheatersFavoritesQuery, OffsetPaginationResponse<TheaterResponse>>,
     IRequestHandler<CheckDuplicatedTheaterByNameAndIdQuery, bool>,
     IRequestHandler<CheckDuplicatedTheaterByNameQuery, bool>
 {
@@ -37,5 +38,10 @@ public class TheaterQueryHandler :
     public async Task<bool> Handle(CheckDuplicatedTheaterByNameQuery request, CancellationToken cancellationToken)
     {
         return await _theaterRepository.IsDuplicatedTheaterByNameAsync(request.Name, cancellationToken);
+    }
+    
+    public async Task<OffsetPaginationResponse<TheaterResponse>> Handle(GetTheatersFavoritesQuery request, CancellationToken cancellationToken)
+    {
+        return await _theaterRepository.GetListTheatersFavoritesAsync(request.Request, request.AccountId, cancellationToken);
     }
 }

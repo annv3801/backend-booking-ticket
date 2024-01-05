@@ -10,4 +10,4 @@ public interface IBookingRepository : IRepository<BookingEntity>
     Task<OffsetPaginationResponse<BookingResponse>> GetListBookingsAsync(ViewListBookingsRequest request, CancellationToken cancellationToken);
     Task<BookingResponse?> GetBookingByIdAsync(long id, CancellationToken cancellationToken);
     Task<BookingEntity?> GetBookingEntityByIdAsync(long id, CancellationToken cancellationToken);
-}
+    Task<BookingEntity?> GetBookingEntityByToCancelAsync(long id, CancellationToken cancellationToken);}

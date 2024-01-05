@@ -12,4 +12,5 @@ public interface ITheaterManagementService
     Task<RequestResult<bool>> DeleteTheaterAsync(long id, CancellationToken cancellationToken);
     Task<RequestResult<TheaterResponse>> GetTheaterAsync(long id, CancellationToken cancellationToken);
     Task<RequestResult<OffsetPaginationResponse<TheaterResponse>>> GetListTheatersAsync(OffsetPaginationRequest request, CancellationToken cancellationToken);
+    Task<RequestResult<OffsetPaginationResponse<TheaterResponse>>> GetListTheatersFavoritesAsync(ViewTheaterFavoriteRequest request, CancellationToken cancellationToken);
 }

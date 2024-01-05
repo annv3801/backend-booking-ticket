@@ -136,4 +136,26 @@ public class TheaterController : ControllerBase
             throw;
         }
     }
+    
+    /// <summary>
+    /// Get list Theater with pagination
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("View-List-Theaters-Favorites")]
+    public async Task<RequestResult<OffsetPaginationResponse<TheaterResponse>>> ViewListTheatersFavoritesAsync(ViewTheaterFavoriteRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _theaterManagementService.GetListTheatersFavoritesAsync(request, cancellationToken);
+            return result;
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(ViewListTheatersFavoritesAsync));
+            throw;
+        }
+    }
 }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Handlers.Commands.Booking;
 
-public class BookingCommandHandler : ICreateBookingCommandHandler
+public class BookingCommandHandler : ICreateBookingCommandHandler, ICancelBookingCommandHandler
 {
     private readonly IBookingRepository _bookingRepository;
     private readonly ILoggerService _loggerService;
@@ -25,6 +25,20 @@ public class BookingCommandHandler : ICreateBookingCommandHandler
         try
         {
             await _bookingRepository.AddAsync(command.Entity, cancellationToken);
+            return await _bookingRepository.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(Handle));
+            throw;
+        }
+    }
+
+    public async Task<int> Handle(CancelBookingCommand request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _bookingRepository.UpdateAsync(request.Entity, cancellationToken);
             return await _bookingRepository.SaveChangesAsync(cancellationToken);
         }
         catch (Exception e)

@@ -7,3 +7,7 @@ public interface ICreateBookingCommandHandler : IRequestHandler<CreateBookingCom
 {
 }
 
+public interface ICancelBookingCommandHandler : IRequestHandler<CancelBookingCommand, int>
+{
+}
+

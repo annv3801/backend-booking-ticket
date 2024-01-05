@@ -321,4 +321,23 @@ public class FilmManagementService : IFilmManagementService
         }
     }
 
+    public async Task<RequestResult<OffsetPaginationResponse<FilmResponse>>> GetListFilmsFavoritesByAccountAsync(ViewListFilmsFavoriteByAccountRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var film = await _mediator.Send(new GetFilmsFavoriesByAccountQuery
+            {
+                Request = request,
+                AccontId = _currentAccountService.Id
+            }, cancellationToken);
+    
+            return RequestResult<OffsetPaginationResponse<FilmResponse>>.Succeed(null, film);
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(GetListFilmsFavoritesByAccountAsync));
+            throw;
+        }
+    }
+    
 }

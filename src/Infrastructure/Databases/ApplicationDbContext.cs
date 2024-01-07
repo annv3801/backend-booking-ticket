@@ -34,4 +34,5 @@ public class ApplicationDbContext : DbContext
     public DbSet<BookingEntity> Booking { get; set; }
     public DbSet<BookingDetailEntity> BookingDetail { get; set; }
     public DbSet<SlideEntity> Slide { get; set; }
+    public DbSet<NewsEntity> News { get; set; }
 }

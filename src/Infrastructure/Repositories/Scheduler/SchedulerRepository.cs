@@ -16,12 +16,14 @@ namespace Infrastructure.Repositories.Scheduler;
 public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbContext>, ISchedulerRepository
 {
     private readonly DbSet<SchedulerEntity> _schedulerEntities;
+    private readonly DbSet<AccountFavoritesEntity> _accountFavoritesEntities;
     private readonly IMapper _mapper;
 
     public SchedulerRepository(ApplicationDbContext applicationDbContext, IMapper mapper, ISnowflakeIdService snowflakeIdService) : base(applicationDbContext, snowflakeIdService)
     {
         _mapper = mapper;
         _schedulerEntities = applicationDbContext.Set<SchedulerEntity>();
+        _accountFavoritesEntities = applicationDbContext.Set<AccountFavoritesEntity>();
     }
 
     public async Task<OffsetPaginationResponse<SchedulerResponse>> GetListSchedulersAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
@@ -50,24 +52,67 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
         };
     }
 
-    public async Task<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>> GetListTheaterByFilmAsync(OffsetPaginationRequest request, long filmId, CancellationToken cancellationToken)
+    public async Task<List<long>> GetDistinctTheaterIdsForFilmAsync(long filmId, CancellationToken cancellationToken)
     {
+        var distinctTheaterIds = await _schedulerEntities
+            .Where(x => !x.Deleted && x.FilmId == filmId)
+            .Select(x => x.Theater.Id)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+
+        return distinctTheaterIds;
+    }
+    public async Task<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>> GetListTheaterByFilmAsync(OffsetPaginationRequest request, long filmId, string? tab, long? accountId, CancellationToken cancellationToken)
+    {
+        var distinctTheaterIds = await GetDistinctTheaterIdsForFilmAsync(filmId, cancellationToken);
+
+        // Use the distinct theater IDs in your main query
         var query = _schedulerEntities
             .Where(x => !x.Deleted && x.FilmId == filmId)
-            .GroupBy(x => x.FilmId)
-            .Select(group => new SchedulerFilmAndTheaterResponse()
+            .Select(x => new SchedulerFilmAndTheaterResponse()
             {
-                Id = group.First().Theater.Id,
-                Status = group.First().Theater.Status,
-                Latitude = group.First().Theater.Latitude,
-                Longitude = group.First().Theater.Longitude,
-                Location = group.First().Theater.Location,
-                Name = group.First().Theater.Name,
-                PhoneNumber = group.First().Theater.PhoneNumber,
-                TotalRating = group.First().Theater.TotalRating,
+                Id = x.Theater.Id,
+                Status = x.Theater.Status,
+                Latitude = x.Theater.Latitude,
+                Longitude = x.Theater.Longitude,
+                Location = x.Theater.Location,
+                Name = x.Theater.Name,
+                PhoneNumber = x.Theater.PhoneNumber,
+                TotalRating = x.Theater.TotalRating,
+                IsFavorite = false
             });
 
-        var response = await query.PaginateAsync<SchedulerEntity, SchedulerFilmAndTheaterResponse>(request, cancellationToken);
+        if (accountId != null)
+        {
+            query = query
+                .GroupJoin(
+                    _accountFavoritesEntities.AsNoTracking().Where(x => x.AccountId == accountId),
+                    theater => theater.Id,
+                    favorite => favorite.TheaterId,
+                    (theater, favorites) => new { Theater = theater, Favorites = favorites })
+                .SelectMany(
+                    x => x.Favorites.DefaultIfEmpty(),
+                    (x, favorite) => new SchedulerFilmAndTheaterResponse()
+                    {
+                        Id = x.Theater.Id,
+                        Status = x.Theater.Status,
+                        Latitude = x.Theater.Latitude,
+                        Longitude = x.Theater.Longitude,
+                        Location = x.Theater.Location,
+                        Name = x.Theater.Name,
+                        PhoneNumber = x.Theater.PhoneNumber,
+                        TotalRating = x.Theater.TotalRating,
+                        IsFavorite = favorite != null ? true : false
+                    });
+        }
+
+        if (tab == "Favorites")
+        {
+            query = query.Where(x => x.IsFavorite);
+        }
+
+        var response = await query.Distinct().PaginateAsync<SchedulerEntity, SchedulerFilmAndTheaterResponse>(request, cancellationToken);
+
         return new OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>()
         {
             Data = response.Data,
@@ -76,6 +121,8 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
             CurrentPage = response.CurrentPage
         };
     }
+
+
 
     public async Task<SchedulerResponse?> GetSchedulerByIdAsync(long id, CancellationToken cancellationToken)
     {

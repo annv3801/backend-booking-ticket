@@ -27,7 +27,7 @@ public class FoodRepository : Repository<FoodEntity, ApplicationDbContext>, IFoo
 
     public async Task<OffsetPaginationResponse<FoodResponse>> GetListFoodsAsync(ViewFoodRequest request, CancellationToken cancellationToken)
     {
-        var query = _foodEntities.Where(x => !x.Deleted && x.GroupEntityId == request.GroupId && x.GroupEntity.Type == "FOOD").OrderBy(x => x.Title.ToLower()).Select(x => new FoodResponse()
+        var query = _foodEntities.Where(x => !x.Deleted && x.GroupEntityId == request.GroupId && x.GroupEntity.Type.ToLower() == "FOOD".ToLower()).OrderBy(x => x.Title.ToLower()).Select(x => new FoodResponse()
             {
                 Title = x.Title,
                 Status = x.Status,

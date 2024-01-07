@@ -216,11 +216,11 @@ public class SchedulerController : ControllerBase
     /// <returns></returns>
     [HttpPost]
     [Route("View-List-Theater-By-Film/{filmId:long}")]
-    public async Task<RequestResult<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>>> ViewListTheatersByFilmAsync(OffsetPaginationRequest request, long filmId, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>>> ViewListTheatersByFilmAsync(OffsetPaginationRequest request, long filmId, string? tab, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _schedulerManagementService.GetListTheaterByFilmAsync(request, filmId, cancellationToken);
+            var result = await _schedulerManagementService.GetListTheaterByFilmAsync(request, filmId, tab, cancellationToken);
             return result;
         }
         catch (Exception e)

@@ -13,4 +13,5 @@ public class SchedulerFilmAndTheaterResponse
     public decimal Latitude { get; set; }
     public string PhoneNumber { get; set; }
     public string Status { get; set; }
+    public bool IsFavorite { get; set; }
 }

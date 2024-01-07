@@ -27,7 +27,7 @@ public class NewsRepository : Repository<NewsEntity, ApplicationDbContext>, INew
 
     public async Task<OffsetPaginationResponse<NewsResponse>> GetListNewsAsync(ViewNewsRequest request, CancellationToken cancellationToken)
     {
-        var query = _newsEntities.Where(x => !x.Deleted && x.GroupEntityId == request.GroupId && x.GroupEntity.Type == "News").OrderBy(x => x.Title.ToLower()).Select(x => new NewsResponse()
+        var query = _newsEntities.Where(x => !x.Deleted && x.GroupEntityId == request.GroupId && x.GroupEntity.Type.ToLower() == "News".ToLower()).OrderBy(x => x.Title.ToLower()).Select(x => new NewsResponse()
             {
                 Title = x.Title,
                 Status = x.Status,

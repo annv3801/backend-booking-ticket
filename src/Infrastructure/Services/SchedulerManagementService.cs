@@ -1,4 +1,5 @@
-﻿using Application.Commands.Scheduler;
+﻿using System.Security.Claims;
+using Application.Commands.Scheduler;
 using Application.Common.Interfaces;
 using Application.DataTransferObjects.Scheduler.Requests;
 using Application.DataTransferObjects.Scheduler.Responses;
@@ -12,8 +13,10 @@ using Application.Services.Scheduler;
 using AutoMapper;
 using Domain.Common.Interface;
 using Domain.Common.Pagination.OffsetBased;
+using Domain.Constants;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Nobi.Core.Responses;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
@@ -33,9 +36,10 @@ public class SchedulerManagementService : ISchedulerManagementService
     private readonly IRoomRepository _roomRepository;
     private readonly IFilmRepository _filmRepository;
     private readonly ITheaterRepository _theaterRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public SchedulerManagementService(IMapper mapper, IMediator mediator, ILoggerService loggerService, ISchedulerRepository schedulerRepository,
-        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService, ISnowflakeIdService snowflakeIdService, IRoomRepository roomRepository, IFilmRepository filmRepository, ITheaterRepository theaterRepository)
+        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService, ISnowflakeIdService snowflakeIdService, IRoomRepository roomRepository, IFilmRepository filmRepository, ITheaterRepository theaterRepository, IHttpContextAccessor httpContextAccessor)
     {
         _mapper = mapper;
         _mediator = mediator;
@@ -47,6 +51,7 @@ public class SchedulerManagementService : ISchedulerManagementService
         _roomRepository = roomRepository;
         _filmRepository = filmRepository;
         _theaterRepository = theaterRepository;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<RequestResult<bool>> CreateSchedulerAsync(CreateSchedulerRequest request, CancellationToken cancellationToken)
@@ -238,15 +243,20 @@ public class SchedulerManagementService : ISchedulerManagementService
         }
     }
 
-    public async Task<RequestResult<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>>> GetListTheaterByFilmAsync(OffsetPaginationRequest request, long filmId, CancellationToken cancellationToken)
+    public async Task<RequestResult<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>>> GetListTheaterByFilmAsync(OffsetPaginationRequest request, long filmId, string? tab, CancellationToken cancellationToken)
     {
         try
         {
-            // check tenant valid
+            long.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(JwtClaimTypes.UserId), out var userId);
+            var accountId = (long)0;
+            if (userId != 0) 
+                accountId = userId; 
             var scheduler = await _mediator.Send(new GetTheatersByFilmQuery()
             {
                 OffsetPaginationRequest = request,
-                FilmId = filmId
+                FilmId = filmId,
+                AccountId = accountId,
+                Tab = tab
             }, cancellationToken);
 
             return RequestResult<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>>.Succeed(null, scheduler);

@@ -32,7 +32,7 @@ public class SchedulerQueryHandler :
     
     public async Task<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>> Handle(GetTheatersByFilmQuery request, CancellationToken cancellationToken)
     {
-        return await _schedulerRepository.GetListTheaterByFilmAsync(request.OffsetPaginationRequest, request.FilmId, cancellationToken);
+        return await _schedulerRepository.GetListTheaterByFilmAsync(request.OffsetPaginationRequest, request.FilmId, request.Tab, request.AccountId, cancellationToken);
     }
     
     public async Task<ICollection<SchedulerGroupResponse>> Handle(GetSchedulerByDateAndTheaterIdQuery request, CancellationToken cancellationToken)

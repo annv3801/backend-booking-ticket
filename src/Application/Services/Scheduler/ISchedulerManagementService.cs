@@ -16,5 +16,5 @@ public interface ISchedulerManagementService
     Task<RequestResult<ICollection<SchedulerGroupResponse>>> GetSchedulerByTheaterIdAndDateAndFilmIdAsync(long theaterId, string date, long filmId, CancellationToken cancellationToken);
     Task<RequestResult<ICollection<SchedulerGroupResponse>>> GetSchedulerByDateAndFilmIdAsync(string date, long filmId, CancellationToken cancellationToken);
     Task<RequestResult<OffsetPaginationResponse<SchedulerResponse>>> GetListSchedulersAsync(OffsetPaginationRequest request, CancellationToken cancellationToken);
-    Task<RequestResult<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>>> GetListTheaterByFilmAsync(OffsetPaginationRequest request, long filmId, CancellationToken cancellationToken);
+    Task<RequestResult<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>>> GetListTheaterByFilmAsync(OffsetPaginationRequest request, long filmId, string? tab, CancellationToken cancellationToken);
 }

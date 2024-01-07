@@ -8,7 +8,7 @@ namespace Application.Repositories.Scheduler;
 public interface ISchedulerRepository : IRepository<SchedulerEntity>
 {
     Task<OffsetPaginationResponse<SchedulerResponse>> GetListSchedulersAsync(OffsetPaginationRequest request, CancellationToken cancellationToken);
-    Task<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>> GetListTheaterByFilmAsync(OffsetPaginationRequest request, long filmId, CancellationToken cancellationToken);
+    Task<OffsetPaginationResponse<SchedulerFilmAndTheaterResponse>> GetListTheaterByFilmAsync(OffsetPaginationRequest request, long filmId, string? tab, long? accountId, CancellationToken cancellationToken);
     Task<SchedulerResponse?> GetSchedulerByIdAsync(long id, CancellationToken cancellationToken);
     Task<SchedulerEntity?> GetSchedulerEntityByIdAsync(long id, CancellationToken cancellationToken);
     Task<SchedulerResponse?> GetSchedulerByTime(long roomId, DateTimeOffset startTime, CancellationToken cancellationToken);

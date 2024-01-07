@@ -9,4 +9,6 @@ public class GetTheatersByFilmQuery : IRequest<OffsetPaginationResponse<Schedule
 {
     public OffsetPaginationRequest OffsetPaginationRequest { get; set; }
     public long FilmId { get; set; }
+    public string? Tab { get; set; }
+    public long? AccountId { get; set; }
 }

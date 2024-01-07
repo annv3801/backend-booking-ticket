@@ -27,7 +27,7 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
     { 
         IQueryable<BookingResponse> query = null;
         
-        if (request.AccountId == 0)
+        if (request.AccountId != 0)
         {
             var booking = _bookingEntities.Where(x => !x.Deleted && x.AccountId == request.AccountId);
             query = booking.Join(_bookingDetailEntities.Include(x => x.Seat), x => x.Id, y => y.BookingId, (x, y) => new
@@ -56,7 +56,8 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                     TheaterName = y.Seat.Scheduler.Theater.Name,
                     FilmImage = y.Seat.Scheduler.Film.Image
                 },
-                Foods = y.Foods
+                Foods = y.Foods,
+                IsComingSoon = DateTimeOffset.Compare(y.Seat.Scheduler.StartTime, DateTimeOffset.UtcNow) > 0
             })
             .GroupBy(x => x.BookingId)
             .Select(group => new BookingResponse()
@@ -73,7 +74,8 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                 CreatedBy = group.First().CreatedBy,
                 CreatedTime = group.First().CreatedTime,
                 Seats = group.Select(x => x.Seat).ToList(),
-                Foods = group.Select(x => x.Foods).First()
+                Foods = group.Select(x => x.Foods).First(),
+                IsComingSoon = group.First().IsComingSoon ? true : false
             });
         }
         else
@@ -105,7 +107,8 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                     TheaterName = y.Seat.Scheduler.Theater.Name,
                     FilmImage = y.Seat.Scheduler.Film.Image
                 },
-                Foods = y.Foods
+                Foods = y.Foods,
+                IsComingSoon = DateTimeOffset.Compare(y.Seat.Scheduler.StartTime, DateTimeOffset.UtcNow) > 0
             })
             .GroupBy(x => x.BookingId)
             .Select(group => new BookingResponse()
@@ -122,11 +125,24 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                 CreatedBy = group.First().CreatedBy,
                 CreatedTime = group.First().CreatedTime,
                 Seats = group.Select(x => x.Seat).ToList(),
-                Foods = group.Select(x => x.Foods).First()
-
+                Foods = group.Select(x => x.Foods).First(),
+                IsComingSoon = group.First().IsComingSoon ? true : false
             });
         }
-        
+
+        if (request.Tab.ToLower() == "UpComing".ToLower())
+        {
+            query = query.Where(x => x.IsComingSoon && x.Status != "CANCELED");
+        }
+        else if (request.Tab.ToLower() == "Passed".ToLower())
+        {
+            query = query.Where(x => !x.IsComingSoon && x.Status != "CANCELED");
+        }
+        else if (request.Tab.ToLower() == "Canceled".ToLower())
+        {
+            query = query.Where(x => x.Status == "CANCELED");
+        }
+
         var response = await query.PaginateAsync<BookingEntity, BookingResponse>(request, cancellationToken);
         return new OffsetPaginationResponse<BookingResponse>()
         {
@@ -134,7 +150,7 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
             PageSize = response.PageSize,
             Total = response.Total,
             CurrentPage = response.CurrentPage
-        };
+        }; 
     }
 
     public async Task<BookingResponse?> GetBookingByIdAsync(long id, CancellationToken cancellationToken)
@@ -166,7 +182,8 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                     TheaterName = y.Seat.Scheduler.Theater.Name,
                     FilmImage = y.Seat.Scheduler.Film.Image
                 },
-                Foods = y.Foods
+                Foods = y.Foods,
+                IsComingSoon = DateTimeOffset.Compare(y.Seat.Scheduler.StartTime, DateTimeOffset.UtcNow) > 0
             })
             .GroupBy(x => x.BookingId)
             .Select(group => new BookingResponse()
@@ -183,8 +200,8 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                 CreatedBy = group.First().CreatedBy,
                 CreatedTime = group.First().CreatedTime,
                 Seats = group.Select(x => x.Seat).ToList(),
-                Foods = group.Select(x => x.Foods).First()
-
+                Foods = group.Select(x => x.Foods).First(),
+                IsComingSoon = group.First().IsComingSoon ? true : false
             }).FirstOrDefaultAsync(cancellationToken);
     }
     

@@ -35,11 +35,13 @@ public class AccountManagementService : IAccountManagementService
     private readonly IAccountRepository _accountRepository;
     private readonly IAccountTokenRepository _accountTokenRepository;
     private readonly IMediator _mediator;
+    private readonly ISmsService _smsService;
+    private readonly IEmailService _emailService;
     
     public AccountManagementService(IDateTimeService dateTime,
         IStringLocalizationService localizationService, 
         IOptions<ApplicationConfiguration> appOption, IPasswordGeneratorService passwordGeneratorService,
-        IJwtService jwtService, IJsonSerializerService jsonSerializerService, IMapper mapper, ICurrentAccountService currentAccountService, ApplicationDbContext applicationDbContext, IAccountRepository accountRepository, IAccountTokenRepository accountTokenRepository, IMediator mediator)
+        IJwtService jwtService, IJsonSerializerService jsonSerializerService, IMapper mapper, ICurrentAccountService currentAccountService, ApplicationDbContext applicationDbContext, IAccountRepository accountRepository, IAccountTokenRepository accountTokenRepository, IMediator mediator, ISmsService smsService, IEmailService emailService)
     {
         _dateTime = dateTime;
         _localizationService = localizationService;
@@ -53,6 +55,8 @@ public class AccountManagementService : IAccountManagementService
         _accountRepository = accountRepository;
         _accountTokenRepository = accountTokenRepository;
         _mediator = mediator;
+        _smsService = smsService;
+        _emailService = emailService;
     }
 
     public async Task<RequestResult<AccountResult>> CreateAccountByAdminAsync(Account account, CancellationToken cancellationToken = default(CancellationToken))
@@ -67,8 +71,13 @@ public class AccountManagementService : IAccountManagementService
             if (duplicatedEnumerable)
                 return RequestResult<AccountResult>.Fail("Duplicated Item");
             
+            var duplicatedPhoneNumberEnumerable = await _accountRepository.IsDuplicatedPhoneNumberAsync(account.Id, account.PhoneNumber, cancellationToken);
+            if (duplicatedPhoneNumberEnumerable)
+                return RequestResult<AccountResult>.Fail("Duplicated Phone Number");
+            
             await _accountRepository.AddAsync(account, cancellationToken);
             var result = await _accountRepository.SaveChangesAsync(cancellationToken);
+            _emailService.SendEmail(account.Email, "Xác nhận tài khoản", $"Mã otp của bạn là: {account.Otp}");
             if (result > 0)
                 return RequestResult<AccountResult>.Succeed("Success", new AccountResult());
             return RequestResult<AccountResult>.Fail("Save Fail");

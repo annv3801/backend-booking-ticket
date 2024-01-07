@@ -111,11 +111,11 @@ public class BookingController : ControllerBase
         var result = "";
         if (response.VnPayResponseCode == "00")
         {
-            result = "http://localhost:3000/payment-success";
+            result = "https://dummywebsite.me/payment-success";
         }
         if (response.VnPayResponseCode != "00")
         {
-            result = "http://localhost:3000/payment-fail";
+            result = "https://dummywebsite.me/payment-fail";
         }
         return Redirect(result);
     }

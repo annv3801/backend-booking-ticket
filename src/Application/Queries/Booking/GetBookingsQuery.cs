@@ -9,4 +9,5 @@ public class GetListBookingsQuery : IRequest<OffsetPaginationResponse<BookingRes
 {
     public ViewListBookingsRequest Request { get; set; }
     public long? AccountId { get; set; }
+    public string? Tab { get; set; }
 }

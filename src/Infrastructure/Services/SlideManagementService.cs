@@ -51,7 +51,7 @@ public class SlideManagementService : ISlideManagementService
                 var fileResult = _fileService.SaveImage(request.Image);
                 if (fileResult.Item1 == 1)
                 {
-                    image = fileResult.Item2; // getting name of image
+                    image = fileResult.Item2; 
                 }
             }
             
@@ -82,7 +82,7 @@ public class SlideManagementService : ISlideManagementService
             if (existedSlide == null)
                 return RequestResult<bool>.Fail("Slide is not found");
             
-            var currentImage = existedSlide.Image; // Load current image name/path from the database or wherever you store it
+            var currentImage = existedSlide.Image;
             var image = "";
 
             if (request.Image != null)

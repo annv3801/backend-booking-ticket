@@ -93,10 +93,13 @@ builder.Services.Configure<ApplicationConfiguration>(builder.Configuration.GetSe
 builder.Services.Configure<PasswordOptions>(builder.Configuration.GetSection("PasswordOptions"));
 builder.Services.Configure<JwtConfiguration>(builder.Configuration.GetSection("JwtConfigurations"));
 builder.Services.AddLocalization(option => { option.ResourcesPath = "Resources"; });
+builder.Services.Configure<SmsConfiguration>(configuration.GetSection("SmsConfigurations"));
+
 
 #region Dependency Injection
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IStringLocalizationService, StringLocalizationServiceService>();
 builder.Services.AddSingleton<ICurrentAccountService, CurrentAccountService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
@@ -106,6 +109,9 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ISnowflakeIdService, SnowflakeIdService>();
 builder.Services.AddScoped<ILoggerService, LoggerService>();
 builder.Services.AddScoped<IDateTimeService, DateTimeService>();
+builder.Services.AddScoped<ISmsService, SmsService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 
 // Account
 builder.Services.AddScoped<IAccountManagementService, AccountManagementService>();
@@ -174,6 +180,7 @@ builder.Services.AddScoped<ISlideManagementService, SlideManagementService>();
 
 builder.Services.AddSingleton<IFileService>(sp => new FileService(environment));
 builder.Services.AddScoped<IVnPayService, VnPayService>();
+
 #endregion
 
 #region JWT

@@ -19,6 +19,7 @@ public class BookingResponse
     public List<FoodRequest> Foods { get; set; }
     public DateTimeOffset? CreatedTime { get; set; }
     public long? CreatedBy { get; set; }
+    public bool IsComingSoon { get; set; } = true;
 }
 
 public class FoodBooking

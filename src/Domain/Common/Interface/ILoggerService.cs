@@ -32,6 +32,8 @@ namespace Domain.Common.Interface
 
         #endregion
         
+        public void LogTrace(string message, params object[] args);
+
 
         #region LogWarning
         

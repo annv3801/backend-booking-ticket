@@ -6,4 +6,5 @@ namespace Application.DataTransferObjects.Booking.Requests;
 public class ViewListBookingsRequest : OffsetPaginationRequest
 {
     public long? AccountId { get; set; }
+    public string? Tab { get; set; }
 }

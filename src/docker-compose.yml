@@ -12,3 +12,5 @@ services:
       - "19081:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - /app/Uploads

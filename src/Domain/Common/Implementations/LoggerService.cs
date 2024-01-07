@@ -149,7 +149,11 @@ namespace Domain.Common.Implementations
                 Log.Information(message, args);
             }
         }
-
+        
+        public void LogTrace(string message, params object[] args)
+        {
+            _logger.LogTrace(message, args);
+        }
 
         public void LogWarning(Exception exception, string message, [CallerMemberName] string caller = "", [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0, params object[] args)
         {

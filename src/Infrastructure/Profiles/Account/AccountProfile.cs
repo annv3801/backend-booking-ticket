@@ -30,8 +30,8 @@ public class AccountProfile : Profile
             .ForMember(d => d.SecurityStamp,
                 opt => opt.MapFrom(src => Guid.NewGuid().ToString().ToUpper().Replace("-", "")))
             .ForMember(d => d.PasswordChangeRequired, opt => opt.MapFrom(src => false))
-            // .ForMember(d => d.Otp, opt => opt.MapFrom<SmsOtpResolver>())
-            // .ForMember(d => d.OtpValidEnd, opt => opt.MapFrom<SmsOtpValidEndResolver>())
+            .ForMember(d => d.Otp, opt => opt.MapFrom<SmsOtpResolver>())
+            .ForMember(d => d.OtpValidEnd, opt => opt.MapFrom<SmsOtpValidEndResolver>())
             ;
 
         // Map from create request to create command

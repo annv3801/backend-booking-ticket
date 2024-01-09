@@ -5,5 +5,5 @@ namespace Application.Commands.RoomSeat;
 
 public class CreateRoomSeatCommand : IRequest<int>
 {
-    public RoomSeatEntity Entity { get; set; }
+    public List<RoomSeatEntity> Entity { get; set; }
 }

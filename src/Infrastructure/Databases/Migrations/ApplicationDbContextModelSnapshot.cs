@@ -50,10 +50,10 @@ namespace Infrastructure.Databases.Migrations
                     b.Property<long>("AccountId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("FilmId")
+                    b.Property<long?>("FilmId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("TheaterId")
+                    b.Property<long?>("TheaterId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -160,8 +160,9 @@ namespace Infrastructure.Databases.Migrations
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<double>("Total")
                         .HasColumnType("double precision");
@@ -505,7 +506,6 @@ namespace Infrastructure.Databases.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .IsUnicode(true)
                         .HasColumnType("character varying(255)");
@@ -540,7 +540,6 @@ namespace Infrastructure.Databases.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("NormalizedEmail")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .IsUnicode(true)
                         .HasColumnType("character varying(255)");
@@ -609,10 +608,6 @@ namespace Infrastructure.Databases.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email");
-
-                    b.HasIndex("NormalizedEmail");
-
                     b.HasIndex("PhoneNumber")
                         .IsUnique();
 
@@ -624,7 +619,7 @@ namespace Infrastructure.Databases.Migrations
                             Id = 921946681335811L,
                             AccessFailedCount = 0,
                             CreatedBy = 921946681335812L,
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 12, 15, 9, 47, 52, 369, DateTimeKind.Unspecified).AddTicks(5583), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2024, 1, 9, 16, 24, 43, 290, DateTimeKind.Unspecified).AddTicks(2484), new TimeSpan(0, 0, 0, 0, 0)),
                             Deleted = false,
                             Email = "nva030801@gmail.com",
                             EmailConfirmed = true,
@@ -632,7 +627,7 @@ namespace Infrastructure.Databases.Migrations
                             Gender = true,
                             LockoutEnabled = true,
                             ModifiedBy = 921946681335812L,
-                            ModifiedTime = new DateTimeOffset(new DateTime(2023, 12, 15, 9, 47, 52, 369, DateTimeKind.Unspecified).AddTicks(5572), new TimeSpan(0, 0, 0, 0, 0)),
+                            ModifiedTime = new DateTimeOffset(new DateTime(2024, 1, 9, 16, 24, 43, 290, DateTimeKind.Unspecified).AddTicks(2468), new TimeSpan(0, 0, 0, 0, 0)),
                             NormalizedEmail = "NVA030801@GMAIL.COM",
                             NormalizedUserName = "NVA3801",
                             Otp = "000000",
@@ -642,7 +637,7 @@ namespace Infrastructure.Databases.Migrations
                             PasswordHash = "AMJoiJQ9xLazxisVPXx+lBDRw7wfWBerhXipsLpHNGLXGAAKIeCnwi5XhIRbTbqovA==",
                             PhoneNumber = "0966093801",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "01C08BB8-4E79-4098-B53B-84D5D21B6B35",
+                            SecurityStamp = "31C8FDF8-298B-417E-89F0-4B71BE16EC5D",
                             Status = 3,
                             TwoFactorEnabled = false,
                             UserName = "admin"
@@ -682,6 +677,30 @@ namespace Infrastructure.Databases.Migrations
                     b.ToTable("AccountLogin", "Film");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Identity.AccountRole", b =>
+                {
+                    b.Property<long>("AccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("AccountId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("AccountId", "RoleId");
+
+                    b.ToTable("AccountRoles", "Film");
+
+                    b.HasData(
+                        new
+                        {
+                            AccountId = 921946681335811L,
+                            RoleId = 921946681335812L
+                        });
+                });
+
             modelBuilder.Entity("Domain.Entities.Identity.AccountToken", b =>
                 {
                     b.Property<string>("LoginProvider")
@@ -712,6 +731,223 @@ namespace Infrastructure.Databases.Migrations
                     b.HasIndex("LoginProvider", "Name", "AccountId");
 
                     b.ToTable("AccountTokens", "Film");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Identity.Permission", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(255)")
+                        .HasDefaultValueSql("'?'");
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("NormalizedName");
+
+                    b.ToTable("Permissions", "Film");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 921946681335813L,
+                            Code = "ROOT:ROOT:SYSADMIN",
+                            Deleted = false,
+                            Description = "The system admin permission",
+                            Name = "System Admin",
+                            NormalizedName = "SYSTEM ADMIN"
+                        });
+                });
+
+            modelBuilder.Entity("Domain.Entities.Identity.Role", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("NormalizedName");
+
+                    b.ToTable("Roles", "Film");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 921946681335812L,
+                            Deleted = false,
+                            Description = "The system Admin Role",
+                            Name = "System Admin",
+                            NormalizedName = "SYSTEM ADMIN",
+                            Status = 1
+                        });
+                });
+
+            modelBuilder.Entity("Domain.Entities.Identity.RolePermission", b =>
+                {
+                    b.Property<long>("PermissionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("PermissionId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("PermissionId", "RoleId");
+
+                    b.ToTable("RolePermissions", "Film");
+
+                    b.HasData(
+                        new
+                        {
+                            PermissionId = 921946681335813L,
+                            RoleId = 921946681335812L
+                        });
+                });
+
+            modelBuilder.Entity("Domain.Entities.NewsEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Title")
+                        .IsUnique();
+
+                    b.ToTable("News", "Film");
                 });
 
             modelBuilder.Entity("Domain.Entities.RoomEntity", b =>
@@ -915,6 +1151,9 @@ namespace Infrastructure.Databases.Migrations
                     b.Property<long>("TicketId")
                         .HasColumnType("bigint");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RoomSeatId");
@@ -924,6 +1163,57 @@ namespace Infrastructure.Databases.Migrations
                     b.HasIndex("SchedulerId", "RoomSeatId");
 
                     b.ToTable("Seats", "Film");
+                });
+
+            modelBuilder.Entity("Domain.Entities.SlideEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("ObjectId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Slides", "Film");
                 });
 
             modelBuilder.Entity("Domain.Entities.TheaterEntity", b =>
@@ -995,6 +1285,10 @@ namespace Infrastructure.Databases.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<long?>("CreatedBy")
                         .HasColumnType("bigint");
@@ -1068,15 +1362,11 @@ namespace Infrastructure.Databases.Migrations
 
                     b.HasOne("Domain.Entities.FilmEntity", "Film")
                         .WithMany()
-                        .HasForeignKey("FilmId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FilmId");
 
                     b.HasOne("Domain.Entities.TheaterEntity", "Theater")
                         .WithMany()
-                        .HasForeignKey("TheaterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TheaterId");
 
                     b.Navigation("Account");
 
@@ -1165,6 +1455,25 @@ namespace Infrastructure.Databases.Migrations
                     b.Navigation("Account");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Identity.AccountRole", b =>
+                {
+                    b.HasOne("Domain.Entities.Identity.Account", "Account")
+                        .WithMany("AccountRoles")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Identity.Role", "Role")
+                        .WithMany("AccountRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("Domain.Entities.Identity.AccountToken", b =>
                 {
                     b.HasOne("Domain.Entities.Identity.Account", "Account")
@@ -1174,6 +1483,25 @@ namespace Infrastructure.Databases.Migrations
                         .IsRequired();
 
                     b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Identity.RolePermission", b =>
+                {
+                    b.HasOne("Domain.Entities.Identity.Permission", "Permission")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Identity.Role", "Role")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Domain.Entities.RoomEntity", b =>
@@ -1256,7 +1584,21 @@ namespace Infrastructure.Databases.Migrations
                 {
                     b.Navigation("AccountLogins");
 
+                    b.Navigation("AccountRoles");
+
                     b.Navigation("AccountTokens");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Identity.Permission", b =>
+                {
+                    b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Identity.Role", b =>
+                {
+                    b.Navigation("AccountRoles");
+
+                    b.Navigation("RolePermissions");
                 });
 #pragma warning restore 612, 618
         }

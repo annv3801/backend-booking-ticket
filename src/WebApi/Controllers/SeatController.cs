@@ -34,7 +34,7 @@ public class SeatController : ControllerBase
     /// <returns></returns>
     [HttpPost]
     [Route("Create-Seat")]
-    public async Task<RequestResult<bool>?> CreateSeatAsync(CreateSeatRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResult<bool>?> CreateSeatAsync(CreateListSeatRequest request, CancellationToken cancellationToken)
     {
         try
         {

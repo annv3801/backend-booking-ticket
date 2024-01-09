@@ -28,7 +28,10 @@ public class RoomSeatCommandHandler : ICreateRoomSeatCommandHandler, IUpdateRoom
     {
         try
         {
-            await _roomSeatRepository.AddAsync(command.Entity, cancellationToken);
+            foreach (var item in command.Entity)
+            {
+                await _roomSeatRepository.AddAsync(item, cancellationToken);
+            }
             return await _roomSeatRepository.SaveChangesAsync(cancellationToken);
         }
         catch (Exception e)

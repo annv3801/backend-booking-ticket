@@ -30,12 +30,25 @@ public class AccountProfile : Profile
             .ForMember(d => d.SecurityStamp,
                 opt => opt.MapFrom(src => Guid.NewGuid().ToString().ToUpper().Replace("-", "")))
             .ForMember(d => d.PasswordChangeRequired, opt => opt.MapFrom(src => false))
-            .ForMember(d => d.Otp, opt => opt.MapFrom<SmsOtpResolver>())
-            .ForMember(d => d.OtpValidEnd, opt => opt.MapFrom<SmsOtpValidEndResolver>())
             ;
 
         // Map from create request to create command
         CreateMap<CreateAccountRequest, CreateAccountCommand>();
+        
+        CreateMap<PreCreateAccountCommand, Domain.Entities.Identity.Account>()
+            // generate new id
+            .ForMember(dest => dest.Id,
+                opt =>
+                    opt.MapFrom<IdGeneratorResolver>())
+            // set default gender as true
+            .ForMember(d => d.NormalizedUserName, opt => opt.MapFrom(src => src.PhoneNumber))
+            .ForMember(d => d.SecurityStamp,
+                opt => opt.MapFrom(src => Guid.NewGuid().ToString().ToUpper().Replace("-", "")))
+            .ForMember(d => d.PasswordChangeRequired, opt => opt.MapFrom(src => false))
+            ;
+
+        // Map from create request to create command
+        CreateMap<PreCreateAccountRequest, PreCreateAccountCommand>();
         CreateMap<Domain.Entities.Identity.Account, ViewAccountResponse>();
 
         // Map last modified by and created by
@@ -66,9 +79,15 @@ public class AccountProfile : Profile
         CreateMap<UpdateAccountRequest, UpdateAccountCommand>();
         CreateMap<UpdateAccountCommand, Domain.Entities.Identity.Account>()
             .ForMember(d => d.NormalizedEmail, opt => opt.MapFrom(src => src.Email.ToUpper()))
-            .ForMember(d => d.NormalizedUserName, opt => opt.MapFrom(src => src.PhoneNumber))
-            .ForMember(d => d.UserName, opt => opt.MapFrom(src => src.PhoneNumber))
             .ForMember(d => d.SecurityStamp, opt => opt.MapFrom(src => Guid.NewGuid().ToString().ToUpper().Replace("-", "")))
+            ;
+        
+        CreateMap<UpdateProfileAccountFirstLoginRequest, UpdateProfileAccountFirstLoginCommand>();
+        CreateMap<UpdateProfileAccountFirstLoginCommand, Domain.Entities.Identity.Account>()
+            .ForMember(d => d.NormalizedEmail, opt => opt.MapFrom(src => src.Email.ToUpper()))
+            .ForMember(d => d.SecurityStamp, opt => opt.MapFrom(src => Guid.NewGuid().ToString().ToUpper().Replace("-", "")))
+            .ForMember(d => d.Otp, opt => opt.MapFrom<SmsOtpResolver>())
+            .ForMember(d => d.OtpValidEnd, opt => opt.MapFrom<SmsOtpValidEndResolver>())
             ;
 
         CreateMap<ChangePasswordRequest, ChangePasswordCommand>().ReverseMap();

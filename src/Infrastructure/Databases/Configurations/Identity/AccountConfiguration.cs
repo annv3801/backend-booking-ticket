@@ -12,12 +12,10 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
     {
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id).ValueGeneratedOnAdd();
-        builder.HasIndex(u => u.Email);
-        builder.HasIndex(u => u.NormalizedEmail);
         builder.HasIndex(u => u.PhoneNumber).IsUnique();
 
-        builder.Property(u => u.Email).IsRequired().IsUnicode().HasMaxLength(Constants.FieldLength.TextMaxLength);
-        builder.Property(u => u.NormalizedEmail).IsRequired().IsUnicode().HasMaxLength(Constants.FieldLength.TextMaxLength);
+        builder.Property(u => u.Email).IsUnicode().HasMaxLength(Constants.FieldLength.TextMaxLength);
+        builder.Property(u => u.NormalizedEmail).IsUnicode().HasMaxLength(Constants.FieldLength.TextMaxLength);
         builder.Property(t => t.EmailConfirmed).HasDefaultValueSql("true");
         builder.Property(t => t.AvatarPhoto).HasMaxLength(Constants.FieldLength.UrlMaxLength);
 

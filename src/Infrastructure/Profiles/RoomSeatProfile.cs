@@ -15,7 +15,7 @@ public class RoomSeatProfile : Profile
         CreateMap<CreateRoomSeatRequest, CreateRoomSeatCommand>().ReverseMap();
         CreateMap<CreateRoomSeatRequest, RoomSeatEntity>()
             .ForMember(d => d.Id, o => o.MapFrom<IdGeneratorResolver>());
-
+        CreateMap<RoomSeatRequest, RoomSeatEntity>();
         // Update 
         CreateMap<UpdateRoomSeatRequest, UpdateRoomSeatCommand>().ReverseMap();
 

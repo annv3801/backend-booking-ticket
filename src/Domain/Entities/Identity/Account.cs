@@ -10,8 +10,8 @@ namespace Domain.Entities.Identity;
 public class Account : Entity<long>
 {
     public long Id { get; set; }
-    [Sortable]  public string Email { get; set; }
-    public string NormalizedEmail { get; set; }
+    [Sortable] public string? Email { get; set; }
+    public string? NormalizedEmail { get; set; }
     public bool EmailConfirmed { get; set; }
     public string? AvatarPhoto { get; set; }
     [NotMapped]
@@ -34,6 +34,7 @@ public class Account : Entity<long>
     public int AccessFailedCount { get; set; }
     public ICollection<AccountLogin>? AccountLogins { get; set; } = new List<AccountLogin>();
     public ICollection<AccountToken> AccountTokens { get; set; } = new List<AccountToken>();
+    public ICollection<AccountRole> AccountRoles { get; set; } = new List<AccountRole>();
     public string? Otp { get; set; } = "000000";
     public DateTime OtpValidEnd { get; set; }
     public int OtpCount { get; set; } = 0;

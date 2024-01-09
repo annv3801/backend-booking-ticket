@@ -13,12 +13,13 @@ public class SeatProfile : Profile
     {
         // Create
         CreateMap<CreateSeatRequest, CreateSeatCommand>().ReverseMap();
+        CreateMap<CreateListSeatRequest, SeatEntity>()
+            .ForMember(d => d.Id, o => o.MapFrom<IdGeneratorResolver>());
         CreateMap<CreateSeatRequest, SeatEntity>()
             .ForMember(d => d.Id, o => o.MapFrom<IdGeneratorResolver>());
 
         // Update 
         CreateMap<UpdateSeatRequest, UpdateSeatCommand>().ReverseMap();
-
 
         CreateMap<SeatEntity, SeatResponse>();
     }

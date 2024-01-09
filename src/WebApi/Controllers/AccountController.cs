@@ -1,4 +1,5 @@
-﻿using Application.Commands.Account;
+﻿using System.Security.Claims;
+using Application.Commands.Account;
 using Application.Common;
 using Application.Common.Interfaces;
 using Application.DataTransferObjects.Account.Requests;
@@ -7,6 +8,8 @@ using Application.Queries.Account;
 using Application.Services.Account;
 using AutoMapper;
 using Domain.Common.Interface;
+using Domain.Constants;
+using Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Nobi.Core.Responses;
@@ -73,7 +76,72 @@ public class AccountController : ControllerBase
             throw;
         }
     }
+    
+    [HttpPost]
+    [Route("Pre-Create-Account")]
+    [Produces("application/json")]
 
+    public async Task<RequestResult<CreateAccountResponse>> PreCreateAccountAsync([FromForm]PreCreateAccountRequest createAccountRequest, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var createAccountCommand = new PreCreateAccountCommand()
+            {
+                Password = createAccountRequest.Password,
+                PhoneNumber = createAccountRequest.PhoneNumber,
+            };
+            var result = await _mediator.Send(createAccountCommand, cancellationToken);
+            if (result.Success)
+                return RequestResult<CreateAccountResponse>.Succeed("Save success");
+            return RequestResult<CreateAccountResponse>.Fail(result.Message);
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    [HttpPut]
+    [Route("Update-Profile-Account-First-Login")]
+    [Produces("application/json")]
+    public async Task<RequestResult<bool>> UpdateProfileAccountFirstLoginAsync([FromForm]UpdateProfileAccountFirstLoginRequest createAccountRequest, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var currentUserId = _currentAccountService.Id;
+            var image = "";
+            if (createAccountRequest.AvatarPhoto != null)
+            {
+                var fileResult = _fileService.SaveImage(createAccountRequest.AvatarPhoto);
+                if (fileResult.Item1 == 1)
+                {
+                    image = fileResult.Item2; // getting name of image
+                }
+            }
+
+            var createAccountCommand = new UpdateProfileAccountFirstLoginCommand()
+            {
+                Id = currentUserId,
+                AvatarPhoto = image,
+                Email = createAccountRequest.Email,
+                Gender = createAccountRequest.Gender,
+                FullName = createAccountRequest.FullName,
+            };
+            var result = await _mediator.Send(createAccountCommand, cancellationToken);
+            if (result.Success)
+                return RequestResult<bool>.Succeed("Save success");
+            return RequestResult<bool>.Fail(result.Message);
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
     [HttpPut]
     [Route("Update-Account")]
     [Produces("application/json")]
@@ -105,6 +173,53 @@ public class AccountController : ControllerBase
             if (result.Success)
                 return RequestResult<CreateAccountResponse>.Succeed("Save success");
             return RequestResult<CreateAccountResponse>.Fail(result.Message);
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    [HttpPut]
+    [Route("Active-Account")]
+    [Produces("application/json")]
+    public async Task<RequestResult<bool>> ActiveAccountAsync(ActiveAccountRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var createAccountCommand = new ActiveAccountCommand()
+            {
+                Otp = request.Otp
+            };
+            var result = await _mediator.Send(createAccountCommand, cancellationToken);
+            if (result.Success)
+                return RequestResult<bool>.Succeed("Save success");
+            return RequestResult<bool>.Fail(result.Message);
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    [HttpPut]
+    [Route("Reset-Otp")]
+    [Produces("application/json")]
+    public async Task<RequestResult<bool>> ResetOtpAsync(ResetOtpRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var createAccountCommand = new ResetOtpCommand()
+            {
+            };
+            var result = await _mediator.Send(createAccountCommand, cancellationToken);
+            if (result.Success)
+                return RequestResult<bool>.Succeed("Save success");
+            return RequestResult<bool>.Fail(result.Message);
 
         }
         catch (Exception e)
@@ -230,5 +345,23 @@ public class AccountController : ControllerBase
             _loggerService.LogError(e, nameof(CreateOrUpdateAccountCategoryAsync));
             throw;
         }
+    }
+    
+    private static ClaimsIdentity BuildClaimsIdentity(Account account)
+    {
+        var claims = new List<Claim>();
+        foreach (var userRole in account.AccountRoles)
+        {
+            if (userRole.Role == null) continue;
+            claims.Add(new Claim(JwtClaimTypes.Role, userRole.Role.Name));
+
+            claims.AddRange(from rolePermission in userRole.Role?.RolePermissions ?? new List<RolePermission>() where rolePermission.Permission != null select new Claim(JwtClaimTypes.Permission, rolePermission.Permission?.Code ?? string.Empty));
+        }
+
+        claims.Add(new Claim(JwtClaimTypes.IdentityProvider, Constants.LoginProviders.Self));
+        claims.Add(new Claim(JwtClaimTypes.UserId, account.Id.ToString()));
+
+        var claimsIdentity = new ClaimsIdentity(claims);
+        return claimsIdentity;
     }
 }

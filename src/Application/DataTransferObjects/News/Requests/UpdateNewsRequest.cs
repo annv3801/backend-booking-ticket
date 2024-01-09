@@ -11,6 +11,6 @@ public class UpdateNewsRequest
     public long Id { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
-    public long GroupEntityId { get; set; }
+    public string Content { get; set; }
     public IFormFile? Image { get; set; }
 }

@@ -7,7 +7,7 @@ namespace Application.Services.Seat;
 
 public interface ISeatManagementService
 {
-    Task<RequestResult<bool>> CreateSeatAsync(CreateSeatRequest request, CancellationToken cancellationToken);
+    Task<RequestResult<bool>> CreateSeatAsync(CreateListSeatRequest request, CancellationToken cancellationToken);
     Task<RequestResult<bool>> UpdateSeatAsync(UpdateSeatRequest request, CancellationToken cancellationToken);
     Task<RequestResult<bool>> DeleteSeatAsync(long id, CancellationToken cancellationToken);
     Task<RequestResult<SeatResponse>> GetSeatAsync(long id, CancellationToken cancellationToken);

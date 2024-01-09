@@ -45,7 +45,7 @@ public class NewsCommandHandler : ICreateNewsCommandHandler, IUpdateNewsCommandH
             return await _newsRepository.Entity.Where(x => x.Id == command.Request.Id && x.Status != EntityStatus.Deleted)
                 .ExecuteUpdateAsync(u => u
                     .SetProperty(l => l.Title, command.Request.Title)
-                    .SetProperty(l => l.GroupEntityId, command.Request.GroupEntityId)
+                    .SetProperty(l => l.Content, command.Request.Content)
                     .SetProperty(l => l.Image, command.Request.Image)
                     .SetProperty(l => l.Description, command.Request.Description)
                     .SetProperty(l => l.ModifiedBy, _currentAccountService.Id)

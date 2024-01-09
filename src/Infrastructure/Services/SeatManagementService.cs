@@ -38,17 +38,19 @@ public class SeatManagementService : ISeatManagementService
         _currentAccountService = currentAccountService;
     }
 
-    public async Task<RequestResult<bool>> CreateSeatAsync(CreateSeatRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResult<bool>> CreateSeatAsync(CreateListSeatRequest request, CancellationToken cancellationToken)
     {
         try
         {
             // Create Seat 
-            var seatEntity = _mapper.Map<SeatEntity>(request);
-
-            seatEntity.CreatedBy = _currentAccountService.Id;
-            seatEntity.CreatedTime = _dateTimeService.NowUtc;
-
-            var resultCreateSeat = await _mediator.Send(new CreateSeatCommand {Entity = seatEntity}, cancellationToken);
+            var seatEntity = _mapper.Map<List<SeatEntity>>(request.CreateSeatRequests);
+            foreach (var entity in seatEntity)
+            {
+                entity.CreatedBy = _currentAccountService.Id;
+                entity.CreatedTime = _dateTimeService.NowUtc;
+            }
+            
+            var resultCreateSeat = await _mediator.Send(new CreateListSeatCommand {Entity = seatEntity}, cancellationToken);
             if (resultCreateSeat <= 0)
                 return RequestResult<bool>.Fail("Save data failed");
             return RequestResult<bool>.Succeed("Save data success");

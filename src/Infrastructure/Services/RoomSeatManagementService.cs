@@ -43,20 +43,26 @@ public class RoomSeatManagementService : IRoomSeatManagementService
         try
         {
             // Check duplicate RoomSeat name
-            if (await _mediator.Send(new CheckDuplicatedRoomSeatByNameQuery
-                {
-                    Name = request.Name,
-                    RoomId = request.RoomId
-                }, cancellationToken))
-                return RequestResult<bool>.Fail("Item is duplicated");
-
+            foreach (var item in request.RoomSeat)
+            {
+                if (await _mediator.Send(new CheckDuplicatedRoomSeatByNameQuery
+                    {
+                        Name = item.Name,
+                        RoomId = item.RoomId
+                    }, cancellationToken))
+                    return RequestResult<bool>.Fail("Item is duplicated");
+            } 
+            
             // Create RoomSeat 
-            var roomSeatEntity = _mapper.Map<RoomSeatEntity>(request);
+            var roomSeatEntities = _mapper.Map<List<RoomSeatEntity>>(request.RoomSeat);
 
-            roomSeatEntity.CreatedBy = _currentAccountService.Id;
-            roomSeatEntity.CreatedTime = _dateTimeService.NowUtc;
+            foreach (var entity in roomSeatEntities)
+            {
+                entity.CreatedBy = _currentAccountService.Id;
+                entity.CreatedTime = _dateTimeService.NowUtc;
+            }
 
-            var resultCreateRoomSeat = await _mediator.Send(new CreateRoomSeatCommand {Entity = roomSeatEntity}, cancellationToken);
+            var resultCreateRoomSeat = await _mediator.Send(new CreateRoomSeatCommand {Entity = roomSeatEntities}, cancellationToken);
             if (resultCreateRoomSeat <= 0)
                 return RequestResult<bool>.Fail("Save data failed");
             return RequestResult<bool>.Succeed("Save data success");

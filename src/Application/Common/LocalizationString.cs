@@ -29,10 +29,14 @@ public static class LocalizationString
         public const string CreatedAccount = "Created Account {0}";
         public const string FailedToSignInWithUserName = "Failed to sign in with user name {0}";
         public const string NotFound = "Account is not found, deactivated or deleted";
+        public const string OtpNotValid = "Otp is not valid";
+        public const string OtpTimeExpire = "Otp time expire";
         public const string AccountIsNotActive = "Your account is not active, you must activate your account first";
+        public const string AccountIsLocked = "Your account is locked, you must unlock your account first";
         public const string NotLockedYet= "Account is not locked yet, you can not unlock account {0}";
         public const string AccountIsPendingApproval = "Your account is pending for approval";
         public const string AccountIsPendingConfirmation = "Your account is pending for your confirmation";
+        public const string AccountIsPendingUpdateProfile = "Your account is pending update profile";
         public const string UserNameOrPasswordIncorrectWithLockoutEnabled = "User name or password is incorrect ({0} times left)";
         public const string UserNameOrPasswordIncorrectWithoutLockOut = "User name or password is incorrect";
         public const string ChangePasswordRequired = "You need to change your password first";

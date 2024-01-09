@@ -61,11 +61,17 @@ public class JwtService : IJwtService
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtOptions.SymmetricSecurityKey);
-            var claims = new List<Claim>()
+            var claims = new List<Claim>();
+            foreach (var userRole in account.AccountRoles)
             {
-                new Claim(JwtClaimTypes.UserId, account.Id.ToString()),
-                new Claim(JwtClaimTypes.IdentityProvider, Constants.LoginProviders.Self),
-            };
+                if (userRole.Role == null) continue;
+                claims.Add(new Claim(JwtClaimTypes.Role, userRole.Role.Name));
+
+                claims.AddRange(from rolePermission in userRole.Role?.RolePermissions ?? new List<RolePermission>() where rolePermission.Permission != null select new Claim(JwtClaimTypes.Permission, rolePermission.Permission?.Code ?? string.Empty));
+            }
+
+            claims.Add(new Claim(JwtClaimTypes.IdentityProvider, Constants.LoginProviders.Self));
+            claims.Add(new Claim(JwtClaimTypes.UserId, account.Id.ToString()));
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Audience = _jwtOptions.Audience,

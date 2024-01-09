@@ -18,6 +18,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<Account> Accounts { get; set; }
     public DbSet<AccountToken> AccountTokens { get; set; }
     public DbSet<AccountLogin> AccountLogins { get; set; }
+    public DbSet<AccountRole> AccountRoles { get; set; }
+    public DbSet<Permission> Permissions { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<AccountCategoryEntity> AccountCategory { get; set; }
     public DbSet<AccountFavoritesEntity> AccountFavorites { get; set; }
     public DbSet<FilmFeedbackEntity> FilmFeedback { get; set; }

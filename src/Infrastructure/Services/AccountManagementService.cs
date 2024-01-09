@@ -89,7 +89,77 @@ public class AccountManagementService : IAccountManagementService
         }
     }
 
-    public async Task<RequestResult<AccountResult>> UpdateAccountAsync(Domain.Entities.Identity.Account account, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<RequestResult<AccountResult>> PreCreateAccountByAdminAsync(Account account, CancellationToken cancellationToken = default(CancellationToken))
+    {
+        try
+        {
+            var validator = new CreateAccountEntityValidator(_localizationService, _accountRepository);
+            var validation = await validator.ValidateAsync(account, cancellationToken);
+            if (!validation.IsValid)
+                return RequestResult<AccountResult>.Fail("Fail");
+
+            var duplicatedPhoneNumberEnumerable = await _accountRepository.IsDuplicatedPhoneNumberAsync(account.Id, account.PhoneNumber, cancellationToken);
+            if (duplicatedPhoneNumberEnumerable)
+                return RequestResult<AccountResult>.Fail("Duplicated Phone Number");
+            
+            await _accountRepository.AddAsync(account, cancellationToken);
+            var result = await _accountRepository.SaveChangesAsync(cancellationToken);
+            if (result > 0)
+                return RequestResult<AccountResult>.Succeed("Success", new AccountResult());
+            return RequestResult<AccountResult>.Fail("Save Fail");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task<RequestResult<AccountResult>> UpdateProfileAccountFirstLoginAsync(Account account, CancellationToken cancellationToken = default(CancellationToken))
+    {
+        try
+        {
+            // Check account
+            var existedAccount = await _accountRepository.ViewAccountDetailByAdmin(account.Id, cancellationToken);
+
+            if (existedAccount == null)
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value);
+
+            //Check duplicated email 
+            var emailCheck = await _accountRepository.IsDuplicatedEmailAsync(existedAccount.Id, account.Email, cancellationToken);
+            if (emailCheck)
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.DuplicatedEmail].Value);
+
+            // Check current account permission
+            // If account is sysadmin --> can update
+            // If account is tenant admin-> can update user who belong his tenant only --> return forbid http status code
+
+            existedAccount.Email = account.Email;
+            existedAccount.AvatarPhoto = account.AvatarPhoto;
+            existedAccount.FullName = account.FullName;
+            existedAccount.UserName = account.UserName;
+            existedAccount.Gender = account.Gender;
+            existedAccount.Status = account.Status;
+            existedAccount.Otp = account.Otp;
+            existedAccount.OtpValidEnd = account.OtpValidEnd;
+            
+            await _accountRepository.UpdateAsync(existedAccount, cancellationToken);
+            var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
+            if (result > 0)
+            {
+                _emailService.SendEmail(account.Email, "Xác nhận tài khoản", $"Mã otp của bạn là: {account.Otp}");
+                return RequestResult<AccountResult>.Succeed();
+            }
+            return RequestResult<AccountResult>.Fail("Save Fail");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task<RequestResult<AccountResult>> UpdateAccountAsync(Account account, CancellationToken cancellationToken = default(CancellationToken))
     {
         try
         {
@@ -119,6 +189,68 @@ public class AccountManagementService : IAccountManagementService
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)
                 return RequestResult<AccountResult>.Succeed();
+            return RequestResult<AccountResult>.Fail("Save Fail");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task<RequestResult<AccountResult>> ActiveAccountAsync(string otp, CancellationToken cancellationToken = default(CancellationToken))
+    {
+        try
+        {
+            var account = _currentAccountService.Id;
+            // Check account
+            var existedAccount = await _accountRepository.ViewAccountDetailByAdmin(account, cancellationToken);
+
+            if (existedAccount == null)
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value);
+
+            if (existedAccount.Otp != otp)
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.OtpNotValid].Value);
+            
+            if (existedAccount.OtpValidEnd < DateTime.UtcNow)
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.OtpTimeExpire].Value);
+            
+            existedAccount.Status = AccountStatus.Active;
+            
+            await _accountRepository.UpdateAsync(existedAccount, cancellationToken);
+            var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
+            if (result > 0)
+                return RequestResult<AccountResult>.Succeed();
+            return RequestResult<AccountResult>.Fail("Save Fail");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task<RequestResult<AccountResult>> ResetOtpAsync(CancellationToken cancellationToken = default(CancellationToken))
+    {
+        try
+        {
+            var account = _currentAccountService.Id;
+            // Check account
+            var existedAccount = await _accountRepository.ViewAccountDetailByAdmin(account, cancellationToken);
+
+            if (existedAccount == null)
+                return RequestResult<AccountResult>.Fail(_localizationService[LocalizationString.Account.NotFound].Value);
+
+            existedAccount.Otp = _smsService.GenerateOtpAsync(CancellationToken.None).Result.Data.Otp;
+            existedAccount.OtpValidEnd = DateTime.UtcNow.AddSeconds(90);
+            
+            await _accountRepository.UpdateAsync(existedAccount, cancellationToken);
+            var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
+            if (result > 0)
+            {
+                _emailService.SendEmail(existedAccount.Email, "Xác nhận tài khoản", $"Mã otp của bạn là: {existedAccount.Otp}");
+                return RequestResult<AccountResult>.Succeed();
+            }
             return RequestResult<AccountResult>.Fail("Save Fail");
         }
         catch (Exception e)
@@ -283,10 +415,12 @@ public class AccountManagementService : IAccountManagementService
                     return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsNotActive].Value);
                 case AccountStatus.PendingApproval:
                     return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsPendingApproval].Value);
-                // case AccountStatus.Locked:
-                //     return Result<SignInWithUserNameResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsLocked].Value);
+                case AccountStatus.Locked:
+                    return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsLocked].Value);
                 case AccountStatus.PendingConfirmation:
                     return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsPendingConfirmation].Value);
+                // case AccountStatus.PendingUpdateProfile:
+                //     return RequestResult<SignInWithPhoneNumberResponse>.Fail(_localizationService[LocalizationString.Account.AccountIsPendingUpdateProfile].Value);
             }
 
             // Verify password or temporary password, if both of them are wrong, return
@@ -356,6 +490,7 @@ public class AccountManagementService : IAccountManagementService
                         Gender = account.Gender,
                         Avatar = account.AvatarPhoto,
                         FullName = account.FullName,
+                        Status = account.Status
                     },
                     AccessToken = tokenResponse.Data.Token,
                     RefreshToken = tokenResponse.Data.RefreshToken
@@ -432,13 +567,19 @@ public class AccountManagementService : IAccountManagementService
         return RequestResult<bool>.Succeed("Save data success");
     }
 
-    private static ClaimsIdentity BuildClaimsIdentity(Domain.Entities.Identity.Account account)
+    private static ClaimsIdentity BuildClaimsIdentity(Account account)
     {
         var claims = new List<Claim>();
+        foreach (var userRole in account.AccountRoles)
+        {
+            if (userRole.Role == null) continue;
+            claims.Add(new Claim(JwtClaimTypes.Role, userRole.Role.Name));
+
+            claims.AddRange(from rolePermission in userRole.Role?.RolePermissions ?? new List<RolePermission>() where rolePermission.Permission != null select new Claim(JwtClaimTypes.Permission, rolePermission.Permission?.Code ?? string.Empty));
+        }
 
         claims.Add(new Claim(JwtClaimTypes.IdentityProvider, Constants.LoginProviders.Self));
         claims.Add(new Claim(JwtClaimTypes.UserId, account.Id.ToString()));
-        claims.Add(new Claim(JwtClaimTypes.UserName, account.UserName));
 
         var claimsIdentity = new ClaimsIdentity(claims);
         return claimsIdentity;

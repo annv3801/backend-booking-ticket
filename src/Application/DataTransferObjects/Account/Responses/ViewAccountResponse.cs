@@ -6,8 +6,8 @@ namespace Application.DataTransferObjects.Account.Responses;
 public class ViewAccountResponse
 {
     public long Id { get; set; }
-    public string Email { get; set; }
-    public string NormalizedEmail { get; set; }
+    public string? Email { get; set; }
+    public string? NormalizedEmail { get; set; }
     public string? UserName { get; set; }
     public string? AvatarPhoto { get; set; }
     public string? FullName { get; set; }

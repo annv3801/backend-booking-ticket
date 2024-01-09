@@ -119,7 +119,7 @@ public class NewsManagementService : INewsManagementService
             // Update value to existed News
             existedNews.Title = request.Title;
             existedNews.Description = request.Description;
-            existedNews.GroupEntityId = request.GroupEntityId;
+            existedNews.Content = request.Content;
             if(image != "") 
                 existedNews.Image = image;
 

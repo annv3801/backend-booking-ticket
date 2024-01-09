@@ -55,6 +55,16 @@ public static class Constants
         public const string DefaultOrderBy = "";
     }
     public static string JsonDateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ";
+
+    public static class Permissions
+    {
+        // Structure area:module:perm
+        public const string SysAdmin = "ROOT:ROOT:SYSADMIN";
+        public const string ScpUser = "SC:PROVIDER:USER";
+        public const string TenantAdmin = "TENANT:ROOT:ADMIN";
+        public const string UnlockAccount = "IDENTITY:ACCOUNT:UNLOCK";
+        public const string LockAccount = "IDENTITY:ACCOUNT:LOCK";
+    }
     
     public static class MimeTypes
     {

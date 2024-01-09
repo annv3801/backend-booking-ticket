@@ -1,0 +1,15 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
+
+// ReSharper disable All
+#pragma warning disable 8618
+
+namespace Domain.Entities.Identity;
+[ExcludeFromCodeCoverage]
+public class RolePermission
+{
+    public long RoleId { get; set; }
+    public Role? Role { get; set; }
+    public long PermissionId { get; set; }
+    public Permission? Permission { get; set; }
+}

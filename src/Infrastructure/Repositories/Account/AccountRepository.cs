@@ -20,6 +20,10 @@ public class AccountRepository : Repository<Domain.Entities.Identity.Account, Ap
     public async Task<Domain.Entities.Identity.Account?> GetAccountByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken = default(CancellationToken))
     {
         return await _accounts
+            .Include(u => u.AccountRoles)
+            .ThenInclude(r => r.Role)
+            .ThenInclude(rp => rp.RolePermissions)
+            .ThenInclude(p => p.Permission)
             .AsSplitQuery()
             .FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber && u.Status != AccountStatus.Inactive, cancellationToken);
     }

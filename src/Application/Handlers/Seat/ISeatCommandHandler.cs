@@ -7,7 +7,7 @@ public interface ICreateListSeatCommandHandler : IRequestHandler<CreateListSeatC
 {
 }
 
-public interface ICreateSeatCommandHandler : IRequestHandler<CreateSeatCommand, int>
+public interface ICreateSeatCommandHandler : IRequestHandler<CreateListSeatCommand, int>
 {
 }
 

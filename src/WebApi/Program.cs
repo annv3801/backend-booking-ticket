@@ -15,6 +15,8 @@ using Application.Repositories.Film;
 using Application.Repositories.Food;
 using Application.Repositories.Group;
 using Application.Repositories.News;
+using Application.Repositories.Permission;
+using Application.Repositories.Role;
 using Application.Repositories.Room;
 using Application.Repositories.RoomSeat;
 using Application.Repositories.Scheduler;
@@ -29,6 +31,8 @@ using Application.Services.Film;
 using Application.Services.Food;
 using Application.Services.Group;
 using Application.Services.News;
+using Application.Services.Permission;
+using Application.Services.Role;
 using Application.Services.Room;
 using Application.Services.RoomSeat;
 using Application.Services.Scheduler;
@@ -49,6 +53,8 @@ using Infrastructure.Repositories.Film;
 using Infrastructure.Repositories.Food;
 using Infrastructure.Repositories.Group;
 using Infrastructure.Repositories.News;
+using Infrastructure.Repositories.Permission;
+using Infrastructure.Repositories.Role;
 using Infrastructure.Repositories.Room;
 using Infrastructure.Repositories.RoomSeat;
 using Infrastructure.Repositories.Scheduler;
@@ -183,6 +189,12 @@ builder.Services.AddScoped<ISlideManagementService, SlideManagementService>();
 
 builder.Services.AddScoped<INewsRepository, NewsRepository>();    
 builder.Services.AddScoped<INewsManagementService, NewsManagementService>();
+
+builder.Services.AddScoped<IRoleManagementService, RoleManagementService>();    
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();    
+builder.Services.AddScoped<IPermissionManagementService, PermissionManagementService>();
 
 builder.Services.AddSingleton<IFileService>(sp => new FileService(environment));
 builder.Services.AddScoped<IVnPayService, VnPayService>();
@@ -338,6 +350,7 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(uploadsPath),
     RequestPath = "/Resources"
 });
+
 app.UseAuthentication();
 app.UseAuthorization();
 

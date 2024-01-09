@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 namespace Infrastructure.Profiles.Account.Resolvers
 {
     [ExcludeFromCodeCoverage]
-    public class SmsOtpValidEndResolver : IValueResolver<CreateAccountCommand, Domain.Entities.Identity.Account, DateTime>
+    public class SmsOtpValidEndResolver : IValueResolver<UpdateProfileAccountFirstLoginCommand, Domain.Entities.Identity.Account, DateTime>
     {
         private readonly ISmsService _smsService;
         private readonly SmsConfiguration _smsOptions;
@@ -23,7 +23,7 @@ namespace Infrastructure.Profiles.Account.Resolvers
             _dateTime = dateTime;
         }
 
-        public DateTime Resolve(CreateAccountCommand source, Domain.Entities.Identity.Account destination,
+        public DateTime Resolve(UpdateProfileAccountFirstLoginCommand source, Domain.Entities.Identity.Account destination,
             DateTime destMember, ResolutionContext context)
         {
             return DateTime.UtcNow.AddSeconds(_smsOptions.Expiration);

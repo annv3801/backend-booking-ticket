@@ -7,5 +7,6 @@ public enum AccountStatus
     PendingConfirmation = 1,
     PendingApproval = 2,
     Active = 3,
+    PendingUpdateProfile = 4
     
 }

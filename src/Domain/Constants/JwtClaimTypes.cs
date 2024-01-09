@@ -48,6 +48,9 @@ public static class JwtClaimTypes
     public const string SupplierCode = "supcode";
     public const string ReferenceTokenId = "reference_token_id";
     public const string Confirmation = "cnf";
+    public const string Role = "role";
+    public const string Permission = "permission";
+
     public class JwtTypes
     {
         public const string AccessToken = "at+jwt";

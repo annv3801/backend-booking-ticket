@@ -9,8 +9,12 @@ namespace Application.Services.Account;
 public interface IAccountManagementService
 {
     Task<RequestResult<AccountResult>> CreateAccountByAdminAsync(Domain.Entities.Identity.Account account,CancellationToken cancellationToken = default(CancellationToken));
+    Task<RequestResult<AccountResult>> PreCreateAccountByAdminAsync(Domain.Entities.Identity.Account account,CancellationToken cancellationToken = default(CancellationToken));
+    Task<RequestResult<AccountResult>> UpdateProfileAccountFirstLoginAsync(Domain.Entities.Identity.Account account,CancellationToken cancellationToken = default(CancellationToken));
     Task<RequestResult<AccountResult>> UpdateAccountAsync(Domain.Entities.Identity.Account account, CancellationToken cancellationToken = default(CancellationToken));
     Task<RequestResult<AccountResult>> UpdateMyAccountAsync(Domain.Entities.Identity.Account account, CancellationToken cancellationToken = default(CancellationToken));
+    Task<RequestResult<AccountResult>> ActiveAccountAsync(string otp, CancellationToken cancellationToken = default(CancellationToken));
+    Task<RequestResult<AccountResult>> ResetOtpAsync(CancellationToken cancellationToken = default(CancellationToken));
     Task<RequestResult<ViewAccountResponse>> ViewAccountDetailByAdminAsync(long accountId, CancellationToken cancellationToken = default(CancellationToken));
     Task<RequestResult<AccountResult>> ChangePasswordAsync(ChangePasswordRequest request, CancellationToken cancellationToken = default(CancellationToken));
     Task<RequestResult<SignInWithPhoneNumberResponse>> SignInWithPhoneNumberAsync(SignInWithPhoneNumberRequest request, CancellationToken cancellationToken = default(CancellationToken));

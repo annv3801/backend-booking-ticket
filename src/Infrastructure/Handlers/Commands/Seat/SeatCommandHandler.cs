@@ -24,11 +24,14 @@ public class SeatCommandHandler : ICreateSeatCommandHandler, IUpdateSeatCommandH
         _currentAccountService = currentAccountService;
     }
 
-    public async Task<int> Handle(CreateSeatCommand command, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateListSeatCommand command, CancellationToken cancellationToken)
     {
         try
         {
-            await _seatRepository.AddAsync(command.Entity, cancellationToken);
+            foreach (var item in command.Entity)
+            {
+                await _seatRepository.AddAsync(item, cancellationToken);
+            }
             return await _seatRepository.SaveChangesAsync(cancellationToken);
         }
         catch (Exception e)

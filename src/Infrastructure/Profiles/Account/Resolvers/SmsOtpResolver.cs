@@ -6,7 +6,7 @@ using AutoMapper;
 namespace Infrastructure.Profiles.Account.Resolvers
 {
     [ExcludeFromCodeCoverage]
-    public class SmsOtpResolver : IValueResolver<CreateAccountCommand, Domain.Entities.Identity.Account, string?>
+    public class SmsOtpResolver : IValueResolver<UpdateProfileAccountFirstLoginCommand, Domain.Entities.Identity.Account, string?>
     {
         private readonly ISmsService _smsService;
 
@@ -15,7 +15,7 @@ namespace Infrastructure.Profiles.Account.Resolvers
             _smsService = smsService;
         }
 
-        public string Resolve(CreateAccountCommand source, Domain.Entities.Identity.Account destination,
+        public string Resolve(UpdateProfileAccountFirstLoginCommand source, Domain.Entities.Identity.Account destination,
             string? destMember, ResolutionContext context)
         {
             return _smsService.GenerateOtpAsync(CancellationToken.None).Result.Data.Otp;

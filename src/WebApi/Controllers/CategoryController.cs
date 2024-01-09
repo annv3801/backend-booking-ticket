@@ -1,3 +1,4 @@
+using Application.Common;
 using Application.DataTransferObjects.Category.Requests;
 using Application.DataTransferObjects.Category.Responses;
 using Application.Services.Category;
@@ -5,6 +6,7 @@ using Domain.Common.Interface;
 using Domain.Common.Pagination.OffsetBased;
 using Microsoft.AspNetCore.Mvc;
 using Nobi.Core.Responses;
+using WebApi.Services;
 
 namespace WebApi.Controllers;
 

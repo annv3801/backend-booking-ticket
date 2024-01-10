@@ -11,3 +11,8 @@ public interface ICancelBookingCommandHandler : IRequestHandler<CancelBookingCom
 {
 }
 
+public interface IChangeStatusBookingCommandHandler : IRequestHandler<ChangeStatusBookingCommand, int>
+{
+}
+
+

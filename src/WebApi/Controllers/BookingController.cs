@@ -141,4 +141,26 @@ public class BookingController : ControllerBase
             throw;
         }
     }
+    
+    /// <summary>
+    /// Delete Category with id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut]
+    [Route("Change-Status-Booking/{id:long}")]
+    public async Task<RequestResult<bool>?> ChangeStatusCategoryAsync(long id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _bookingManagementService.ChangeStatusBookingAsync(id, cancellationToken);
+            return result;
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(CancelCategoryAsync));
+            throw;
+        }
+    }
 }

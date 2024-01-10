@@ -165,6 +165,35 @@ public class BookingManagementService : IBookingManagementService
         }
     }
 
+    public async Task<RequestResult<bool>> ChangeStatusBookingAsync(long id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var bookingEntity = await _bookingRepository.Entity.Where(x => x.Id == id && _currentAccountService.Id == x.CreatedBy).FirstOrDefaultAsync(cancellationToken);
+            if (bookingEntity is null)
+            {
+                return RequestResult<bool>.Fail("Booking is not found");
+            }
+            
+            bookingEntity.IsReceived = 1;
+            bookingEntity.Status = "RECEIVED";
+            bookingEntity.ModifiedTime = _dateTimeService.NowUtc;
+            bookingEntity.ModifiedBy = _currentAccountService.Id;
+            var booking = await _mediator.Send(new ChangeStatusBookingCommand()
+            {
+                Entity = bookingEntity
+            }, cancellationToken);
+            if (booking == null)
+                return RequestResult<bool>.Fail("Booking is not found");
+            return RequestResult<bool>.Succeed("Change status booking success");
+        }
+        catch (Exception e)
+        {
+            _loggerService.LogError(e, nameof(GetBookingAsync));
+            throw;
+        }
+    }
+
     public async Task<RequestResult<BookingResponse>> GetBookingAsync(long id, CancellationToken cancellationToken)
     {
         try

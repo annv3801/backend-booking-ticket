@@ -34,6 +34,7 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
             {
                 BookingId = x.Id,
                 AccountId = x.AccountId,
+                Account = x.Account,
                 Total = x.Total,
                 TotalBeforeDiscount = x.TotalBeforeDiscount,
                 x.Discount,
@@ -64,6 +65,7 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
             {
                 Id = group.Key,
                 AccountId = group.First().AccountId,
+                Account = group.First().Account,
                 Total = group.First().Total,
                 TotalBeforeDiscount = group.First().TotalBeforeDiscount,
                 Discount = group.First().Discount,
@@ -85,6 +87,7 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
             {
                 BookingId = x.Id,
                 AccountId = x.AccountId,
+                Account = x.Account,
                 Total = x.Total,
                 TotalBeforeDiscount = x.TotalBeforeDiscount,
                 x.Discount,
@@ -115,6 +118,7 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
             {
                 Id = group.Key,
                 AccountId = group.First().AccountId,
+                Account = group.First().Account,
                 Total = group.First().Total,
                 TotalBeforeDiscount = group.First().TotalBeforeDiscount,
                 Discount = group.First().Discount,
@@ -160,6 +164,7 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
             {
                 BookingId = x.Id,
                 AccountId = x.AccountId,
+                Account = x.Account,
                 Total = x.Total,
                 TotalBeforeDiscount = x.TotalBeforeDiscount,
                 x.Discount,
@@ -190,6 +195,7 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
             {
                 Id = group.Key,
                 AccountId = group.First().AccountId,
+                Account = group.First().Account,
                 Total = group.First().Total,
                 TotalBeforeDiscount = group.First().TotalBeforeDiscount,
                 Discount = group.First().Discount,

@@ -94,8 +94,8 @@ public class BookingManagementService : IBookingManagementService
                 getBooking.Total = seatResponse.Ticket.Price * request.SeatId.Count + totalFood;
                 getBooking.TotalBeforeDiscount = seatResponse.Ticket.Price * request.SeatId.Count + totalFood;
                 
-                if (request.Total != bookingEntity.Total)
-                    return RequestResult<bool>.Fail("Total not exist");
+                // if (request.Total != bookingEntity.Total)
+                //     return RequestResult<bool>.Fail("Total not exist");
                 
                 foreach (var item in request.SeatId)
                 {

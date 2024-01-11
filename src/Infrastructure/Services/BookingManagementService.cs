@@ -1,4 +1,5 @@
-﻿using Application.Commands.Booking;
+﻿using System.Drawing;
+using Application.Commands.Booking;
 using Application.Common.Interfaces;
 using Application.DataTransferObjects.Booking.Requests;
 using Application.DataTransferObjects.Booking.Responses;
@@ -7,6 +8,7 @@ using Application.Queries.Booking;
 using Application.Repositories.Booking;
 using Application.Repositories.Food;
 using Application.Repositories.Seat;
+using Application.Services.Account;
 using Application.Services.Booking;
 using AutoMapper;
 using Domain.Common.Interface;
@@ -15,7 +17,9 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using Nobi.Core.Responses;
+using QRCoder;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
 
@@ -35,9 +39,11 @@ public class BookingManagementService : IBookingManagementService
     private readonly ISeatRepository _seatRepository;
     private readonly IFoodRepository _foodRepository;
     private readonly IVnPayService _vnPayService;
+    private readonly IEmailService _emaiService;
+    private readonly IAccountManagementService _accountManagementService;
 
     public BookingManagementService(IMapper mapper, IMediator mediator, ILoggerService loggerService, IBookingRepository bookingRepository,
-        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService, ISnowflakeIdService snowflakeIdService, IBookingDetailRepository bookingDetailRepository, ISeatRepository seatRepository, IFoodRepository foodRepository, IVnPayService vnPayService)
+        IDateTimeService dateTimeService, ICurrentAccountService currentAccountService, ISnowflakeIdService snowflakeIdService, IBookingDetailRepository bookingDetailRepository, ISeatRepository seatRepository, IFoodRepository foodRepository, IVnPayService vnPayService, IEmailService emaiService, IAccountManagementService accountManagementService)
     {
         _mapper = mapper;
         _mediator = mediator;
@@ -50,6 +56,8 @@ public class BookingManagementService : IBookingManagementService
         _seatRepository = seatRepository;
         _foodRepository = foodRepository;
         _vnPayService = vnPayService;
+        _emaiService = emaiService;
+        _accountManagementService = accountManagementService;
     }
 
     public async Task<RequestResult<bool>> CreateBookingAsync(CreateBookingRequest request, CancellationToken cancellationToken)
@@ -58,6 +66,10 @@ public class BookingManagementService : IBookingManagementService
         {
             if (request.SeatId.Count <= 0)
                 return RequestResult<bool>.Fail("Not Found Seats");
+            var account = await _accountManagementService.ViewAccountDetailByAdminAsync(_currentAccountService.Id, cancellationToken);
+            if(!account.Success) 
+                return RequestResult<bool>.Fail("Not found account"); 
+            
             // Create Booking 
             var bookingEntity = _mapper.Map<BookingEntity>(request);
             bookingEntity.Id = await _snowflakeIdService.GenerateId(cancellationToken);
@@ -73,11 +85,8 @@ public class BookingManagementService : IBookingManagementService
             bookingEntity.ModifiedTime = _dateTimeService.NowUtc;
             bookingEntity.Status = "PENDING";   
             
-            var resultCreateBooking = await _mediator.Send(new CreateBookingCommand {Entity = bookingEntity}, cancellationToken);
-            var getBooking = await _bookingRepository.GetBookingEntityByIdAsync(bookingEntity.Id, cancellationToken);
+            await _bookingRepository.AddAsync(bookingEntity, cancellationToken);
             
-            if (resultCreateBooking > 0)
-            {
                 var seatResponse = await _seatRepository.GetSeatEntityByIdAsync(request.SeatId.First(), cancellationToken);
                 
                 var totalFood = (double)0;
@@ -91,8 +100,8 @@ public class BookingManagementService : IBookingManagementService
                     }
                 }
                 
-                getBooking.Total = seatResponse.Ticket.Price * request.SeatId.Count + totalFood;
-                getBooking.TotalBeforeDiscount = seatResponse.Ticket.Price * request.SeatId.Count + totalFood;
+                bookingEntity.Total = seatResponse.Ticket.Price * request.SeatId.Count + totalFood;
+                bookingEntity.TotalBeforeDiscount = seatResponse.Ticket.Price * request.SeatId.Count + totalFood;
                 
                 // if (request.Total != bookingEntity.Total)
                 //     return RequestResult<bool>.Fail("Total not exist");
@@ -119,11 +128,16 @@ public class BookingManagementService : IBookingManagementService
                     await _seatRepository.UpdateAsync(seat, cancellationToken);
                     await _seatRepository.SaveChangesAsync(cancellationToken);
                 }
-                await _bookingRepository.UpdateAsync(getBooking, cancellationToken);
+                await _bookingRepository.UpdateAsync(bookingEntity, cancellationToken);
+                var resutl = await _bookingRepository.SaveChangesAsync(cancellationToken);
                 await _bookingDetailRepository.SaveChangesAsync(cancellationToken);
-                return RequestResult<bool>.Succeed("Save data success");
-            }
-            return RequestResult<bool>.Fail("Save data failed");
+                _emaiService.SendEmail(account.Data.Email, "Cảm ơn bạn đã đặt vé thành công tại Cinemax", bookingEntity.Id.ToString(), true);
+                if (resutl > 0)
+                {
+                    return RequestResult<bool>.Succeed("Save data success");
+                }
+                return RequestResult<bool>.Fail("Save data fail");
+
         }
         catch (Exception e)
         {

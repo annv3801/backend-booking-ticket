@@ -77,7 +77,7 @@ public class AccountManagementService : IAccountManagementService
             
             await _accountRepository.AddAsync(account, cancellationToken);
             var result = await _accountRepository.SaveChangesAsync(cancellationToken);
-            _emailService.SendEmail(account.Email, "Xác nhận tài khoản", $"Mã otp của bạn là: {account.Otp}");
+            _emailService.SendEmail(account.Email, "Xác nhận tài khoản", $"Mã otp của bạn là: {account.Otp}", false);
             if (result > 0)
                 return RequestResult<AccountResult>.Succeed("Success", new AccountResult());
             return RequestResult<AccountResult>.Fail("Save Fail");
@@ -147,7 +147,7 @@ public class AccountManagementService : IAccountManagementService
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)
             {
-                _emailService.SendEmail(account.Email, "Xác nhận tài khoản", $"Mã otp của bạn là: {account.Otp}");
+                _emailService.SendEmail(account.Email, "Xác nhận tài khoản", $"Mã otp của bạn là: {account.Otp}", false);
                 return RequestResult<AccountResult>.Succeed();
             }
             return RequestResult<AccountResult>.Fail("Save Fail");
@@ -248,7 +248,7 @@ public class AccountManagementService : IAccountManagementService
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             if (result > 0)
             {
-                _emailService.SendEmail(existedAccount.Email, "Xác nhận tài khoản", $"Mã otp của bạn là: {existedAccount.Otp}");
+                _emailService.SendEmail(existedAccount.Email, "Xác nhận tài khoản", $"Mã otp của bạn là: {existedAccount.Otp}", false);
                 return RequestResult<AccountResult>.Succeed();
             }
             return RequestResult<AccountResult>.Fail("Save Fail");

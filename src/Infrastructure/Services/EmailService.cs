@@ -55,10 +55,12 @@ public class EmailService : IEmailService
             email.Subject = subject;
         
             var builder = new BodyBuilder();
-            var test = @"<html>
+            var additionalMessage = "Vui lòng đưa mã QR cho nhân viên tại quầy: " + body;
+
+            var test = $@"<html>
                         <body>
                             <h1 style='text-center font-weight:bold'>Cảm ơn bạn đã đặt vé thành công</h1>
-                            <h2>Vui lòng đưa mã QR cho nhân viên tại quầy</h2>
+                            <h2>{additionalMessage}</h2>
                             <img src=""cid:qr_code"" alt=""QR Code"">
                         </body>
                     </html>";

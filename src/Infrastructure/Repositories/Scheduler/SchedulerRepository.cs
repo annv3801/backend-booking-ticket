@@ -1,3 +1,4 @@
+using Application.DataTransferObjects.Film.Responses;
 using Application.DataTransferObjects.Scheduler.Responses;
 using Application.Interface;
 using Application.Repositories.Scheduler;
@@ -17,6 +18,7 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
 {
     private readonly DbSet<SchedulerEntity> _schedulerEntities;
     private readonly DbSet<AccountFavoritesEntity> _accountFavoritesEntities;
+    private readonly DbSet<FilmFeedbackEntity> _filmFeedbackEntities;
     private readonly IMapper _mapper;
 
     public SchedulerRepository(ApplicationDbContext applicationDbContext, IMapper mapper, ISnowflakeIdService snowflakeIdService) : base(applicationDbContext, snowflakeIdService)
@@ -24,6 +26,7 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
         _mapper = mapper;
         _schedulerEntities = applicationDbContext.Set<SchedulerEntity>();
         _accountFavoritesEntities = applicationDbContext.Set<AccountFavoritesEntity>();
+        _filmFeedbackEntities = applicationDbContext.Set<FilmFeedbackEntity>();
     }
 
     public async Task<OffsetPaginationResponse<SchedulerResponse>> GetListSchedulersAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
@@ -68,7 +71,7 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
 
         // Use the distinct theater IDs in your main query
         var query = _schedulerEntities
-            .Where(x => !x.Deleted && x.FilmId == filmId)
+            .Where(x => !x.Deleted && x.FilmId == filmId && DateTimeOffset.UtcNow.AddHours(7) <= x.StartTime.AddMinutes(10))
             .Select(x => new SchedulerFilmAndTheaterResponse()
             {
                 Id = x.Theater.Id,
@@ -126,7 +129,20 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
 
     public async Task<SchedulerResponse?> GetSchedulerByIdAsync(long id, CancellationToken cancellationToken)
     {
-        return await _schedulerEntities.AsNoTracking().ProjectTo<SchedulerResponse>(_mapper.ConfigurationProvider).Where(x => x.Id == id && x.Status != EntityStatus.Deleted).FirstOrDefaultAsync(cancellationToken);
+        var result = await _schedulerEntities.AsNoTracking().ProjectTo<SchedulerResponse>(_mapper.ConfigurationProvider).Where(x => x.Id == id && x.Status != EntityStatus.Deleted).FirstOrDefaultAsync(cancellationToken);
+        var filmFeedbackResponse = await _filmFeedbackEntities.Where(x => x.FilmId == result.FilmId).GroupBy(x => x.FilmId).Select(x => new FeedbackFilmResponse()
+        {
+            FilmId = id,
+            AverageRating = (double)x.Sum(xx => xx.Rating) / x.Count(),
+            CountOneStar = x.Count(xx => xx.Rating == 1),
+            CountTwoStar = x.Count(xx => xx.Rating == 2),
+            CountThreeStar = x.Count(xx => xx.Rating == 3),
+            CountFourStar = x.Count(xx => xx.Rating == 4),
+            CountFiveStar = x.Count(xx => xx.Rating == 5),
+            CountStart = x.Count()
+        }).FirstOrDefaultAsync(cancellationToken);
+        result.Feedback = filmFeedbackResponse;
+        return result;
     }
 
     public async Task<SchedulerEntity?> GetSchedulerEntityByIdAsync(long id, CancellationToken cancellationToken)
@@ -146,7 +162,7 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
     {
         var schedules = await _schedulerEntities.AsNoTracking().Include(x => x.Film)
             .Include(x => x.Room)
-            .Where(x => x.TheaterId == theaterId && x.StartTime.Day == DateTimeOffset.Parse(date).Day && x.StartTime.Month == DateTimeOffset.Parse(date).Month && x.StartTime.Year == DateTimeOffset.Parse(date).Year && DateTimeOffset.UtcNow <= x.StartTime.AddMinutes(10) && x.Status != EntityStatus.Deleted)
+            .Where(x => x.TheaterId == theaterId && x.StartTime.Day == DateTimeOffset.Parse(date).Day && x.StartTime.Month == DateTimeOffset.Parse(date).Month && x.StartTime.Year == DateTimeOffset.Parse(date).Year && DateTimeOffset.UtcNow.AddHours(7) <= x.StartTime.AddMinutes(10) && x.Status != EntityStatus.Deleted)
             .ToListAsync(cancellationToken);
 
         var groupedSchedules = schedules.GroupBy(x => x.FilmId);
@@ -184,7 +200,7 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
     {
         var schedules = await _schedulerEntities.AsNoTracking().Include(x => x.Film)
             .Include(x => x.Room)
-            .Where(x => x.FilmId == filmId &&  x.TheaterId == theaterId && x.StartTime.Day == DateTimeOffset.Parse(date).Day && x.StartTime.Month == DateTimeOffset.Parse(date).Month && x.StartTime.Year == DateTimeOffset.Parse(date).Year && DateTimeOffset.UtcNow <= x.StartTime.AddMinutes(10) && x.Status != EntityStatus.Deleted)
+            .Where(x => x.FilmId == filmId &&  x.TheaterId == theaterId && x.StartTime.Day == DateTimeOffset.Parse(date).Day && x.StartTime.Month == DateTimeOffset.Parse(date).Month && x.StartTime.Year == DateTimeOffset.Parse(date).Year && DateTimeOffset.UtcNow.AddHours(7) <= x.StartTime.AddMinutes(10) && x.Status != EntityStatus.Deleted)
             .ToListAsync(cancellationToken);
 
         var groupedSchedules = schedules.GroupBy(x => x.FilmId);
@@ -221,7 +237,7 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
         var schedules = await _schedulerEntities.AsNoTracking().Include(x => x.Film)
             .Include(x => x.Room)
             .Include(x => x.Room.Theater)
-            .Where(x => x.FilmId == filmId && x.StartTime.Day == DateTimeOffset.Parse(date).Day && x.StartTime.Month == DateTimeOffset.Parse(date).Month && x.StartTime.Year == DateTimeOffset.Parse(date).Year && DateTimeOffset.UtcNow <= x.StartTime.AddMinutes(10) && x.Status != EntityStatus.Deleted)
+            .Where(x => x.FilmId == filmId && x.StartTime.Day == DateTimeOffset.Parse(date).Day && x.StartTime.Month == DateTimeOffset.Parse(date).Month && x.StartTime.Year == DateTimeOffset.Parse(date).Year && DateTimeOffset.UtcNow.AddHours(7) <= x.StartTime.AddMinutes(10) && x.Status != EntityStatus.Deleted)
             .ToListAsync(cancellationToken);
 
         var groupedSchedules = schedules.GroupBy(x => x.FilmId);

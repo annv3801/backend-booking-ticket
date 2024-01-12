@@ -58,7 +58,7 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                     FilmImage = y.Seat.Scheduler.Film.Image
                 },
                 Foods = y.Foods,
-                IsComingSoon = DateTimeOffset.Compare(y.Seat.Scheduler.StartTime, DateTimeOffset.UtcNow) > 0
+                IsComingSoon = y.Seat.Scheduler.StartTime > DateTimeOffset.UtcNow.AddHours(7)
             })
             .GroupBy(x => x.BookingId)
             .Select(group => new BookingResponse()
@@ -111,7 +111,7 @@ public class BookingRepository : Repository<BookingEntity, ApplicationDbContext>
                     FilmImage = y.Seat.Scheduler.Film.Image
                 },
                 Foods = y.Foods,
-                IsComingSoon = DateTimeOffset.Compare(y.Seat.Scheduler.StartTime, DateTimeOffset.UtcNow) > 0
+                IsComingSoon = y.Seat.Scheduler.StartTime > DateTimeOffset.UtcNow.AddHours(7)
             })
             .GroupBy(x => x.BookingId)
             .Select(group => new BookingResponse()

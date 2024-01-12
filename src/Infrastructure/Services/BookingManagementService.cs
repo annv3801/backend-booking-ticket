@@ -183,7 +183,7 @@ public class BookingManagementService : IBookingManagementService
     {
         try
         {
-            var bookingEntity = await _bookingRepository.Entity.Where(x => x.Id == id && _currentAccountService.Id == x.CreatedBy).FirstOrDefaultAsync(cancellationToken);
+            var bookingEntity = await _bookingRepository.Entity.Where(x => x.Id == id).FirstOrDefaultAsync(cancellationToken);
             if (bookingEntity is null)
             {
                 return RequestResult<bool>.Fail("Booking is not found");
@@ -191,8 +191,6 @@ public class BookingManagementService : IBookingManagementService
             
             bookingEntity.IsReceived = 1;
             bookingEntity.Status = "RECEIVED";
-            bookingEntity.ModifiedTime = _dateTimeService.NowUtc;
-            bookingEntity.ModifiedBy = _currentAccountService.Id;
             var booking = await _mediator.Send(new ChangeStatusBookingCommand()
             {
                 Entity = bookingEntity

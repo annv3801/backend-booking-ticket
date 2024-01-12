@@ -76,6 +76,7 @@ public class SchedulerManagementService : ISchedulerManagementService
             var schedulerEntity = _mapper.Map<SchedulerEntity>(request);
 
             schedulerEntity.Id = await _snowflakeIdService.GenerateId(cancellationToken);
+            schedulerEntity.StartTime = request.StartTime.AddHours(7);
             schedulerEntity.EndTime = schedulerEntity.StartTime.AddMinutes(filmValid.Duration);
             schedulerEntity.CreatedBy = _currentAccountService.Id;
             schedulerEntity.CreatedTime = _dateTimeService.NowUtc;

@@ -85,6 +85,7 @@ public class CategoryController : ControllerBase
     {
         try
         {
+            
             var result = await _categoryManagementService.DeleteCategoryAsync(id, cancellationToken);
             return result;
         }

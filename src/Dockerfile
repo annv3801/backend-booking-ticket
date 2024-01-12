@@ -2,6 +2,7 @@
 
 # Set up baseStage to prepare clean enviroment before copying
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS basestage
+RUN apt-get update && apt-get install -y apt-utils libgdiplus libc6-dev
 # Set working dir as /app
 WORKDIR /app
 # Expose ports

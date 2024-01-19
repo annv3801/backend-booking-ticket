@@ -32,7 +32,8 @@ public class RoomRepository : Repository<RoomEntity, ApplicationDbContext>, IRoo
                 Name = x.Name,
                 TheaterId = x.TheaterId,
                 Status = x.Status,
-                Theater = x.Theater
+                Theater = x.Theater,
+                CreatedTime = x.CreatedTime
             });
         
         var response = await query.PaginateAsync<RoomEntity,RoomResponse>(request, cancellationToken);

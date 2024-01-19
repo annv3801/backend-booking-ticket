@@ -39,6 +39,7 @@ public class TheaterRepository : Repository<TheaterEntity, ApplicationDbContext>
                 Location = x.Location,
                 PhoneNumber = x.PhoneNumber,
                 Status = x.Status,
+                CreatedTime = x.CreatedTime
             });
         
         if (accountId != 0)
@@ -61,7 +62,8 @@ public class TheaterRepository : Repository<TheaterEntity, ApplicationDbContext>
                         Location = x.Theater.Location,
                         PhoneNumber = x.Theater.PhoneNumber,
                         Status = x.Theater.Status,
-                        IsFavorite = (favorite != null)
+                        IsFavorite = (favorite != null),
+                        CreatedTime = x.Theater.CreatedTime
                     });
         }
         

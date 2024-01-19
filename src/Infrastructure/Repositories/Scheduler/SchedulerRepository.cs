@@ -11,6 +11,7 @@ using Domain.Entities;
 using Domain.Extensions;
 using Infrastructure.Databases;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Infrastructure.Repositories.Scheduler;
 
@@ -19,6 +20,7 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
     private readonly DbSet<SchedulerEntity> _schedulerEntities;
     private readonly DbSet<AccountFavoritesEntity> _accountFavoritesEntities;
     private readonly DbSet<FilmFeedbackEntity> _filmFeedbackEntities;
+    private readonly DbSet<SeatEntity> _seatEntities;
     private readonly IMapper _mapper;
 
     public SchedulerRepository(ApplicationDbContext applicationDbContext, IMapper mapper, ISnowflakeIdService snowflakeIdService) : base(applicationDbContext, snowflakeIdService)
@@ -27,26 +29,37 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
         _schedulerEntities = applicationDbContext.Set<SchedulerEntity>();
         _accountFavoritesEntities = applicationDbContext.Set<AccountFavoritesEntity>();
         _filmFeedbackEntities = applicationDbContext.Set<FilmFeedbackEntity>();
+        _seatEntities = applicationDbContext.Set<SeatEntity>();
     }
 
     public async Task<OffsetPaginationResponse<SchedulerResponse>> GetListSchedulersAsync(OffsetPaginationRequest request, CancellationToken cancellationToken)
     {
-        var query = _schedulerEntities.Where(x => !x.Deleted).Select(x => new SchedulerResponse()
-        {
-            Id = x.Id,
-            FilmId = x.FilmId,
-            Film = x.Film,
-            RoomId = x.RoomId,
-            Room = x.Room,
-            StartTime = x.StartTime,
-            EndTime = x.EndTime,
-            Status = x.Status,
-            TheaterId = x.TheaterId,
-            Theater = x.Theater
-        });
+        var query = _schedulerEntities
+            .Where(x => !x.Deleted)
+            .GroupJoin(
+                _seatEntities, // The collection to join
+                scheduler => scheduler.Id, // Key from the first collection
+                seat => seat.SchedulerId, // Key from the second collection
+                (scheduler, seats) => new { scheduler, seats } // Result selector
+            )
+            .Select(group => new SchedulerResponse
+            {
+                Id = group.scheduler.Id,
+                FilmId = group.scheduler.FilmId,
+                Film = group.scheduler.Film,
+                RoomId = group.scheduler.RoomId,
+                Room = group.scheduler.Room,
+                StartTime = group.scheduler.StartTime,
+                EndTime = group.scheduler.EndTime,
+                Status = group.scheduler.Status,
+                TheaterId = group.scheduler.TheaterId,
+                Theater = group.scheduler.Theater,
+                CountSeat = group.seats.Count(), // Counting the seats
+                CreatedTime = group.scheduler.CreatedTime
+            });
 
         var response = await query.PaginateAsync<SchedulerEntity, SchedulerResponse>(request, cancellationToken);
-        return new OffsetPaginationResponse<SchedulerResponse>()
+        return new OffsetPaginationResponse<SchedulerResponse>
         {
             Data = response.Data,
             PageSize = response.PageSize,
@@ -54,6 +67,7 @@ public class SchedulerRepository : Repository<SchedulerEntity, ApplicationDbCont
             CurrentPage = response.CurrentPage
         };
     }
+
 
     public async Task<List<long>> GetDistinctTheaterIdsForFilmAsync(long filmId, CancellationToken cancellationToken)
     {

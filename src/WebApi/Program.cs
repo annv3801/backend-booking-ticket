@@ -66,11 +66,14 @@ using Infrastructure.Services;
 using Infrastructure.Services.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using WebApi.Securities.Authorization.Handlers;
+using WebApi.Securities.Authorization.PolicyProviders;
 using WebApi.Services;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -120,6 +123,10 @@ builder.Services.AddScoped<ILoggerService, LoggerService>();
 builder.Services.AddScoped<IDateTimeService, DateTimeService>();
 builder.Services.AddScoped<ISmsService, SmsService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionsPolicyProvider>();
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionsAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, RolesAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, ScopesAuthorizationHandler>();
 
 
 // Account

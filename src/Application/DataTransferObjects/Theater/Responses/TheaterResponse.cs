@@ -13,4 +13,5 @@ public class TheaterResponse
     public string PhoneNumber { get; set; }
     public string Status { get; set; }
     public bool IsFavorite { get; set; }
+    public DateTimeOffset? CreatedTime { get; set; }
 }

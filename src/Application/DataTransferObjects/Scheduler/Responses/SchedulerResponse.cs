@@ -1,4 +1,5 @@
 using Application.DataTransferObjects.Film.Responses;
+using Domain.Common.Attributes;
 using Domain.Entities;
 
 namespace Application.DataTransferObjects.Scheduler.Responses;
@@ -16,4 +17,6 @@ public class SchedulerResponse
     public DateTimeOffset? EndTime { get; set; }
     public string Status { get; set; }
     public FeedbackFilmResponse? Feedback { get; set; }
+    public int? CountSeat { get; set; }
+    public DateTimeOffset? CreatedTime { get; set; }
 }

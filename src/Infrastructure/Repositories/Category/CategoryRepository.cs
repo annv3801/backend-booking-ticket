@@ -31,6 +31,7 @@ public class CategoryRepository : Repository<CategoryEntity, ApplicationDbContex
                 Name = x.Name,
                 Status = x.Status,
                 Id = x.Id,
+                CreatedTime = x.CreatedTime,
             });
         
         var response = await query.PaginateAsync<CategoryEntity,CategoryResponse>(request, cancellationToken);

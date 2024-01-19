@@ -10,4 +10,5 @@ public class TicketResponse
     public long Price { get; set; }
     public string Status { get; set; } = EntityStatus.Active;
     public string Color { get; set; }
+    public DateTimeOffset? CreatedTime { get; set; }
 }

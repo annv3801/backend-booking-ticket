@@ -9,4 +9,5 @@ public class RoomResponse
     public string Status { get; set; }
     public long TheaterId { get; set; }
     public TheaterEntity Theater { get; set; }
+    public DateTimeOffset? CreatedTime { get; set; }
 }

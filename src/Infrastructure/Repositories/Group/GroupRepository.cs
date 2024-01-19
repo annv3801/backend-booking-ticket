@@ -31,7 +31,8 @@ public class GroupRepository : Repository<GroupEntity, ApplicationDbContext>, IG
                 Title = x.Title,
                 Status = x.Status,
                 Id = x.Id,
-                Type = x.Type
+                Type = x.Type,
+                CreatedTime = x.CreatedTime
             });
         
         var response = await query.PaginateAsync<GroupEntity,GroupResponse>(request, cancellationToken);

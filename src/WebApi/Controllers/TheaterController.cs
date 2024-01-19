@@ -15,7 +15,7 @@ namespace WebApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("Theater")]
-public class TheaterController : ControllerBase
+public class TheaterController : ControllerBase 
 {
     private readonly ITheaterManagementService _theaterManagementService;
     private readonly ILoggerService _loggerService;
